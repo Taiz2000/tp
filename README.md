@@ -15,7 +15,7 @@ It is optimized for users who prefer fast, keyboard-driven workflows over mouse-
 - **Offline-capable desktop app** for use in low-connectivity environments.
 - **Local data handling** to better support privacy-conscious users.
 
-For detailed documentation, see the [RosterBolt Product Website](https://se-education.org/addressbook-level3).
+For detailed documentation, see the [RosterBolt Product Website](https://ay2526s2-cs2103t-t12-1.github.io/tp/).
 
 ### Acknowledgement
-* This project is a **part of the se-education.org** initiative, modified from AddressBook3. If you would like to contribute code to this project, see [se-education.org](https://se-education.org/#contributing-to-se-edu) for more info.
+* This project is based on the AddressBook-Level3 project created by the [SE-EDU initiative](https://se-education.org).
