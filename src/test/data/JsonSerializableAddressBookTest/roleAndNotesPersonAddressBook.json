@@ -1,0 +1,11 @@
+{
+  "persons": [ {
+    "name": "Role Notes User",
+    "phone": "81234567",
+    "email": "rolenotes@example.com",
+    "address": "10 Lower Kent Ridge Rd",
+    "role": "Logistics Lead",
+    "notes": "Can cover weekday evenings.",
+    "tags": [ "friends" ]
+  } ]
+}

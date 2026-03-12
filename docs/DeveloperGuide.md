@@ -9,7 +9,7 @@ title: Developer Guide
 
 ## **Acknowledgements**
 
-* {list here sources of all reused/adapted ideas, code, documentation, and third-party libraries -- include links to the original source as well}
+* OpenAI Codex was used to devise boilerplate tests based on natural-language specifications (e.g. "Make sure that a Notes instance can house any valid string value"). Its footprint can be found in most testing files and setup utilities in `src/test` as as result.
 
 --------------------------------------------------------------------------------------------------------------------
 
