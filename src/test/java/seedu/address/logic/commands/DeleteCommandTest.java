@@ -76,6 +76,25 @@ public class DeleteCommandTest {
     }
 
     @Test
+    public void execute_validIndexListFilteredListMultipleIndices_success() {
+        Person firstPersonToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person secondPersonToDelete = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
+        model.updateFilteredPersonList(p -> p.equals(firstPersonToDelete) || p.equals(secondPersonToDelete));
+        assertEquals(2, model.getFilteredPersonList().size());
+
+        DeleteCommand deleteCommand = new DeleteCommand(List.of(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON));
+
+        String expectedMessage = DeleteCommand.buildSuccessMessage(List.of(firstPersonToDelete, secondPersonToDelete));
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.updateFilteredPersonList(p -> p.equals(firstPersonToDelete) || p.equals(secondPersonToDelete));
+        expectedModel.deletePerson(firstPersonToDelete);
+        expectedModel.deletePerson(secondPersonToDelete);
+
+        assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
     public void execute_invalidIndexListFilteredList_throwsCommandException() {
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         showPersonAtIndex(expectedModel, INDEX_FIRST_PERSON);

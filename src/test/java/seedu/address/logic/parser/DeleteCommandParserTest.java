@@ -34,6 +34,12 @@ public class DeleteCommandParserTest {
     }
 
     @Test
+    public void parse_unsortedArgs_returnsDeleteCommandWithSortedIndices() {
+        assertParseSuccess(parser, "2 1",
+                new DeleteCommand(List.of(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON)));
+    }
+
+    @Test
     public void parse_invalidArgs_throwsParseException() {
         assertParseFailure(parser, "a",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
