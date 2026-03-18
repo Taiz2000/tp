@@ -2,8 +2,10 @@ package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import seedu.address.commons.core.index.Index;
@@ -23,6 +25,18 @@ import seedu.address.model.tag.Tag;
 public class ParserUtil {
 
     public static final String MESSAGE_INVALID_INDEX = "Index is not a non-zero unsigned integer.";
+
+    /**
+     * Tokenizes {@code input} into space-separated tokens.
+     */
+    public static List<String> tokenizeSpaceSeparated(String input) {
+        requireNonNull(input);
+        String trimmedInput = input.trim();
+        if (trimmedInput.isEmpty()) {
+            return List.of();
+        }
+        return Arrays.asList(trimmedInput.split("\\s+"));
+    }
 
     /**
      * Parses {@code oneBasedIndex} into an {@code Index} and returns it. Leading and trailing whitespaces will be

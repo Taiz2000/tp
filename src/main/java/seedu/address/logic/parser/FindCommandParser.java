@@ -3,7 +3,6 @@ package seedu.address.logic.parser;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_MATCH_TYPE;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,24 +50,24 @@ public class FindCommandParser implements Parser<FindCommand> {
                 return new ParsedFindArgs(matchType, List.of());
             }
 
-            String[] matchTypeTokens = matchTypeArgs.split("\\s+");
-            matchType = FindMatchType.fromToken(matchTypeTokens[0])
+            List<String> matchTypeTokens = ParserUtil.tokenizeSpaceSeparated(matchTypeArgs);
+            matchType = FindMatchType.fromToken(matchTypeTokens.get(0))
                     .orElseThrow(() -> new ParseException(
                             String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE)));
 
-            if (matchTypeTokens.length == 1) {
+            if (matchTypeTokens.size() == 1) {
                 return new ParsedFindArgs(matchType, List.of());
             }
 
             return new ParsedFindArgs(matchType,
-                    Arrays.asList(Arrays.copyOfRange(matchTypeTokens, 1, matchTypeTokens.length)));
+                    matchTypeTokens.subList(1, matchTypeTokens.size()));
         }
 
         if (preamble.isEmpty()) {
             return new ParsedFindArgs(matchType, List.of());
         }
 
-        return new ParsedFindArgs(matchType, Arrays.asList(preamble.split("\\s+")));
+        return new ParsedFindArgs(matchType, ParserUtil.tokenizeSpaceSeparated(preamble));
     }
 
     /**
