@@ -119,7 +119,8 @@ public class PersonContainsKeywordsPredicateTest {
         List<String> keywords = List.of("keyword1", "keyword2");
         PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(keywords);
 
-        String expected = PersonContainsKeywordsPredicate.class.getCanonicalName() + "{keywords=" + keywords + "}";
+        String expected = PersonContainsKeywordsPredicate.class.getCanonicalName()
+                + "{keywords=" + keywords + ", match_type=keywords}";
         assertEquals(expected, predicate.toString());
     }
 }
