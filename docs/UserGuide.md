@@ -123,13 +123,13 @@ Format: `find [m/MATCH_TYPE] KEYWORD [MORE_KEYWORDS]`
 * Persons matching at least one keyword will be returned (i.e. `OR` search).
   e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
 * `MATCH_TYPE` is optional. When omitted, keyword matching is used.
-* Currently supported `MATCH_TYPE`: `keyword`.
+* Currently supported `MATCH_TYPE`: `kw`.
 
 Examples:
 * `find John` returns `john` and `John Doe`
 * `find alex david` returns `Alex Yeoh`, `David Li`<br>
   ![result for 'find alex david'](images/findAlexDavidResult.png)
-* `find m/keyword John` also returns `john` and `John Doe`
+* `find m/kw John` also returns `john` and `John Doe`
 
 ### Deleting a person : `delete`
 
@@ -198,6 +198,6 @@ Action | Format, Examples
 **Clear** | `clear`
 **Delete** | `delete INDEX [MORE_INDICES]`<br> e.g., `delete 2 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
-**Find** | `find [m/MATCH_TYPE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find m/keyword James Jake`
+**Find** | `find [m/MATCH_TYPE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find m/kw James Jake`
 **List** | `list`
 **Help** | `help`

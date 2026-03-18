@@ -21,7 +21,7 @@ public class FindCommand extends Command {
             + "the specified keywords (case-insensitive) and displays them as a list with index numbers.\n"
             + "Searches across name, phone, email, address, role, notes, and tags.\n"
             + "Parameters: [" + PREFIX_MATCH_TYPE + "MATCH_TYPE] KEYWORD [MORE_KEYWORDS]...\n"
-            + "Valid MATCH_TYPE includes: " + KEYWORD_TOKEN + "\n"
+            + "Currently supported MATCH_TYPE: " + KEYWORD_TOKEN + "\n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_MATCH_TYPE + KEYWORD_TOKEN + " alice bob charlie";
 
     private final PersonPredicate predicate;

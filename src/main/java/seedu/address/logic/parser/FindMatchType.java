@@ -7,7 +7,7 @@ import java.util.Optional;
  * Supported match types for the find command.
  */
 public enum FindMatchType {
-    KEYWORD("keyword");
+    KEYWORD("kw");
 
     public static final String KEYWORD_TOKEN = KEYWORD.token;
 
