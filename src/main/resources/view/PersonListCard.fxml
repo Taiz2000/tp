@@ -31,6 +31,8 @@
       <Label fx:id="phone" styleClass="cell_small_label" text="\$phone" wrapText="true"/>
       <Label fx:id="address" styleClass="cell_small_label" text="\$address" wrapText="true"/>
       <Label fx:id="email" styleClass="cell_small_label" text="\$email" wrapText="true"/>
+      <Label fx:id="role" styleClass="cell_small_label" text="\$role" wrapText="true"/>
+      <Label fx:id="notes" styleClass="cell_small_label" text="\$notes" wrapText="true"/>
     </VBox>
   </GridPane>
 </HBox>
