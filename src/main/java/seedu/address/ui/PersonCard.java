@@ -8,6 +8,8 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.VolunteerAvailability;
+import seedu.address.model.person.VolunteerRecord;
 
 /**
  * An UI component that displays information of a {@code Person}.
@@ -74,7 +76,9 @@ public class PersonCard extends UiPart<Region> {
             return "Availability: -";
         }
         return "Availability: " + person.getAvailabilities().stream()
-                .sorted(Comparator.comparing(a -> a.dayOfWeek.toString() + a.startTime + a.endTime))
+                .sorted(Comparator.comparingInt((VolunteerAvailability a) -> a.dayOfWeek.getValue())
+                .thenComparing(a -> a.startTime)
+                .thenComparing(a -> a.endTime))
                 .map(Object::toString)
                 .reduce((left, right) -> left + " | " + right)
                 .orElse("-");
@@ -85,7 +89,8 @@ public class PersonCard extends UiPart<Region> {
             return "Records: -";
         }
         return "Records: " + person.getRecords().stream()
-                .sorted(Comparator.comparing(r -> r.startDateTime.toString() + r.endDateTime))
+                .sorted(Comparator.comparing((VolunteerRecord r) -> r.startDateTime)
+                .thenComparing(r -> r.endDateTime))
                 .map(Object::toString)
                 .reduce((left, right) -> left + " | " + right)
                 .orElse("-");
