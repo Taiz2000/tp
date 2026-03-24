@@ -15,6 +15,7 @@ Interface PersonPredicate #MODEL_COLOR
 Abstract PersonContainsFieldsPredicate #MODEL_COLOR
 Class PersonContainsKeywordsPredicate #MODEL_COLOR
 Class PersonContainsSubstringsPredicate #MODEL_COLOR
+Class PersonContainsFuzzyKeywordsPredicate #MODEL_COLOR
 }
 
 FindCommandParser ..> FindMatchType : selects
@@ -25,4 +26,5 @@ FindCommand --> PersonPredicate : uses
 PersonContainsFieldsPredicate ..|> PersonPredicate
 PersonContainsKeywordsPredicate --|> PersonContainsFieldsPredicate
 PersonContainsSubstringsPredicate --|> PersonContainsFieldsPredicate
+PersonContainsFuzzyKeywordsPredicate --|> PersonContainsFieldsPredicate
 @enduml
