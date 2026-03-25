@@ -27,14 +27,26 @@ public class PersonSortComparator implements Comparator<Person> {
 
     @Override
     public int compare(Person first, Person second) {
-        int result = switch (attribute) {
-            case NAME -> STRING_COMPARATOR.compare(first.getName().fullName, second.getName().fullName);
-            case PHONE -> STRING_COMPARATOR.compare(first.getPhone().value, second.getPhone().value);
-            case EMAIL -> STRING_COMPARATOR.compare(first.getEmail().value, second.getEmail().value);
-            case ROLE -> STRING_COMPARATOR.compare(first.getRole().value, second.getRole().value);
-            case TAG -> STRING_COMPARATOR.compare(getTagKey(first), getTagKey(second));
-            default -> throw new UnsupportedOperationException("Unsupported sort attribute: " + attribute);
-        };
+        int result;
+        switch (attribute) {
+        case NAME:
+            result = STRING_COMPARATOR.compare(first.getName().fullName, second.getName().fullName);
+            break;
+        case PHONE:
+            result = STRING_COMPARATOR.compare(first.getPhone().value, second.getPhone().value);
+            break;
+        case EMAIL:
+            result = STRING_COMPARATOR.compare(first.getEmail().value, second.getEmail().value);
+            break;
+        case ROLE:
+            result = STRING_COMPARATOR.compare(first.getRole().value, second.getRole().value);
+            break;
+        case TAG:
+            result = STRING_COMPARATOR.compare(getTagKey(first), getTagKey(second));
+            break;
+        default:
+            throw new UnsupportedOperationException("Unsupported sort attribute: " + attribute);
+        }
 
         return order == SortOrder.DESC ? -result : result;
     }
