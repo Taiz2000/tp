@@ -11,8 +11,13 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BOB;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
+import seedu.address.model.person.exceptions.DuplicatePersonException;
 import seedu.address.model.person.exceptions.PersonNotFoundException;
 import seedu.address.testutil.PersonBuilder;
 
@@ -154,6 +159,41 @@ public class DeletedPersonListTest {
         deletedPersonList.remove(ALICE);
         DeletedPersonList expectedDeletedPersonList = new DeletedPersonList();
         assertEquals(expectedDeletedPersonList, deletedPersonList);
+    }
+
+    @Test
+    public void setPersons_nullUniquePersonList_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> deletedPersonList.setPersons((DeletedPersonList) null));
+    }
+
+    @Test
+    public void setPersons_uniquePersonList_replacesOwnListWithProvidedUniquePersonList() {
+        deletedPersonList.add(ALICE);
+        DeletedPersonList expectedDeletedPersonList = new DeletedPersonList();
+        expectedDeletedPersonList.add(BOB);
+        deletedPersonList.setPersons(expectedDeletedPersonList);
+        assertEquals(expectedDeletedPersonList, deletedPersonList);
+    }
+
+    @Test
+    public void setPersons_nullList_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> deletedPersonList.setPersons((List<Person>) null));
+    }
+
+    @Test
+    public void setPersons_list_replacesOwnListWithProvidedList() {
+        deletedPersonList.add(ALICE);
+        List<Person> personList = Collections.singletonList(BOB);
+        deletedPersonList.setPersons(personList);
+        DeletedPersonList expectedDeletedPersonList = new DeletedPersonList();
+        expectedDeletedPersonList.add(BOB);
+        assertEquals(expectedDeletedPersonList, deletedPersonList);
+    }
+
+    @Test
+    public void setPersons_listWithDuplicatePersons_throwsDuplicatePersonException() {
+        List<Person> listWithDuplicatePersons = Arrays.asList(ALICE, ALICE);
+        assertThrows(DuplicatePersonException.class, () -> deletedPersonList.setPersons(listWithDuplicatePersons));
     }
 
     @Test
