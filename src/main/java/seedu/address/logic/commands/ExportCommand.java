@@ -28,6 +28,11 @@ public class ExportCommand extends Command {
 
     private final Path filePath;
 
+    /**
+     * Creates an ExportCommand to export the active address book to the specified file path.
+     *
+     * @param filePath Path to the CSV file to be written.
+     */
     public ExportCommand(Path filePath) {
         requireNonNull(filePath);
         this.filePath = filePath;
