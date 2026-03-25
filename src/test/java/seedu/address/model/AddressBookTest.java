@@ -9,6 +9,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
+import static seedu.address.testutil.TypicalPersons.BOB;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.util.Arrays;
@@ -182,6 +183,23 @@ public class AddressBookTest {
         // Deleting the same person again should not add it to the deleted persons list again.
         addressBook.addPerson(ALICE);
         addressBook.deletePerson(ALICE);
+        assertEquals(expectedAddressBook, addressBook);
+    }
+
+    @Test
+    public void deleteAllPersons_noKeptPersons_success() {
+        addressBook.deleteAllPersons();
+        assertEquals(new AddressBook(), addressBook);
+    }
+
+    @Test
+    public void deleteAllPersons_withKeptPersons_success() {
+        AddressBook expectedAddressBook = new AddressBook();
+        expectedAddressBook.setDeletedPersons(List.of(ALICE, BOB));
+
+        addressBook.addPerson(ALICE);
+        addressBook.addPerson(BOB);
+        addressBook.deleteAllPersons();
         assertEquals(expectedAddressBook, addressBook);
     }
 

@@ -116,6 +116,11 @@ public class ModelManager implements Model {
         addressBook.setKeptPerson(target, editedPerson);
     }
 
+    @Override
+    public void deleteAllPersons() {
+        addressBook.deleteAllPersons();
+    }
+
     //=========== Filtered Person List Accessors =============================================================
 
     public void setToViewDeletedPersons() {

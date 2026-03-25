@@ -130,6 +130,19 @@ public class AddressBook implements ReadOnlyAddressBook {
         deletedPersons.add(p);
     }
 
+    /**
+     * Deletes all persons in the list of kept persons, and adds them to the list of deleted persons.
+     * Persons that already exist in the list of deleted persons will not be added again.
+     */
+    public void deleteAllPersons() {
+        for (Person person : keptPersons) {
+            if (!hasDeletedPerson(person)) {
+                deletedPersons.add(person);
+            }
+        }
+        keptPersons.setPersons(new UniquePersonList());
+    }
+
     //// util methods
 
     @Override

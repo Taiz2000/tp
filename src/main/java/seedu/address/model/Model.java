@@ -76,6 +76,11 @@ public interface Model {
      */
     void setPerson(Person target, Person editedPerson);
 
+    /**
+     * Deletes all persons in the address book.
+     */
+    void deleteAllPersons();
+
     /** Returns an unmodifiable view of the filtered person list */
     ObservableList<Person> getFilteredPersonList();
 
