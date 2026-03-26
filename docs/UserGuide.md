@@ -58,7 +58,7 @@ RosterBolt is a **desktop app for managing team contacts, optimized for use via 
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
 
-* Extraneous parameters for commands that do not take in parameters (such as `help`, `list`, `exit` and `clear`) will be ignored.<br>
+* Extraneous parameters for commands that do not take in parameters (such as `help`, `exit` and `clear`) will be ignored.<br>
   e.g. if the command specifies `help 123`, it will be interpreted as `help`.
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
@@ -94,9 +94,18 @@ Examples:
 
 ### Listing all persons : `list`
 
-Shows a list of all persons in RosterBolt.
+Shows a list of all persons in RosterBolt, optionally sorted by an attribute.
 
-Format: `list`
+Format: `list [ATTRIBUTE [asc|desc]]`
+
+* Currently supported `ATTRIBUTE`: `name`, `phone`, `email`, `role`, or `tag`.
+* Order defaults to `asc` when omitted.
+* Omitting `ATTRIBUTE` shows the list in the default order.
+
+Examples:
+* `list`
+* `list name`
+* `list email desc`
 
 ### Creating a command alias : `alias`
 
@@ -255,5 +264,5 @@ Action | Format, Examples
 **Delete** | `delete INDEX [MORE_INDICES]`<br> e.g., `delete 2 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [nt/NOTES] [t/TAG]…​ [va/AVAILABILITY]…​ [vr/RECORD]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com va/MONDAY,14:00,17:00`
 **Find** | `find [m/MATCH_TYPE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find m/kw James Jake`, `find m/ss ali`, `find m/fz michigan`
-**List** | `list`
+**List** | `list [ATTRIBUTE [asc|desc]]`<br> e.g., `list name desc`
 **Help** | `help`
