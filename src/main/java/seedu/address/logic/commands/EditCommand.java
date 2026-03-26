@@ -5,8 +5,10 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_AVAILABILITY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_RECORD;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
@@ -26,8 +28,10 @@ import seedu.address.model.Model;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.Notes;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Role;
 import seedu.address.model.person.VolunteerAvailability;
 import seedu.address.model.person.VolunteerRecord;
 import seedu.address.model.tag.Tag;
@@ -47,6 +51,8 @@ public class EditCommand extends Command {
             + "[" + PREFIX_PHONE + "PHONE] "
             + "[" + PREFIX_EMAIL + "EMAIL] "
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
+            + "[" + PREFIX_ROLE + "ROLE] "
+            + "[" + PREFIX_NOTES + "NOTES] "
             + "[" + PREFIX_TAG + "TAG]... "
             + "[" + PREFIX_AVAILABILITY + "DAY,HH:mm,HH:mm]... "
             + "[" + PREFIX_RECORD + "yyyy-MM-ddTHH:mm,yyyy-MM-ddTHH:mm]...\n"
@@ -70,6 +76,9 @@ public class EditCommand extends Command {
     public EditCommand(Index index, EditPersonDescriptor editPersonDescriptor) {
         requireNonNull(index);
         requireNonNull(editPersonDescriptor);
+        if (!editPersonDescriptor.isAnyFieldEdited()) {
+            throw new IllegalArgumentException(MESSAGE_NOT_EDITED);
+        }
 
         this.index = index;
         this.editPersonDescriptor = new EditPersonDescriptor(editPersonDescriptor);
@@ -107,13 +116,15 @@ public class EditCommand extends Command {
         Phone updatedPhone = editPersonDescriptor.getPhone().orElse(personToEdit.getPhone());
         Email updatedEmail = editPersonDescriptor.getEmail().orElse(personToEdit.getEmail());
         Address updatedAddress = editPersonDescriptor.getAddress().orElse(personToEdit.getAddress());
+        Role updatedRole = editPersonDescriptor.getRole().orElse(personToEdit.getRole());
+        Notes updatedNotes = editPersonDescriptor.getNotes().orElse(personToEdit.getNotes());
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
         Set<VolunteerAvailability> updatedAvailabilities =
                 editPersonDescriptor.getAvailabilities().orElse(personToEdit.getAvailabilities());
         Set<VolunteerRecord> updatedRecords = editPersonDescriptor.getRecords().orElse(personToEdit.getRecords());
 
         return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress,
-                personToEdit.getRole(), personToEdit.getNotes(), updatedTags, updatedAvailabilities, updatedRecords);
+                updatedRole, updatedNotes, updatedTags, updatedAvailabilities, updatedRecords);
     }
 
     @Override
@@ -149,6 +160,8 @@ public class EditCommand extends Command {
         private Phone phone;
         private Email email;
         private Address address;
+        private Role role;
+        private Notes notes;
         private Set<Tag> tags;
         private Set<VolunteerAvailability> availabilities;
         private Set<VolunteerRecord> records;
@@ -164,6 +177,8 @@ public class EditCommand extends Command {
             setPhone(toCopy.phone);
             setEmail(toCopy.email);
             setAddress(toCopy.address);
+            setRole(toCopy.role);
+            setNotes(toCopy.notes);
             setTags(toCopy.tags);
             setAvailabilities(toCopy.availabilities);
             setRecords(toCopy.records);
@@ -173,7 +188,8 @@ public class EditCommand extends Command {
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(name, phone, email, address, tags, availabilities, records);
+            return CollectionUtil.isAnyNonNull(name, phone, email, address, role, notes,
+                    tags, availabilities, records);
         }
 
         public void setName(Name name) {
@@ -206,6 +222,22 @@ public class EditCommand extends Command {
 
         public Optional<Address> getAddress() {
             return Optional.ofNullable(address);
+        }
+
+        public void setRole(Role role) {
+            this.role = role;
+        }
+
+        public Optional<Role> getRole() {
+            return Optional.ofNullable(role);
+        }
+
+        public void setNotes(Notes notes) {
+            this.notes = notes;
+        }
+
+        public Optional<Notes> getNotes() {
+            return Optional.ofNullable(notes);
         }
 
         /**
@@ -277,6 +309,8 @@ public class EditCommand extends Command {
                     && Objects.equals(phone, otherEditPersonDescriptor.phone)
                     && Objects.equals(email, otherEditPersonDescriptor.email)
                     && Objects.equals(address, otherEditPersonDescriptor.address)
+                    && Objects.equals(role, otherEditPersonDescriptor.role)
+                    && Objects.equals(notes, otherEditPersonDescriptor.notes)
                     && Objects.equals(tags, otherEditPersonDescriptor.tags)
                     && Objects.equals(availabilities, otherEditPersonDescriptor.availabilities)
                     && Objects.equals(records, otherEditPersonDescriptor.records);
@@ -289,6 +323,8 @@ public class EditCommand extends Command {
                     .add("phone", phone)
                     .add("email", email)
                     .add("address", address)
+                    .add("role", role)
+                    .add("notes", notes)
                     .add("tags", tags)
                     .add("availabilities", availabilities)
                     .add("records", records)
