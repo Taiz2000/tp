@@ -42,11 +42,23 @@ public class CommandBox extends UiPart<Region> {
         }
 
         try {
-            commandExecutor.execute(commandText);
-            commandTextField.setText("");
+            CommandResult commandResult = commandExecutor.execute(commandText);
+            commandResult.getCommandTextToPopulate().ifPresentOrElse(
+                    this::populateCommandText,
+                    this::clearCommandText);
         } catch (CommandException | ParseException e) {
             setStyleToIndicateCommandFailure();
         }
+    }
+
+    private void clearCommandText() {
+        commandTextField.setText("");
+    }
+
+    private void populateCommandText(String commandText) {
+        commandTextField.setText(commandText);
+        commandTextField.positionCaret(commandText.length());
+        commandTextField.requestFocus();
     }
 
     /**

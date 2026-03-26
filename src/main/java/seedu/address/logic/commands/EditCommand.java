@@ -2,9 +2,13 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_AVAILABILITY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_RECORD;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
@@ -24,8 +28,12 @@ import seedu.address.model.Model;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.Notes;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Role;
+import seedu.address.model.person.VolunteerAvailability;
+import seedu.address.model.person.VolunteerRecord;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -43,10 +51,16 @@ public class EditCommand extends Command {
             + "[" + PREFIX_PHONE + "PHONE] "
             + "[" + PREFIX_EMAIL + "EMAIL] "
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
-            + "[" + PREFIX_TAG + "TAG]...\n"
+            + "[" + PREFIX_ROLE + "ROLE] "
+            + "[" + PREFIX_NOTES + "NOTES] "
+            + "[" + PREFIX_TAG + "TAG]... "
+            + "[" + PREFIX_AVAILABILITY + "DAY,HH:mm,HH:mm]... "
+            + "[" + PREFIX_RECORD + "yyyy-MM-ddTHH:mm,yyyy-MM-ddTHH:mm]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_PHONE + "91234567 "
-            + PREFIX_EMAIL + "johndoe@example.com";
+            + PREFIX_EMAIL + "johndoe@example.com "
+            + PREFIX_AVAILABILITY + "MONDAY,14:00,17:00 "
+            + PREFIX_RECORD + "2026-03-20T14:00,2026-03-20T17:00";
 
     public static final String MESSAGE_EDIT_PERSON_SUCCESS = "Edited person: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
@@ -62,6 +76,9 @@ public class EditCommand extends Command {
     public EditCommand(Index index, EditPersonDescriptor editPersonDescriptor) {
         requireNonNull(index);
         requireNonNull(editPersonDescriptor);
+        if (!editPersonDescriptor.isAnyFieldEdited()) {
+            throw new IllegalArgumentException(MESSAGE_NOT_EDITED);
+        }
 
         this.index = index;
         this.editPersonDescriptor = new EditPersonDescriptor(editPersonDescriptor);
@@ -99,10 +116,15 @@ public class EditCommand extends Command {
         Phone updatedPhone = editPersonDescriptor.getPhone().orElse(personToEdit.getPhone());
         Email updatedEmail = editPersonDescriptor.getEmail().orElse(personToEdit.getEmail());
         Address updatedAddress = editPersonDescriptor.getAddress().orElse(personToEdit.getAddress());
+        Role updatedRole = editPersonDescriptor.getRole().orElse(personToEdit.getRole());
+        Notes updatedNotes = editPersonDescriptor.getNotes().orElse(personToEdit.getNotes());
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
+        Set<VolunteerAvailability> updatedAvailabilities =
+                editPersonDescriptor.getAvailabilities().orElse(personToEdit.getAvailabilities());
+        Set<VolunteerRecord> updatedRecords = editPersonDescriptor.getRecords().orElse(personToEdit.getRecords());
 
         return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress,
-                personToEdit.getRole(), personToEdit.getNotes(), updatedTags);
+                updatedRole, updatedNotes, updatedTags, updatedAvailabilities, updatedRecords);
     }
 
     @Override
@@ -138,7 +160,11 @@ public class EditCommand extends Command {
         private Phone phone;
         private Email email;
         private Address address;
+        private Role role;
+        private Notes notes;
         private Set<Tag> tags;
+        private Set<VolunteerAvailability> availabilities;
+        private Set<VolunteerRecord> records;
 
         public EditPersonDescriptor() {}
 
@@ -151,14 +177,19 @@ public class EditCommand extends Command {
             setPhone(toCopy.phone);
             setEmail(toCopy.email);
             setAddress(toCopy.address);
+            setRole(toCopy.role);
+            setNotes(toCopy.notes);
             setTags(toCopy.tags);
+            setAvailabilities(toCopy.availabilities);
+            setRecords(toCopy.records);
         }
 
         /**
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(name, phone, email, address, tags);
+            return CollectionUtil.isAnyNonNull(name, phone, email, address, role, notes,
+                    tags, availabilities, records);
         }
 
         public void setName(Name name) {
@@ -193,6 +224,22 @@ public class EditCommand extends Command {
             return Optional.ofNullable(address);
         }
 
+        public void setRole(Role role) {
+            this.role = role;
+        }
+
+        public Optional<Role> getRole() {
+            return Optional.ofNullable(role);
+        }
+
+        public void setNotes(Notes notes) {
+            this.notes = notes;
+        }
+
+        public Optional<Notes> getNotes() {
+            return Optional.ofNullable(notes);
+        }
+
         /**
          * Sets {@code tags} to this object's {@code tags}.
          * A defensive copy of {@code tags} is used internally.
@@ -208,6 +255,42 @@ public class EditCommand extends Command {
          */
         public Optional<Set<Tag>> getTags() {
             return (tags != null) ? Optional.of(Collections.unmodifiableSet(tags)) : Optional.empty();
+        }
+
+        /**
+         * Sets {@code availabilities} to this object's {@code availabilities}.
+         * A defensive copy of {@code availabilities} is used internally.
+         */
+        public void setAvailabilities(Set<VolunteerAvailability> availabilities) {
+            this.availabilities = (availabilities != null) ? new HashSet<>(availabilities) : null;
+        }
+
+        /**
+         * Returns an unmodifiable availability set, which throws {@code UnsupportedOperationException}
+         * if modification is attempted.
+         * Returns {@code Optional#empty()} if {@code availabilities} is null.
+         */
+        public Optional<Set<VolunteerAvailability>> getAvailabilities() {
+            return (availabilities != null)
+                    ? Optional.of(Collections.unmodifiableSet(availabilities))
+                    : Optional.empty();
+        }
+
+        /**
+         * Sets {@code records} to this object's {@code records}.
+         * A defensive copy of {@code records} is used internally.
+         */
+        public void setRecords(Set<VolunteerRecord> records) {
+            this.records = (records != null) ? new HashSet<>(records) : null;
+        }
+
+        /**
+         * Returns an unmodifiable record set, which throws {@code UnsupportedOperationException}
+         * if modification is attempted.
+         * Returns {@code Optional#empty()} if {@code records} is null.
+         */
+        public Optional<Set<VolunteerRecord>> getRecords() {
+            return (records != null) ? Optional.of(Collections.unmodifiableSet(records)) : Optional.empty();
         }
 
         @Override
@@ -226,7 +309,11 @@ public class EditCommand extends Command {
                     && Objects.equals(phone, otherEditPersonDescriptor.phone)
                     && Objects.equals(email, otherEditPersonDescriptor.email)
                     && Objects.equals(address, otherEditPersonDescriptor.address)
-                    && Objects.equals(tags, otherEditPersonDescriptor.tags);
+                    && Objects.equals(role, otherEditPersonDescriptor.role)
+                    && Objects.equals(notes, otherEditPersonDescriptor.notes)
+                    && Objects.equals(tags, otherEditPersonDescriptor.tags)
+                    && Objects.equals(availabilities, otherEditPersonDescriptor.availabilities)
+                    && Objects.equals(records, otherEditPersonDescriptor.records);
         }
 
         @Override
@@ -236,7 +323,11 @@ public class EditCommand extends Command {
                     .add("phone", phone)
                     .add("email", email)
                     .add("address", address)
+                    .add("role", role)
+                    .add("notes", notes)
                     .add("tags", tags)
+                    .add("availabilities", availabilities)
+                    .add("records", records)
                     .toString();
         }
     }

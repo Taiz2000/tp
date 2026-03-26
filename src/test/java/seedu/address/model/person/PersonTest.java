@@ -14,6 +14,9 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BOB;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
@@ -25,9 +28,11 @@ public class PersonTest {
     private static final String VALID_NOTES_BOB = "Prefers morning shifts";
 
     @Test
-    public void asObservableList_modifyList_throwsUnsupportedOperationException() {
+    public void unmodifiableSets_modifySet_throwsUnsupportedOperationException() {
         Person person = new PersonBuilder().build();
-        assertThrows(UnsupportedOperationException.class, () -> person.getTags().remove(0));
+        assertThrows(UnsupportedOperationException.class, () -> person.getTags().clear());
+        assertThrows(UnsupportedOperationException.class, () -> person.getAvailabilities().remove(null));
+        assertThrows(UnsupportedOperationException.class, () -> person.getRecords().remove(null));
     }
 
     @Test
@@ -152,13 +157,29 @@ public class PersonTest {
         // different notes -> returns false
         editedAlice = new PersonBuilder(ALICE).withNotes(VALID_NOTES_BOB).build();
         assertFalse(ALICE.equals(editedAlice));
+
+        // different availabilities -> returns false
+        editedAlice = new PersonBuilder(ALICE)
+                .withAvailabilities(new VolunteerAvailability(DayOfWeek.MONDAY, LocalTime.of(12, 0),
+                        LocalTime.of(13, 0)))
+                .build();
+        assertFalse(ALICE.equals(editedAlice));
+
+        // different records -> returns false
+        editedAlice = new PersonBuilder(ALICE)
+                .withRecords(new VolunteerRecord(LocalDateTime.of(2026, 3, 20, 9, 0),
+                        LocalDateTime.of(2026, 3, 20, 12, 0)))
+                .build();
+        assertFalse(ALICE.equals(editedAlice));
     }
 
     @Test
     public void toStringMethod() {
         String expected = Person.class.getCanonicalName() + "{name=" + ALICE.getName() + ", phone=" + ALICE.getPhone()
                 + ", email=" + ALICE.getEmail() + ", address=" + ALICE.getAddress() + ", role=" + ALICE.getRole()
-                + ", notes=" + ALICE.getNotes() + ", tags=" + ALICE.getTags() + "}";
+                + ", notes=" + ALICE.getNotes() + ", tags=" + ALICE.getTags()
+                + ", availabilities=" + ALICE.getAvailabilities()
+                + ", records=" + ALICE.getRecords() + "}";
         assertEquals(expected, ALICE.toString());
     }
 

@@ -17,6 +17,8 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Notes;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.VolunteerAvailability;
+import seedu.address.model.person.VolunteerRecord;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -160,6 +162,55 @@ public class ParserUtil {
             throw new ParseException(Notes.MESSAGE_CONSTRAINTS);
         }
         return new Notes(trimmedNotes);
+    }
+
+    /**
+     * Parses a {@code String} into {@code VolunteerAvailability}.
+     */
+    public static VolunteerAvailability parseVolunteerAvailability(String availability) throws ParseException {
+        requireNonNull(availability);
+        String trimmedAvailability = availability.trim();
+        if (!VolunteerAvailability.isValidAvailability(trimmedAvailability)) {
+            throw new ParseException(VolunteerAvailability.MESSAGE_CONSTRAINTS);
+        }
+        return VolunteerAvailability.fromString(trimmedAvailability);
+    }
+
+    /**
+     * Parses {@code Collection<String>} into a {@code Set<VolunteerAvailability>}.
+     */
+    public static Set<VolunteerAvailability> parseVolunteerAvailabilities(Collection<String> availabilities)
+            throws ParseException {
+        requireNonNull(availabilities);
+        final Set<VolunteerAvailability> availabilitySet = new HashSet<>();
+        for (String availability : availabilities) {
+            availabilitySet.add(parseVolunteerAvailability(availability));
+        }
+        return availabilitySet;
+    }
+
+    /**
+     * Parses a {@code String} into {@code VolunteerRecord}.
+     */
+    public static VolunteerRecord parseVolunteerRecord(String record) throws ParseException {
+        requireNonNull(record);
+        String trimmedRecord = record.trim();
+        if (!VolunteerRecord.isValidRecord(trimmedRecord)) {
+            throw new ParseException(VolunteerRecord.MESSAGE_CONSTRAINTS);
+        }
+        return VolunteerRecord.fromString(trimmedRecord);
+    }
+
+    /**
+     * Parses {@code Collection<String>} into a {@code Set<VolunteerRecord>}.
+     */
+    public static Set<VolunteerRecord> parseVolunteerRecords(Collection<String> records) throws ParseException {
+        requireNonNull(records);
+        final Set<VolunteerRecord> recordSet = new HashSet<>();
+        for (String record : records) {
+            recordSet.add(parseVolunteerRecord(record));
+        }
+        return recordSet;
     }
 
 }

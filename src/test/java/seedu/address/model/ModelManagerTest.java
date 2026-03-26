@@ -17,6 +17,9 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.person.predicates.PersonContainsKeywordsPredicate;
+import seedu.address.model.person.sort.PersonSortComparator;
+import seedu.address.model.person.sort.SortAttribute;
+import seedu.address.model.person.sort.SortOrder;
 import seedu.address.testutil.AddressBookBuilder;
 
 public class ModelManagerTest {
@@ -100,6 +103,17 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void updateSortedPersonList_nullComparator_resetsSorting() {
+        modelManager.addPerson(ALICE);
+        modelManager.addPerson(BENSON);
+        modelManager.updateSortedPersonList(new PersonSortComparator(SortAttribute.NAME, SortOrder.DESC));
+        assertEquals(Arrays.asList(BENSON, ALICE), modelManager.getFilteredPersonList());
+
+        modelManager.updateSortedPersonList(null);
+        assertEquals(Arrays.asList(ALICE, BENSON), modelManager.getFilteredPersonList());
+    }
+
+    @Test
     public void addPerson_filteredListResetsToShowAll() {
         AddressBook addressBook = new AddressBookBuilder().withPerson(ALICE).withPerson(BENSON).build();
         modelManager = new ModelManager(addressBook, new UserPrefs());
@@ -141,6 +155,13 @@ public class ModelManagerTest {
 
         // resets modelManager to initial state for upcoming tests
         modelManager.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+
+        // different sortedList -> returns false
+        modelManager.updateSortedPersonList(new PersonSortComparator(SortAttribute.NAME, SortOrder.ASC));
+        assertFalse(modelManager.equals(new ModelManager(addressBook, userPrefs)));
+
+        // resets modelManager to initial state for upcoming tests
+        modelManager.updateSortedPersonList(null);
 
         // different userPrefs -> returns false
         UserPrefs differentUserPrefs = new UserPrefs();

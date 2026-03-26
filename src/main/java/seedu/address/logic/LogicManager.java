@@ -1,9 +1,13 @@
 package seedu.address.logic;
 
+import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
@@ -26,12 +30,21 @@ public class LogicManager implements Logic {
 
     public static final String FILE_OPS_PERMISSION_ERROR_FORMAT =
             "Could not save data to file %s due to insufficient permissions to write to the file or the folder.";
+    public static final String EDIT_PREVIOUS_COMMAND_WORD = "editprev";
+    public static final String EDIT_PREVIOUS_MESSAGE_USAGE = EDIT_PREVIOUS_COMMAND_WORD
+            + ": Loads the last successfully executed command, excluding editprev, into the command box "
+            + "for editing.\n"
+            + "Example: " + EDIT_PREVIOUS_COMMAND_WORD;
+    public static final String EDIT_PREVIOUS_MESSAGE_NO_PREVIOUS_COMMAND = "There is no previous command to edit.";
+    public static final String EDIT_PREVIOUS_MESSAGE_SUCCESS = "Loaded previous command for editing: %1$s";
 
+    private static final Pattern BASIC_COMMAND_FORMAT = Pattern.compile("(?<commandWord>\\S+)(?<arguments>.*)");
     private final Logger logger = LogsCenter.getLogger(LogicManager.class);
 
     private final Model model;
     private final Storage storage;
     private final AddressBookParser addressBookParser;
+    private String lastExecutedCommandText;
 
     /**
      * Constructs a {@code LogicManager} with the given {@code Model} and {@code Storage}.
@@ -42,13 +55,40 @@ public class LogicManager implements Logic {
         addressBookParser = new AddressBookParser();
     }
 
+    // Reused refactor suggestion from Codex to reduce indentation level and improve readability
     @Override
     public CommandResult execute(String commandText) throws CommandException, ParseException {
         logger.info("----------------[USER COMMAND][" + commandText + "]");
 
-        CommandResult commandResult;
+        String trimmedCommandText = commandText.trim();
+        Matcher commandMatcher = BASIC_COMMAND_FORMAT.matcher(trimmedCommandText);
+        if (!commandMatcher.matches()) {
+            return executeNormalCommand(commandText);
+        }
+
+        String commandWord = commandMatcher.group("commandWord");
+        String arguments = commandMatcher.group("arguments").trim();
+        if (!EDIT_PREVIOUS_COMMAND_WORD.equals(commandWord)) {
+            return executeNormalCommand(commandText);
+        }
+
+        if (!arguments.isEmpty()) {
+            throw new ParseException(String.format(
+                    MESSAGE_INVALID_COMMAND_FORMAT, EDIT_PREVIOUS_MESSAGE_USAGE));
+        }
+        if (lastExecutedCommandText == null) {
+            throw new CommandException(EDIT_PREVIOUS_MESSAGE_NO_PREVIOUS_COMMAND);
+        }
+        return new CommandResult(
+                String.format(EDIT_PREVIOUS_MESSAGE_SUCCESS, lastExecutedCommandText),
+                false,
+                false,
+                lastExecutedCommandText);
+    }
+
+    private CommandResult executeNormalCommand(String commandText) throws CommandException, ParseException {
         Command command = addressBookParser.parseCommand(commandText);
-        commandResult = command.execute(model);
+        CommandResult commandResult = command.execute(model);
 
         try {
             storage.saveAddressBook(model.getAddressBook());
@@ -58,6 +98,7 @@ public class LogicManager implements Logic {
             throw new CommandException(String.format(FILE_OPS_ERROR_FORMAT, ioe.getMessage()), ioe);
         }
 
+        lastExecutedCommandText = commandText;
         return commandResult;
     }
 

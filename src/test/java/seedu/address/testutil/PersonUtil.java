@@ -1,9 +1,13 @@
 package seedu.address.testutil;
 
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_AVAILABILITY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_RECORD;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
 import java.util.Set;
@@ -11,6 +15,8 @@ import java.util.Set;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.VolunteerAvailability;
+import seedu.address.model.person.VolunteerRecord;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -34,8 +40,18 @@ public class PersonUtil {
         sb.append(PREFIX_PHONE + person.getPhone().value + " ");
         sb.append(PREFIX_EMAIL + person.getEmail().value + " ");
         sb.append(PREFIX_ADDRESS + person.getAddress().value + " ");
+        sb.append(PREFIX_ROLE + person.getRole().value + " ");
+        sb.append(PREFIX_NOTES + person.getNotes().value + " ");
         person.getTags().stream().forEach(
-            s -> sb.append(PREFIX_TAG + s.tagName + " ")
+                s -> sb.append(PREFIX_TAG + s.tagName + " ")
+        );
+        person.getAvailabilities().stream().forEach(
+                s -> sb.append(PREFIX_AVAILABILITY).append(s.dayOfWeek).append(",")
+                        .append(s.startTime).append(",").append(s.endTime).append(" ")
+        );
+        person.getRecords().stream().forEach(
+                s -> sb.append(PREFIX_RECORD).append(s.startDateTime).append(",")
+                        .append(s.endDateTime).append(" ")
         );
         return sb.toString();
     }
@@ -49,12 +65,35 @@ public class PersonUtil {
         descriptor.getPhone().ifPresent(phone -> sb.append(PREFIX_PHONE).append(phone.value).append(" "));
         descriptor.getEmail().ifPresent(email -> sb.append(PREFIX_EMAIL).append(email.value).append(" "));
         descriptor.getAddress().ifPresent(address -> sb.append(PREFIX_ADDRESS).append(address.value).append(" "));
+        descriptor.getRole().ifPresent(role -> sb.append(PREFIX_ROLE).append(role.value).append(" "));
+        descriptor.getNotes().ifPresent(notes -> sb.append(PREFIX_NOTES).append(notes.value).append(" "));
         if (descriptor.getTags().isPresent()) {
             Set<Tag> tags = descriptor.getTags().get();
             if (tags.isEmpty()) {
-                sb.append(PREFIX_TAG);
+                sb.append(PREFIX_TAG).append(" ");
             } else {
                 tags.forEach(s -> sb.append(PREFIX_TAG).append(s.tagName).append(" "));
+            }
+        }
+        if (descriptor.getAvailabilities().isPresent()) {
+            Set<VolunteerAvailability> availabilities = descriptor.getAvailabilities().get();
+            if (availabilities.isEmpty()) {
+                sb.append(PREFIX_AVAILABILITY).append(" ");
+            } else {
+                availabilities.forEach(s -> sb.append(PREFIX_AVAILABILITY)
+                        .append(s.dayOfWeek).append(",")
+                        .append(s.startTime).append(",")
+                        .append(s.endTime).append(" "));
+            }
+        }
+        if (descriptor.getRecords().isPresent()) {
+            Set<VolunteerRecord> records = descriptor.getRecords().get();
+            if (records.isEmpty()) {
+                sb.append(PREFIX_RECORD).append(" ");
+            } else {
+                records.forEach(s -> sb.append(PREFIX_RECORD)
+                        .append(s.startDateTime).append(",")
+                        .append(s.endDateTime).append(" "));
             }
         }
         return sb.toString();

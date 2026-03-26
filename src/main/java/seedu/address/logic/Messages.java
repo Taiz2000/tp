@@ -49,6 +49,10 @@ public class Messages {
                 .append(person.getNotes())
                 .append("; Tags: ");
         person.getTags().forEach(tag -> builder.append(tag).append(" "));
+        builder.append("; Availabilities: ");
+        person.getAvailabilities().forEach(availability -> builder.append(availability).append(" "));
+        builder.append("; Records: ");
+        person.getRecords().forEach(record -> builder.append(record).append(" "));
         return builder.toString().trim();
     }
 }

@@ -3,10 +3,12 @@ package seedu.address.logic.commands;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_AVAILABILITY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_RECORD;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.testutil.Assert.assertThrows;
@@ -25,6 +27,7 @@ import seedu.address.testutil.EditPersonDescriptorBuilder;
 
 /**
  * Contains helper methods for testing commands.
+ * Some test cases in this class were adapted from Codex-generated test specifications.
  */
 public class CommandTestUtil {
 
@@ -42,6 +45,12 @@ public class CommandTestUtil {
     public static final String VALID_ROLE_BOB = "Medic";
     public static final String VALID_NOTES_AMY = "Available on weekdays";
     public static final String VALID_NOTES_BOB = "Prefers outdoor events";
+    public static final String VALID_AVAILABILITY_MONDAY_MORNING = "MONDAY,09:00,12:00";
+    public static final String VALID_AVAILABILITY_TUESDAY_AFTERNOON = "TUESDAY,14:00,17:00";
+    public static final String VALID_AVAILABILITY_AMY = VALID_AVAILABILITY_MONDAY_MORNING;
+    public static final String VALID_AVAILABILITY_BOB = VALID_AVAILABILITY_TUESDAY_AFTERNOON;
+    public static final String VALID_RECORD_AMY = "2026-03-20T09:00,2026-03-20T12:00";
+    public static final String VALID_RECORD_BOB = "2026-03-21T14:00,2026-03-21T17:00";
 
     public static final String NAME_DESC_AMY = " " + PREFIX_NAME + VALID_NAME_AMY;
     public static final String NAME_DESC_BOB = " " + PREFIX_NAME + VALID_NAME_BOB;
@@ -57,12 +66,18 @@ public class CommandTestUtil {
     public static final String ROLE_DESC_BOB = " " + PREFIX_ROLE + VALID_ROLE_BOB;
     public static final String NOTES_DESC_AMY = " " + PREFIX_NOTES + VALID_NOTES_AMY;
     public static final String NOTES_DESC_BOB = " " + PREFIX_NOTES + VALID_NOTES_BOB;
+    public static final String AVAILABILITY_DESC_AMY = " " + PREFIX_AVAILABILITY + VALID_AVAILABILITY_AMY;
+    public static final String AVAILABILITY_DESC_BOB = " " + PREFIX_AVAILABILITY + VALID_AVAILABILITY_BOB;
+    public static final String RECORD_DESC_AMY = " " + PREFIX_RECORD + VALID_RECORD_AMY;
+    public static final String RECORD_DESC_BOB = " " + PREFIX_RECORD + VALID_RECORD_BOB;
 
     public static final String INVALID_NAME_DESC = " " + PREFIX_NAME + "James&"; // '&' not allowed in names
     public static final String INVALID_PHONE_DESC = " " + PREFIX_PHONE + "911a"; // 'a' not allowed in phones
     public static final String INVALID_EMAIL_DESC = " " + PREFIX_EMAIL + "bob!yahoo"; // missing '@' symbol
     public static final String INVALID_ADDRESS_DESC = " " + PREFIX_ADDRESS; // empty string not allowed for addresses
     public static final String INVALID_TAG_DESC = " " + PREFIX_TAG + "hubby*"; // '*' not allowed in tags
+    public static final String INVALID_AVAILABILITY_DESC = " " + PREFIX_AVAILABILITY + "MONDAY-0900-1200";
+    public static final String INVALID_RECORD_DESC = " " + PREFIX_RECORD + "2026-03-20 09:00,2026-03-20 12:00";
 
     public static final String PREAMBLE_WHITESPACE = "\t  \r  \n";
     public static final String PREAMBLE_NON_EMPTY = "NonEmptyPreamble";
@@ -73,9 +88,15 @@ public class CommandTestUtil {
     static {
         DESC_AMY = new EditPersonDescriptorBuilder().withName(VALID_NAME_AMY)
                 .withPhone(VALID_PHONE_AMY).withEmail(VALID_EMAIL_AMY).withAddress(VALID_ADDRESS_AMY)
+                .withRole(VALID_ROLE_AMY).withNotes(VALID_NOTES_AMY)
+                .withAvailabilities(VALID_AVAILABILITY_AMY)
+                .withRecords(VALID_RECORD_AMY)
                 .withTags(VALID_TAG_FRIEND).build();
         DESC_BOB = new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB)
                 .withPhone(VALID_PHONE_BOB).withEmail(VALID_EMAIL_BOB).withAddress(VALID_ADDRESS_BOB)
+                .withRole(VALID_ROLE_BOB).withNotes(VALID_NOTES_BOB)
+                .withAvailabilities(VALID_AVAILABILITY_BOB)
+                .withRecords(VALID_RECORD_BOB)
                 .withTags(VALID_TAG_HUSBAND, VALID_TAG_FRIEND).build();
     }
 
@@ -121,6 +142,7 @@ public class CommandTestUtil {
         assertEquals(expectedAddressBook, actualModel.getAddressBook());
         assertEquals(expectedFilteredList, actualModel.getFilteredPersonList());
     }
+
     /**
      * Updates {@code model}'s filtered list to show only the person at the given {@code targetIndex} in the
      * {@code model}'s address book.

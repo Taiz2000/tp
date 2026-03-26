@@ -6,9 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_AVAILABILITY_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_NOTES_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_RECORD_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_ROLE_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 
 import org.junit.jupiter.api.Test;
@@ -16,6 +20,9 @@ import org.junit.jupiter.api.Test;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 
+/**
+ * Some test cases in this class were adapted from Codex-generated test specifications.
+ */
 public class EditPersonDescriptorTest {
 
     @Test
@@ -52,8 +59,24 @@ public class EditPersonDescriptorTest {
         editedAmy = new EditPersonDescriptorBuilder(DESC_AMY).withAddress(VALID_ADDRESS_BOB).build();
         assertFalse(DESC_AMY.equals(editedAmy));
 
+        // different role -> returns false
+        editedAmy = new EditPersonDescriptorBuilder(DESC_AMY).withRole(VALID_ROLE_BOB).build();
+        assertFalse(DESC_AMY.equals(editedAmy));
+
+        // different notes -> returns false
+        editedAmy = new EditPersonDescriptorBuilder(DESC_AMY).withNotes(VALID_NOTES_BOB).build();
+        assertFalse(DESC_AMY.equals(editedAmy));
+
         // different tags -> returns false
         editedAmy = new EditPersonDescriptorBuilder(DESC_AMY).withTags(VALID_TAG_HUSBAND).build();
+        assertFalse(DESC_AMY.equals(editedAmy));
+
+        // different availabilities -> returns false
+        editedAmy = new EditPersonDescriptorBuilder(DESC_AMY).withAvailabilities(VALID_AVAILABILITY_BOB).build();
+        assertFalse(DESC_AMY.equals(editedAmy));
+
+        // different records -> returns false
+        editedAmy = new EditPersonDescriptorBuilder(DESC_AMY).withRecords(VALID_RECORD_BOB).build();
         assertFalse(DESC_AMY.equals(editedAmy));
     }
 
@@ -64,8 +87,12 @@ public class EditPersonDescriptorTest {
                 + editPersonDescriptor.getName().orElse(null) + ", phone="
                 + editPersonDescriptor.getPhone().orElse(null) + ", email="
                 + editPersonDescriptor.getEmail().orElse(null) + ", address="
-                + editPersonDescriptor.getAddress().orElse(null) + ", tags="
-                + editPersonDescriptor.getTags().orElse(null) + "}";
+                + editPersonDescriptor.getAddress().orElse(null) + ", role="
+                + editPersonDescriptor.getRole().orElse(null) + ", notes="
+                + editPersonDescriptor.getNotes().orElse(null) + ", tags="
+                + editPersonDescriptor.getTags().orElse(null) + ", availabilities="
+                + editPersonDescriptor.getAvailabilities().orElse(null) + ", records="
+                + editPersonDescriptor.getRecords().orElse(null) + "}";
         assertEquals(expected, editPersonDescriptor.toString());
     }
 }

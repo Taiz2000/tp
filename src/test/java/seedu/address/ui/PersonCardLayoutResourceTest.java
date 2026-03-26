@@ -42,6 +42,12 @@ public class PersonCardLayoutResourceTest {
             "fx:id=\"notes\" styleClass=\"cell_small_label\" text=\"\\$notes\" wrapText=\"true\""
         ));
         assertTrue(fxmlContent.contains(
+            "fx:id=\"availability\" styleClass=\"cell_small_label\" text=\"\\$availability\" wrapText=\"true\""
+        ));
+        assertTrue(fxmlContent.contains(
+            "fx:id=\"records\" styleClass=\"cell_small_label\" text=\"\\$records\" wrapText=\"true\""
+        ));
+        assertTrue(fxmlContent.contains(
             "fx:id=\"tags\" prefWrapLength=\"240\""
         ));
     }

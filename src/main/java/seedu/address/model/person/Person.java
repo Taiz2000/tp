@@ -29,19 +29,30 @@ public class Person {
     private final Role role;
     private final Notes notes;
     private final Set<Tag> tags = new HashSet<>();
+    private final Set<VolunteerAvailability> availabilities = new HashSet<>();
+    private final Set<VolunteerRecord> records = new HashSet<>();
 
     /**
      * Every field must be present and not null.
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
-        this(name, phone, email, address, EMPTY_ROLE, EMPTY_NOTES, tags);
+        this(name, phone, email, address, EMPTY_ROLE,
+                EMPTY_NOTES, tags, Collections.emptySet(), Collections.emptySet());
     }
 
     /**
      * Every field must be present and not null.
      */
     public Person(Name name, Phone phone, Email email, Address address, Role role, Notes notes, Set<Tag> tags) {
-        requireAllNonNull(name, phone, email, address, role, notes, tags);
+        this(name, phone, email, address, role, notes, tags, Collections.emptySet(), Collections.emptySet());
+    }
+
+    /**
+     * Every field must be present and not null.
+     */
+    public Person(Name name, Phone phone, Email email, Address address, Role role, Notes notes, Set<Tag> tags,
+            Set<VolunteerAvailability> availabilities, Set<VolunteerRecord> records) {
+        requireAllNonNull(name, phone, email, address, role, notes, tags, availabilities, records);
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -49,6 +60,8 @@ public class Person {
         this.role = role;
         this.notes = notes;
         this.tags.addAll(tags);
+        this.availabilities.addAll(availabilities);
+        this.records.addAll(records);
     }
 
     public Name getName() {
@@ -81,6 +94,22 @@ public class Person {
      */
     public Set<Tag> getTags() {
         return Collections.unmodifiableSet(tags);
+    }
+
+    /**
+     * Returns an immutable set of volunteer availabilities, which throws {@code UnsupportedOperationException}
+     * if modification is attempted.
+     */
+    public Set<VolunteerAvailability> getAvailabilities() {
+        return Collections.unmodifiableSet(availabilities);
+    }
+
+    /**
+     * Returns an immutable set of volunteer records, which throws {@code UnsupportedOperationException}
+     * if modification is attempted.
+     */
+    public Set<VolunteerRecord> getRecords() {
+        return Collections.unmodifiableSet(records);
     }
 
     /**
@@ -120,13 +149,15 @@ public class Person {
                 && address.equals(otherPerson.address)
                 && role.equals(otherPerson.role)
                 && notes.equals(otherPerson.notes)
-                && tags.equals(otherPerson.tags);
+                && tags.equals(otherPerson.tags)
+                && availabilities.equals(otherPerson.availabilities)
+                && records.equals(otherPerson.records);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, role, notes, tags);
+        return Objects.hash(name, phone, email, address, role, notes, tags, availabilities, records);
     }
 
     @Override
@@ -139,6 +170,8 @@ public class Person {
                 .add("role", role)
                 .add("notes", notes)
                 .add("tags", tags)
+                .add("availabilities", availabilities)
+                .add("records", records)
                 .toString();
     }
 

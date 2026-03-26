@@ -2,10 +2,12 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_AVAILABILITY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_RECORD;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
@@ -30,7 +32,9 @@ public class AddCommand extends Command {
             + PREFIX_ADDRESS + "ADDRESS "
             + "[" + PREFIX_TAG + "TAG]... "
             + "[" + PREFIX_ROLE + "ROLE] "
-            + "[" + PREFIX_NOTES + "NOTES]\n"
+            + "[" + PREFIX_NOTES + "NOTES] "
+            + "[" + PREFIX_AVAILABILITY + "DAY,HH:mm,HH:mm]... "
+            + "[" + PREFIX_RECORD + "yyyy-MM-ddTHH:mm,yyyy-MM-ddTHH:mm]...\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_NAME + "John Doe "
             + PREFIX_PHONE + "98765432 "
@@ -39,7 +43,9 @@ public class AddCommand extends Command {
             + PREFIX_TAG + "friends "
             + PREFIX_TAG + "owesMoney "
             + PREFIX_ROLE + "Coordinator "
-            + PREFIX_NOTES + "Prefers morning shifts";
+            + PREFIX_NOTES + "Prefers morning shifts "
+            + PREFIX_AVAILABILITY + "MONDAY,14:00,17:00 "
+            + PREFIX_RECORD + "2026-03-20T14:00,2026-03-20T17:00";
 
     public static final String MESSAGE_SUCCESS = "Added person: %1$s";
     public static final String MESSAGE_DUPLICATE_PERSON =

@@ -2,10 +2,12 @@ package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_AVAILABILITY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_RECORD;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
@@ -21,6 +23,8 @@ import seedu.address.model.person.Notes;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.VolunteerAvailability;
+import seedu.address.model.person.VolunteerRecord;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -42,7 +46,9 @@ public class AddCommandParser implements Parser<AddCommand> {
                         PREFIX_ADDRESS,
                         PREFIX_TAG,
                         PREFIX_ROLE,
-                        PREFIX_NOTES);
+                        PREFIX_NOTES,
+                        PREFIX_AVAILABILITY,
+                        PREFIX_RECORD);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_NAME, PREFIX_ADDRESS, PREFIX_PHONE, PREFIX_EMAIL)
                 || !argMultimap.getPreamble().isEmpty()) {
@@ -70,7 +76,11 @@ public class AddCommandParser implements Parser<AddCommand> {
             notes = ParserUtil.parseNotes(argMultimap.getValue(PREFIX_NOTES).get());
         }
 
-        Person person = new Person(name, phone, email, address, role, notes, tagList);
+        Set<VolunteerAvailability> availabilities =
+                ParserUtil.parseVolunteerAvailabilities(argMultimap.getAllValues(PREFIX_AVAILABILITY));
+        Set<VolunteerRecord> records = ParserUtil.parseVolunteerRecords(argMultimap.getAllValues(PREFIX_RECORD));
+
+        Person person = new Person(name, phone, email, address, role, notes, tagList, availabilities, records);
 
         return new AddCommand(person);
     }
