@@ -155,6 +155,42 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
+### Find command
+
+The `find` command is implemented as a small "pipeline" that converts user input into a `PersonPredicate`, and then updates the model's filtered person list by applying that predicate to the active person list. The diagram below summarizes the key classes and their relationships.
+
+![Find Command Class Diagram](images/FindCommandClassDiagram.png)
+
+#### Parsing flow
+
+The sequence diagram below shows how the `find` command arguments are transformed into a `FindCommand` with the appropriate predicate.
+
+![Find Command Parsing Sequence Diagram](images/FindCommandParsingSequenceDiagram.png)
+
+The parsing flow is as follows:
+* `LogicManager` calls `AddressBookParser#parseCommand()`, which instantiates a `FindCommandParser` for the `find` command.
+* If the user provides an `m/` prefix, `FindMatchType.fromToken()` is used to determine the match type before `ParsedFindArgs` is created; otherwise the default match type (i.e. keyword match type) is assumed when building `ParsedFindArgs`.
+* `FindMatchType.createPredicate(...)` creates a concrete, match-type-specific `PersonPredicate`.
+* `FindCommandParser` constructs the `FindCommand` with the predicate and returns it to `AddressBookParser`, which returns it to `LogicManager`.
+
+#### Predicate structure
+
+All find predicates implement `PersonPredicate`, which is a `Predicate<Person>`. The current implementation provides a shared abstract base class (`PersonContainsFieldsPredicate`) that:
+
+* iterates through each keyword
+* checks the keyword against most `Person` fields (e.g. name, phone, email, address, role, notes, tags)
+* delegates the actual field-matching logic to `matchesField(...)`
+
+Concrete predicate classes will implement the `matchesField(...)` method, keeping the overall matching logic consistent and easy to extend.
+
+#### Extending find
+
+To add a new match type or predicate in the future:
+
+* implement a new `PersonPredicate` (or extend `PersonContainsFieldsPredicate` if it fits the same "match across most fields" pattern)
+* add a new enum value and token in `FindMatchType` that returns the new predicate from `createPredicate(...)`
+* update any docs that mention match types (the parser logic does not need to change if the match type continues to be provided via `m/`)
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation

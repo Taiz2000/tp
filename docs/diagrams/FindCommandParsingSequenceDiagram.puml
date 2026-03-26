@@ -1,0 +1,72 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":FindCommandParser" as FindCommandParser LOGIC_COLOR
+participant ":FindMatchType" as FindMatchType LOGIC_COLOR
+participant ":ParsedFindArgs" as ParsedFindArgs LOGIC_COLOR
+participant "p:PersonPredicate" as PersonPredicate LOGIC_COLOR
+participant "f:FindCommand" as FindCommand LOGIC_COLOR
+end box
+
+[-> LogicManager : execute("find ...")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("find ...")
+activate AddressBookParser
+
+create FindCommandParser
+AddressBookParser -> FindCommandParser : parse(arguments)
+activate FindCommandParser
+
+FindCommandParser -> FindCommandParser : parseFindArgs(...)
+activate FindCommandParser
+alt m/ prefix provided
+    FindCommandParser -> FindMatchType : fromToken()
+    activate FindMatchType
+    FindMatchType --> FindCommandParser : matchType
+    deactivate FindMatchType
+    create ParsedFindArgs
+    FindCommandParser -> ParsedFindArgs : ParsedFindArgs(...)
+    activate ParsedFindArgs
+    ParsedFindArgs --> FindCommandParser :
+    deactivate ParsedFindArgs
+else m/ prefix not provided
+    create ParsedFindArgs
+    FindCommandParser -> ParsedFindArgs : ParsedFindArgs(...)
+    activate ParsedFindArgs
+    ParsedFindArgs --> FindCommandParser :
+    deactivate ParsedFindArgs
+end
+deactivate FindCommandParser
+
+FindCommandParser -> FindMatchType : createPredicate(...)
+activate FindMatchType
+create PersonPredicate
+FindMatchType -> PersonPredicate : create concrete (i.e. match-type specific) PersonPredicate
+activate PersonPredicate
+PersonPredicate --> FindMatchType : p
+deactivate PersonPredicate
+FindMatchType --> FindCommandParser : p
+deactivate FindMatchType
+
+create FindCommand
+FindCommandParser -> FindCommand : FindCommand(p)
+activate FindCommand
+FindCommand --> FindCommandParser : f
+deactivate FindCommand
+
+FindCommandParser --> AddressBookParser : f
+deactivate FindCommandParser
+FindCommandParser -[hidden]-> AddressBookParser
+destroy FindCommandParser
+
+AddressBookParser --> LogicManager : f
+deactivate AddressBookParser
+
+[<--LogicManager
+deactivate LogicManager
+@enduml
