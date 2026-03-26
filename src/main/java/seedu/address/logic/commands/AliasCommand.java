@@ -2,11 +2,9 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.logic.parser.ParserUtil;
 import seedu.address.model.Model;
 
 /**
@@ -26,8 +24,7 @@ public class AliasCommand extends Command {
             "Alias names should start with a lowercase letter and contain only lowercase letters, digits, or hyphens.";
     public static final String MESSAGE_RESERVED_ALIAS_NAME = "Alias name cannot be an existing command word.";
     public static final String MESSAGE_INVALID_ALIAS_TEMPLATE =
-            "Alias target must start with an existing command word.";
-    private static final Pattern COMMAND_WORD_PATTERN = Pattern.compile("(?<commandWord>\\S+)(?<arguments>.*)");
+            "Alias target's first word must be an existing command word.";
     private static final String ALIAS_NAME_VALIDATION_REGEX = "[a-z][a-z0-9-]*";
 
     private final String shortName;
@@ -66,13 +63,9 @@ public class AliasCommand extends Command {
      */
     public static boolean isValidAliasTemplate(String template) {
         requireNonNull(template);
-        String commandWord = extractLeadingCommandWord(template);
-        return commandWord != null && CommandWords.isBuiltInCommandWord(commandWord);
-    }
-
-    private static String extractLeadingCommandWord(String input) {
-        Matcher matcher = COMMAND_WORD_PATTERN.matcher(input.trim());
-        return matcher.matches() ? matcher.group("commandWord") : null;
+        return ParserUtil.parseCommandComponents(template)
+                .map(commandComponents -> CommandWords.isBuiltInCommandWord(commandComponents.getCommandWord()))
+                .orElse(false);
     }
 
     @Override

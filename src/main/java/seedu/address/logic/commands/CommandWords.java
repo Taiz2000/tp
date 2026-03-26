@@ -4,6 +4,8 @@ import java.util.Set;
 
 /**
  * Utility methods for built-in command words.
+ * Keep this list in sync with {@code AddressBookParser} when adding new top-level commands so
+ * those commands remain valid alias targets.
  */
 public final class CommandWords {
 

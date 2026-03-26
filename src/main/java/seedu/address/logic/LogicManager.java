@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
@@ -14,6 +12,7 @@ import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.AddressBookParser;
+import seedu.address.logic.parser.ParserUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
@@ -28,7 +27,6 @@ public class LogicManager implements Logic {
 
     public static final String FILE_OPS_PERMISSION_ERROR_FORMAT =
             "Could not save data to file %s due to insufficient permissions to write to the file or the folder.";
-    private static final Pattern BASIC_COMMAND_FORMAT = Pattern.compile("(?<commandWord>\\S+)(?<arguments>.*)");
 
     private final Logger logger = LogsCenter.getLogger(LogicManager.class);
 
@@ -92,17 +90,17 @@ public class LogicManager implements Logic {
     }
 
     private String expandAlias(String commandText) {
-        Matcher matcher = BASIC_COMMAND_FORMAT.matcher(commandText.trim());
-        if (!matcher.matches()) {
-            return commandText;
-        }
+        return ParserUtil.parseCommandComponents(commandText)
+                .map(commandComponents -> expandAlias(commandText, commandComponents))
+                .orElse(commandText);
+    }
 
-        String commandWord = matcher.group("commandWord");
-        String aliasTemplate = model.getCommandAliases().get(commandWord);
+    private String expandAlias(String commandText, ParserUtil.CommandComponents commandComponents) {
+        String aliasTemplate = model.getCommandAliases().get(commandComponents.getCommandWord());
         if (aliasTemplate == null) {
             return commandText;
         }
 
-        return aliasTemplate + matcher.group("arguments");
+        return aliasTemplate + commandComponents.getArguments();
     }
 }

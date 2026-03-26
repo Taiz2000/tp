@@ -6,7 +6,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
@@ -27,6 +30,20 @@ import seedu.address.model.tag.Tag;
 public class ParserUtil {
 
     public static final String MESSAGE_INVALID_INDEX = "Index is not a non-zero unsigned integer.";
+    private static final Pattern BASIC_COMMAND_FORMAT = Pattern.compile("(?<commandWord>\\S+)(?<arguments>.*)");
+
+    /**
+     * Parses a command-like string into its leading word and remaining arguments.
+     */
+    public static Optional<CommandComponents> parseCommandComponents(String input) {
+        requireNonNull(input);
+        Matcher matcher = BASIC_COMMAND_FORMAT.matcher(input.trim());
+        if (!matcher.matches()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(new CommandComponents(matcher.group("commandWord"), matcher.group("arguments")));
+    }
 
     /**
      * Tokenizes {@code input} into space-separated tokens.
@@ -211,6 +228,29 @@ public class ParserUtil {
             recordSet.add(parseVolunteerRecord(record));
         }
         return recordSet;
+    }
+
+    /**
+     * Represents a command word and the remaining raw argument suffix.
+     */
+    public static final class CommandComponents {
+        private final String commandWord;
+        private final String arguments;
+
+        private CommandComponents(String commandWord, String arguments) {
+            requireNonNull(commandWord);
+            requireNonNull(arguments);
+            this.commandWord = commandWord;
+            this.arguments = arguments;
+        }
+
+        public String getCommandWord() {
+            return commandWord;
+        }
+
+        public String getArguments() {
+            return arguments;
+        }
     }
 
 }
