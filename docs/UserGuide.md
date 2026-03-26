@@ -185,6 +185,19 @@ Exits the program.
 
 Format: `exit`
 
+### Editing the previous command : `editprev`
+
+Loads the last successfully executed command, excluding `editprev`, into the command box so you can edit and run it again.
+
+Format: `editprev`
+
+* Only the last successful non-`editprev` command is remembered for the current session.
+* `editprev` does not execute the recalled command. You can change it first before pressing Enter.
+
+Examples:
+* `list` followed by `editprev` loads `list` back into the command box.
+* `delete 1` followed by `editprev` loads `delete 1` back into the command box for editing.
+
 ### Saving the data
 
 RosterBolt data are saved in the hard disk automatically after any command that changes the data. There is no need to save manually.
@@ -227,6 +240,7 @@ Action | Format, Examples
 **Clear** | `clear`
 **Delete** | `delete INDEX [MORE_INDICES]`<br> e.g., `delete 2 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [nt/NOTES] [t/TAG]…​ [va/AVAILABILITY]…​ [vr/RECORD]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com va/MONDAY,14:00,17:00`
+**Edit Previous** | `editprev`
 **Find** | `find [m/MATCH_TYPE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find m/kw James Jake`, `find m/ss ali`, `find m/fz michigan`
 **List** | `list [ATTRIBUTE [asc|desc]]`<br> e.g., `list name desc`
 **Help** | `help`

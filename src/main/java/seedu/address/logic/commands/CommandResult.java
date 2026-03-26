@@ -3,6 +3,7 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import seedu.address.commons.util.ToStringBuilder;
 
@@ -19,13 +20,24 @@ public class CommandResult {
     /** The application should exit. */
     private final boolean exit;
 
+    /** The command box should be populated with this text. */
+    private final String commandTextToPopulate;
+
     /**
      * Constructs a {@code CommandResult} with the specified fields.
      */
     public CommandResult(String feedbackToUser, boolean showHelp, boolean exit) {
+        this(feedbackToUser, showHelp, exit, null);
+    }
+
+    /**
+     * Constructs a {@code CommandResult} with the specified fields.
+     */
+    public CommandResult(String feedbackToUser, boolean showHelp, boolean exit, String commandTextToPopulate) {
         this.feedbackToUser = requireNonNull(feedbackToUser);
         this.showHelp = showHelp;
         this.exit = exit;
+        this.commandTextToPopulate = commandTextToPopulate;
     }
 
     /**
@@ -48,6 +60,10 @@ public class CommandResult {
         return exit;
     }
 
+    public Optional<String> getCommandTextToPopulate() {
+        return Optional.ofNullable(commandTextToPopulate);
+    }
+
     @Override
     public boolean equals(Object other) {
         if (other == this) {
@@ -62,12 +78,13 @@ public class CommandResult {
         CommandResult otherCommandResult = (CommandResult) other;
         return feedbackToUser.equals(otherCommandResult.feedbackToUser)
                 && showHelp == otherCommandResult.showHelp
-                && exit == otherCommandResult.exit;
+                && exit == otherCommandResult.exit
+                && Objects.equals(commandTextToPopulate, otherCommandResult.commandTextToPopulate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(feedbackToUser, showHelp, exit);
+        return Objects.hash(feedbackToUser, showHelp, exit, commandTextToPopulate);
     }
 
     @Override
@@ -76,6 +93,7 @@ public class CommandResult {
                 .add("feedbackToUser", feedbackToUser)
                 .add("showHelp", showHelp)
                 .add("exit", exit)
+                .add("commandTextToPopulate", commandTextToPopulate)
                 .toString();
     }
 

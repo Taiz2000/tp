@@ -8,11 +8,15 @@ import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_AMY;
 import static seedu.address.testutil.Assert.assertThrows;
+import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.AMY;
+import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +24,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.CommandResult;
+import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -33,6 +38,9 @@ import seedu.address.storage.JsonUserPrefsStorage;
 import seedu.address.storage.StorageManager;
 import seedu.address.testutil.PersonBuilder;
 
+/**
+ * Some test cases in this class were adapted from Codex-generated test specifications.
+ */
 public class LogicManagerTest {
     private static final IOException DUMMY_IO_EXCEPTION = new IOException("dummy IO exception");
     private static final IOException DUMMY_AD_EXCEPTION = new AccessDeniedException("dummy access denied exception");
@@ -45,6 +53,10 @@ public class LogicManagerTest {
 
     @BeforeEach
     public void setUp() {
+        resetLogic();
+    }
+
+    private void resetLogic() {
         JsonAddressBookStorage addressBookStorage =
                 new JsonAddressBookStorage(temporaryFolder.resolve("rosterbolt.json"));
         JsonUserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(temporaryFolder.resolve("userPrefs.json"));
@@ -68,6 +80,66 @@ public class LogicManagerTest {
     public void execute_validCommand_success() throws Exception {
         String listCommand = ListCommand.COMMAND_WORD;
         assertCommandSuccess(listCommand, ListCommand.MESSAGE_SUCCESS, model);
+    }
+
+    @Test
+    public void execute_editPreviousWithoutPreviousCommand_throwsCommandException() {
+        assertCommandException(LogicManager.EDIT_PREVIOUS_COMMAND_WORD,
+                LogicManager.EDIT_PREVIOUS_MESSAGE_NO_PREVIOUS_COMMAND);
+    }
+
+    @Test
+    public void execute_editPreviousListCommand_success() throws Exception {
+        assertCommandSuccess(ListCommand.COMMAND_WORD, ListCommand.MESSAGE_SUCCESS, model);
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        CommandResult result = logic.execute(LogicManager.EDIT_PREVIOUS_COMMAND_WORD);
+
+        assertEquals(String.format(LogicManager.EDIT_PREVIOUS_MESSAGE_SUCCESS, ListCommand.COMMAND_WORD),
+                result.getFeedbackToUser());
+        assertEquals(Optional.of(ListCommand.COMMAND_WORD), result.getCommandTextToPopulate());
+        assertEquals(expectedModel, model);
+    }
+
+    @Test
+    public void execute_editPreviousDeleteCommand_success() throws Exception {
+        model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        resetLogic();
+
+        String deleteCommand = DeleteCommand.COMMAND_WORD + " 1";
+        Model expectedModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        expectedModel.deletePerson(ALICE);
+        assertCommandSuccess(deleteCommand,
+                DeleteCommand.buildSuccessMessage(List.of(ALICE)),
+                expectedModel);
+
+        CommandResult result = logic.execute(LogicManager.EDIT_PREVIOUS_COMMAND_WORD);
+        assertEquals(String.format(LogicManager.EDIT_PREVIOUS_MESSAGE_SUCCESS, deleteCommand),
+                result.getFeedbackToUser());
+        assertEquals(Optional.of(deleteCommand), result.getCommandTextToPopulate());
+        assertEquals(expectedModel, model);
+    }
+
+    @Test
+    public void execute_repeatedEditPrevious_success() throws Exception {
+        assertCommandSuccess(ListCommand.COMMAND_WORD, ListCommand.MESSAGE_SUCCESS, model);
+
+        CommandResult firstResult = logic.execute(LogicManager.EDIT_PREVIOUS_COMMAND_WORD);
+        assertEquals(String.format(LogicManager.EDIT_PREVIOUS_MESSAGE_SUCCESS, ListCommand.COMMAND_WORD),
+                firstResult.getFeedbackToUser());
+        assertEquals(Optional.of(ListCommand.COMMAND_WORD), firstResult.getCommandTextToPopulate());
+
+        CommandResult secondResult = logic.execute(LogicManager.EDIT_PREVIOUS_COMMAND_WORD);
+        assertEquals(String.format(LogicManager.EDIT_PREVIOUS_MESSAGE_SUCCESS, ListCommand.COMMAND_WORD),
+                secondResult.getFeedbackToUser());
+        assertEquals(Optional.of(ListCommand.COMMAND_WORD), secondResult.getCommandTextToPopulate());
+    }
+
+    @Test
+    public void execute_editPreviousWithArguments_throwsParseException() {
+        assertParseException(LogicManager.EDIT_PREVIOUS_COMMAND_WORD + " extra",
+                String.format(seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT,
+                        LogicManager.EDIT_PREVIOUS_MESSAGE_USAGE));
     }
 
     @Test
