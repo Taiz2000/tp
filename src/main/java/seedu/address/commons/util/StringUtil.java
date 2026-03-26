@@ -61,6 +61,76 @@ public class StringUtil {
     }
 
     /**
+     * Returns true if the {@code sentence} contains a {@code word} within the given Levenshtein distance threshold.
+     *   Ignores case.
+     *   <br>examples:<pre>
+     *       containsFuzzyWordIgnoreCase("ABc def", "abd", 1) == true
+     *       containsFuzzyWordIgnoreCase("ABc def", "ace", 1) == false
+     *       containsFuzzyWordIgnoreCase("ABc def", "DEF", 0) == true
+     *       </pre>
+     * @param sentence cannot be null
+     * @param word cannot be null, cannot be empty, must be a single word
+     * @param threshold must be non-negative
+     */
+    public static boolean containsFuzzyWordIgnoreCase(String sentence, String word, int threshold) {
+        requireNonNull(sentence);
+        requireNonNull(word);
+        checkArgument(threshold >= 0, "Threshold must be non-negative");
+
+        String preppedWord = word.trim();
+        checkArgument(!preppedWord.isEmpty(), "Word parameter cannot be empty");
+        checkArgument(preppedWord.split("\\s+").length == 1, "Word parameter should be a single word");
+        String lowerWord = preppedWord.toLowerCase();
+
+        String preppedSentence = sentence;
+        String[] wordsInPreppedSentence = preppedSentence.split("\\s+");
+
+        return Arrays.stream(wordsInPreppedSentence)
+                .anyMatch(sentenceWord -> getLevenshteinDistance(sentenceWord.toLowerCase(), lowerWord) <= threshold);
+    }
+
+    /**
+     * Returns the Levenshtein distance between {@code s} and {@code t}.
+     * Based on the algorithm described at
+     * <a href="https://en.wikipedia.org/wiki/Levenshtein_distance">
+     *     https://en.wikipedia.org/wiki/Levenshtein_distance
+     * </a>.
+     */
+    private static int getLevenshteinDistance(String s, String t) {
+        int m = s.length();
+        int n = t.length();
+        int[] v0 = new int[n + 1];
+        int[] v1 = new int[n + 1];
+
+        for (int i = 0; i <= n; i++) {
+            v0[i] = i;
+        }
+
+        for (int i = 0; i <= m - 1; i++) {
+            v1[0] = i + 1;
+
+            for (int j = 0; j <= n - 1; j++) {
+                int deletionCost = v0[j + 1] + 1;
+                int insertionCost = v1[j] + 1;
+                int substitutionCost;
+                if (s.charAt(i) == t.charAt(j)) {
+                    substitutionCost = v0[j];
+                } else {
+                    substitutionCost = v0[j] + 1;
+                }
+
+                v1[j + 1] = Math.min(deletionCost, Math.min(insertionCost, substitutionCost));
+            }
+
+            int[] temp = v0;
+            v0 = v1;
+            v1 = temp;
+        }
+
+        return v0[n];
+    }
+
+    /**
      * Returns a detailed message of the t, including the stack trace.
      */
     public static String getDetails(Throwable t) {

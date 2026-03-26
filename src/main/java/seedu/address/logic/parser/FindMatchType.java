@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import seedu.address.model.person.predicates.PersonContainsFuzzyKeywordsPredicate;
 import seedu.address.model.person.predicates.PersonContainsKeywordsPredicate;
 import seedu.address.model.person.predicates.PersonContainsSubstringsPredicate;
 import seedu.address.model.person.predicates.PersonPredicate;
@@ -13,10 +14,12 @@ import seedu.address.model.person.predicates.PersonPredicate;
  */
 public enum FindMatchType {
     KEYWORD("kw"),
-    SUBSTRING("ss");
+    SUBSTRING("ss"),
+    FUZZY("fz");
 
     public static final String KEYWORD_TOKEN = KEYWORD.token;
     public static final String SUBSTRING_TOKEN = SUBSTRING.token;
+    public static final String FUZZY_TOKEN = FUZZY.token;
 
     private final String token;
     FindMatchType(String token) {
@@ -31,6 +34,8 @@ public enum FindMatchType {
             return new PersonContainsKeywordsPredicate(keywords);
         } else if (this == SUBSTRING) {
             return new PersonContainsSubstringsPredicate(keywords);
+        } else if (this == FUZZY) {
+            return new PersonContainsFuzzyKeywordsPredicate(keywords);
         }
         throw new IllegalStateException("Unsupported FindMatchType: " + this);
     }
