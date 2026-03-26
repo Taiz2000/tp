@@ -157,7 +157,7 @@ This section describes some noteworthy details on how certain features are imple
 
 ### Find command
 
-The `find` command is implemented as a small "pipeline" that converts user input into a `PersonPredicate`, and then updates the model's filtered person list by applying that predicate to the full person list. The diagram below summarizes the key classes and their relationships.
+The `find` command is implemented as a small "pipeline" that converts user input into a `PersonPredicate`, and then updates the model's filtered person list by applying that predicate to the active person list. The diagram below summarizes the key classes and their relationships.
 
 ![Find Command Class Diagram](images/FindCommandClassDiagram.png)
 
