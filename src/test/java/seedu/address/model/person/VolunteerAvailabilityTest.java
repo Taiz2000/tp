@@ -86,6 +86,11 @@ public class VolunteerAvailabilityTest {
     }
 
     @Test
+    public void isValidAvailability_null_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> VolunteerAvailability.isValidAvailability(null));
+    }
+
+    @Test
     public void parsingHelpers() {
         assertTrue(VolunteerAvailability.isValidAvailability("MONDAY,14:00,16:00"));
         assertFalse(VolunteerAvailability.isValidAvailability("MONDAY,16:00,14:00"));

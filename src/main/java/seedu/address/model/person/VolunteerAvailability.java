@@ -45,9 +45,7 @@ public class VolunteerAvailability {
      * with start time before end time.
      */
     public static boolean isValidAvailability(String value) {
-        if (value == null) {
-            return false;
-        }
+        requireNonNull(value);
 
         String[] parts = value.trim().split(",");
         if (parts.length != 3) {

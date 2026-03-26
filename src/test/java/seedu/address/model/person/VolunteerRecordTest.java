@@ -79,6 +79,11 @@ public class VolunteerRecordTest {
     }
 
     @Test
+    public void isValidRecord_null_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> VolunteerRecord.isValidRecord(null));
+    }
+
+    @Test
     public void parsingHelpers() {
         assertTrue(VolunteerRecord.isValidRecord("2026-03-20T14:00,2026-03-20T16:00"));
         assertFalse(VolunteerRecord.isValidRecord("2026-03-20 14:00,2026-03-20 16:00"));

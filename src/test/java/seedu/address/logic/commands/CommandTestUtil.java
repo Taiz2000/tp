@@ -44,8 +44,10 @@ public class CommandTestUtil {
     public static final String VALID_ROLE_BOB = "Medic";
     public static final String VALID_NOTES_AMY = "Available on weekdays";
     public static final String VALID_NOTES_BOB = "Prefers outdoor events";
-    public static final String VALID_AVAILABILITY_AMY = "MONDAY,09:00,12:00";
-    public static final String VALID_AVAILABILITY_BOB = "TUESDAY,14:00,17:00";
+    public static final String VALID_AVAILABILITY_MONDAY_MORNING = "MONDAY,09:00,12:00";
+    public static final String VALID_AVAILABILITY_TUESDAY_AFTERNOON = "TUESDAY,14:00,17:00";
+    public static final String VALID_AVAILABILITY_AMY = VALID_AVAILABILITY_MONDAY_MORNING;
+    public static final String VALID_AVAILABILITY_BOB = VALID_AVAILABILITY_TUESDAY_AFTERNOON;
     public static final String VALID_RECORD_AMY = "2026-03-20T09:00,2026-03-20T12:00";
     public static final String VALID_RECORD_BOB = "2026-03-21T14:00,2026-03-21T17:00";
 
@@ -73,6 +75,8 @@ public class CommandTestUtil {
     public static final String INVALID_EMAIL_DESC = " " + PREFIX_EMAIL + "bob!yahoo"; // missing '@' symbol
     public static final String INVALID_ADDRESS_DESC = " " + PREFIX_ADDRESS; // empty string not allowed for addresses
     public static final String INVALID_TAG_DESC = " " + PREFIX_TAG + "hubby*"; // '*' not allowed in tags
+    public static final String INVALID_AVAILABILITY_DESC = " " + PREFIX_AVAILABILITY + "MONDAY-0900-1200";
+    public static final String INVALID_RECORD_DESC = " " + PREFIX_RECORD + "2026-03-20 09:00,2026-03-20 12:00";
 
     public static final String PREAMBLE_WHITESPACE = "\t  \r  \n";
     public static final String PREAMBLE_NON_EMPTY = "NonEmptyPreamble";

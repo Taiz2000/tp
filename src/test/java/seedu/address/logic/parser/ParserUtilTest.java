@@ -38,7 +38,9 @@ public class ParserUtilTest {
     private static final String VALID_TAG_1 = "friend";
     private static final String VALID_TAG_2 = "neighbour";
     private static final String VALID_AVAILABILITY = "MONDAY,09:00,12:00";
+    private static final String VALID_AVAILABILITY_2 = "TUESDAY,14:00,17:00";
     private static final String VALID_RECORD = "2026-03-20T09:00,2026-03-20T12:00";
+    private static final String VALID_RECORD_2 = "2026-03-21T14:00,2026-03-21T17:00";
 
     private static final String WHITESPACE = " \t\r\n";
 
@@ -217,6 +219,34 @@ public class ParserUtilTest {
     }
 
     @Test
+    public void parseVolunteerAvailabilities_null_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> ParserUtil.parseVolunteerAvailabilities(null));
+    }
+
+    @Test
+    public void parseVolunteerAvailabilities_collectionWithInvalidAvailability_throwsParseException() {
+        assertThrows(ParseException.class, () ->
+                ParserUtil.parseVolunteerAvailabilities(Arrays.asList(VALID_AVAILABILITY, INVALID_AVAILABILITY)));
+    }
+
+    @Test
+    public void parseVolunteerAvailabilities_emptyCollection_returnsEmptySet() throws Exception {
+        assertTrue(ParserUtil.parseVolunteerAvailabilities(Collections.emptyList()).isEmpty());
+    }
+
+    @Test
+    public void parseVolunteerAvailabilities_collectionWithValidAvailabilities_returnsAvailabilitySet()
+            throws Exception {
+        Set<VolunteerAvailability> actualAvailabilitySet =
+                ParserUtil.parseVolunteerAvailabilities(Arrays.asList(VALID_AVAILABILITY, VALID_AVAILABILITY_2));
+        Set<VolunteerAvailability> expectedAvailabilitySet = new HashSet<>(Arrays.asList(
+                VolunteerAvailability.fromString(VALID_AVAILABILITY),
+                VolunteerAvailability.fromString(VALID_AVAILABILITY_2)));
+
+        assertEquals(expectedAvailabilitySet, actualAvailabilitySet);
+    }
+
+    @Test
     public void parseVolunteerRecord_null_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> ParserUtil.parseVolunteerRecord(null));
     }
@@ -230,5 +260,32 @@ public class ParserUtilTest {
     public void parseVolunteerRecord_validValue_returnsVolunteerRecord() throws Exception {
         VolunteerRecord expected = VolunteerRecord.fromString(VALID_RECORD);
         assertEquals(expected, ParserUtil.parseVolunteerRecord(VALID_RECORD));
+    }
+
+    @Test
+    public void parseVolunteerRecords_null_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> ParserUtil.parseVolunteerRecords(null));
+    }
+
+    @Test
+    public void parseVolunteerRecords_collectionWithInvalidRecord_throwsParseException() {
+        assertThrows(ParseException.class, () ->
+                ParserUtil.parseVolunteerRecords(Arrays.asList(VALID_RECORD, INVALID_RECORD)));
+    }
+
+    @Test
+    public void parseVolunteerRecords_emptyCollection_returnsEmptySet() throws Exception {
+        assertTrue(ParserUtil.parseVolunteerRecords(Collections.emptyList()).isEmpty());
+    }
+
+    @Test
+    public void parseVolunteerRecords_collectionWithValidRecords_returnsRecordSet() throws Exception {
+        Set<VolunteerRecord> actualRecordSet =
+                ParserUtil.parseVolunteerRecords(Arrays.asList(VALID_RECORD, VALID_RECORD_2));
+        Set<VolunteerRecord> expectedRecordSet = new HashSet<>(Arrays.asList(
+                VolunteerRecord.fromString(VALID_RECORD),
+                VolunteerRecord.fromString(VALID_RECORD_2)));
+
+        assertEquals(expectedRecordSet, actualRecordSet);
     }
 }

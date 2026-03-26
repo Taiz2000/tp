@@ -43,9 +43,7 @@ public class VolunteerRecord {
      * {@code yyyy-MM-ddTHH:mm,yyyy-MM-ddTHH:mm} and start is before end.
      */
     public static boolean isValidRecord(String value) {
-        if (value == null) {
-            return false;
-        }
+        requireNonNull(value);
 
         String[] parts = value.trim().split(",");
         if (parts.length != 2) {

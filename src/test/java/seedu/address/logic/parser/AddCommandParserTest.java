@@ -8,9 +8,11 @@ import static seedu.address.logic.commands.CommandTestUtil.AVAILABILITY_DESC_BOB
 import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_ADDRESS_DESC;
+import static seedu.address.logic.commands.CommandTestUtil.INVALID_AVAILABILITY_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_EMAIL_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_NAME_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_PHONE_DESC;
+import static seedu.address.logic.commands.CommandTestUtil.INVALID_RECORD_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_TAG_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_BOB;
@@ -27,10 +29,13 @@ import static seedu.address.logic.commands.CommandTestUtil.ROLE_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_HUSBAND;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_AVAILABILITY_AMY;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_AVAILABILITY_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NOTES_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_RECORD_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_RECORD_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_ROLE_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_FRIEND;
@@ -55,6 +60,8 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.VolunteerAvailability;
+import seedu.address.model.person.VolunteerRecord;
 import seedu.address.model.tag.Tag;
 import seedu.address.testutil.PersonBuilder;
 
@@ -67,7 +74,7 @@ public class AddCommandParserTest {
                 .withTags(VALID_TAG_FRIEND)
                 .withRole(VALID_ROLE_BOB)
                 .withNotes(VALID_NOTES_BOB)
-                .withAvailabilities("TUESDAY,14:00,17:00")
+                .withAvailabilities(VALID_AVAILABILITY_BOB)
                 .withRecords(VALID_RECORD_BOB)
                 .build();
 
@@ -82,13 +89,13 @@ public class AddCommandParserTest {
                 .withTags(VALID_TAG_FRIEND, VALID_TAG_HUSBAND)
                 .withRole(VALID_ROLE_BOB)
                 .withNotes(VALID_NOTES_BOB)
-                .withAvailabilities("TUESDAY,14:00,17:00", "MONDAY,09:00,12:00")
-                .withRecords(VALID_RECORD_BOB)
+                .withAvailabilities(VALID_AVAILABILITY_BOB, VALID_AVAILABILITY_AMY)
+                .withRecords(VALID_RECORD_BOB, VALID_RECORD_AMY)
                 .build();
         assertParseSuccess(parser,
                 NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                 + TAG_DESC_HUSBAND + TAG_DESC_FRIEND + ROLE_DESC_BOB + NOTES_DESC_BOB
-                + AVAILABILITY_DESC_BOB + AVAILABILITY_DESC_AMY + RECORD_DESC_BOB,
+                + AVAILABILITY_DESC_BOB + AVAILABILITY_DESC_AMY + RECORD_DESC_BOB + RECORD_DESC_AMY,
                 new AddCommand(expectedPersonMultipleTags));
     }
 
@@ -199,11 +206,29 @@ public class AddCommandParserTest {
                         + ROLE_DESC_BOB + NOTES_DESC_BOB,
                 new AddCommand(expectedPersonWithRoleAndNotes));
 
+        // availability only
+        Person expectedPersonWithAvailability = new PersonBuilder(AMY)
+                .withTags()
+                .withAvailabilities(VALID_AVAILABILITY_AMY)
+                .build();
+        assertParseSuccess(parser, NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + ADDRESS_DESC_AMY
+                + AVAILABILITY_DESC_AMY,
+                new AddCommand(expectedPersonWithAvailability));
+
+        // record only
+        Person expectedPersonWithRecord = new PersonBuilder(AMY)
+                .withTags()
+                .withRecords(VALID_RECORD_AMY)
+                .build();
+        assertParseSuccess(parser, NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + ADDRESS_DESC_AMY
+                + RECORD_DESC_AMY,
+                new AddCommand(expectedPersonWithRecord));
+
         // availability and record only
         Person expectedPersonWithAvailabilityAndRecord = new PersonBuilder(AMY)
                 .withTags()
-                .withAvailabilities("MONDAY,09:00,12:00")
-                .withRecords("2026-03-20T09:00,2026-03-20T12:00")
+                .withAvailabilities(VALID_AVAILABILITY_AMY)
+                .withRecords(VALID_RECORD_AMY)
                 .build();
         assertParseSuccess(parser, NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + ADDRESS_DESC_AMY
                 + AVAILABILITY_DESC_AMY + RECORD_DESC_AMY,
@@ -256,6 +281,14 @@ public class AddCommandParserTest {
         // invalid tag
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                 + INVALID_TAG_DESC + VALID_TAG_FRIEND, Tag.MESSAGE_CONSTRAINTS);
+
+        // invalid availability
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
+                + INVALID_AVAILABILITY_DESC, VolunteerAvailability.MESSAGE_CONSTRAINTS);
+
+        // invalid record
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
+                + INVALID_RECORD_DESC, VolunteerRecord.MESSAGE_CONSTRAINTS);
 
         // two invalid values, only first invalid value reported
         assertParseFailure(parser, INVALID_NAME_DESC + PHONE_DESC_BOB + EMAIL_DESC_BOB + INVALID_ADDRESS_DESC,
