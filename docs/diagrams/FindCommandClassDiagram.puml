@@ -7,6 +7,7 @@ skinparam classBackgroundColor LOGIC_COLOR
 package Logic as LogicPackage {
 Class FindCommand
 Class FindCommandParser
+Class FindMatchTypeFactory
 Enum "<<enumeration>>\nFindMatchType" as FindMatchType
 }
 
@@ -19,7 +20,9 @@ Class PersonContainsFuzzyKeywordsPredicate #MODEL_COLOR
 }
 
 FindCommandParser ..> FindMatchType
-FindMatchType ..> PersonPredicate
+FindCommandParser ..> FindMatchTypeFactory
+FindMatchTypeFactory ..> FindMatchType
+FindMatchTypeFactory ..> PersonContainsFieldsPredicate
 FindCommandParser ..> FindCommand
 FindCommand --> PersonPredicate
 
