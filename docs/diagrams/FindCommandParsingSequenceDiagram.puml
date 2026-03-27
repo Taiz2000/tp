@@ -6,9 +6,9 @@ box Logic LOGIC_COLOR_T1
 participant ":LogicManager" as LogicManager LOGIC_COLOR
 participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
 participant ":FindCommandParser" as FindCommandParser LOGIC_COLOR
-participant ":FindMatchType" as FindMatchType LOGIC_COLOR
+participant "<<class>>\nFindMatchType" as FindMatchTypeClass LOGIC_COLOR
+participant "matchType:FindMatchType" as FindMatchType LOGIC_COLOR
 participant ":ParsedFindArgs" as ParsedFindArgs LOGIC_COLOR
-participant "p:PersonPredicate" as PersonPredicate LOGIC_COLOR
 participant "f:FindCommand" as FindCommand LOGIC_COLOR
 end box
 
@@ -25,10 +25,10 @@ activate FindCommandParser
 FindCommandParser -> FindCommandParser : parseFindArgs(...)
 activate FindCommandParser
 alt m/ prefix provided
-    FindCommandParser -> FindMatchType : fromToken()
-    activate FindMatchType
-    FindMatchType --> FindCommandParser : matchType
-    deactivate FindMatchType
+    FindCommandParser -> FindMatchTypeClass : fromToken()
+    activate FindMatchTypeClass
+    FindMatchTypeClass --> FindCommandParser : matchType
+    deactivate FindMatchTypeClass
     create ParsedFindArgs
     FindCommandParser -> ParsedFindArgs : ParsedFindArgs(...)
     activate ParsedFindArgs
@@ -45,16 +45,11 @@ deactivate FindCommandParser
 
 FindCommandParser -> FindMatchType : createPredicate(...)
 activate FindMatchType
-create PersonPredicate
-FindMatchType -> PersonPredicate : create concrete (i.e. match-type specific) PersonPredicate
-activate PersonPredicate
-PersonPredicate --> FindMatchType : p
-deactivate PersonPredicate
-FindMatchType --> FindCommandParser : p
+FindMatchType --> FindCommandParser : predicate:PersonContainsFieldsPredicate
 deactivate FindMatchType
 
 create FindCommand
-FindCommandParser -> FindCommand : FindCommand(p)
+FindCommandParser -> FindCommand : FindCommand(predicate)
 activate FindCommand
 FindCommand --> FindCommandParser : f
 deactivate FindCommand

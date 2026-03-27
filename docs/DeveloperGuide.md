@@ -158,7 +158,7 @@ This section describes some noteworthy details on how certain features are imple
 
 ### Find command
 
-The `find` command is implemented as a small "pipeline" that converts user input into a `PersonPredicate`, and then updates the model's filtered person list by applying that predicate to the active person list. The diagram below summarizes the key classes and their relationships.
+The `find` command is implemented as a small "pipeline" that converts user input into a match-type-specific `PersonContainsFieldsPredicate`, and then updates the model's filtered person list by applying that predicate to the active person list. The diagram below summarizes the key classes and their relationships.
 
 ![Find Command Class Diagram](images/FindCommandClassDiagram.png)
 
@@ -171,7 +171,7 @@ The sequence diagram below shows how the `find` command arguments are transforme
 The parsing flow is as follows:
 * `LogicManager` calls `AddressBookParser#parseCommand()`, which instantiates a `FindCommandParser` for the `find` command.
 * If the user provides an `m/` prefix, `FindMatchType.fromToken()` is used to determine the match type before `ParsedFindArgs` is created; otherwise the default match type (i.e. keyword match type) is assumed when building `ParsedFindArgs`.
-* `FindMatchType.createPredicate(...)` creates a concrete, match-type-specific `PersonPredicate`.
+* `FindMatchType.createPredicate(...)` returns a `PersonContainsFieldsPredicate` reference to the concrete predicate object for the selected match type.
 * `FindCommandParser` constructs the `FindCommand` with the predicate and returns it to `AddressBookParser`, which returns it to `LogicManager`.
 
 #### Predicate structure
@@ -179,6 +179,7 @@ The parsing flow is as follows:
 All find predicates implement `PersonPredicate`, which is a `Predicate<Person>`. The current implementation provides a shared abstract base class (`PersonContainsFieldsPredicate`) that:
 
 * iterates through each keyword
+* returns `true` as soon as any keyword matches any supported field (i.e. `OR` semantics across keywords)
 * checks the keyword against most `Person` fields (e.g. name, phone, email, address, role, notes, tags)
 * delegates the actual field-matching logic to `matchesField(...)`
 
@@ -188,7 +189,7 @@ Concrete predicate classes will implement the `matchesField(...)` method, keepin
 
 To add a new match type or predicate in the future:
 
-* implement a new `PersonPredicate` (or extend `PersonContainsFieldsPredicate` if it fits the same "match across most fields" pattern)
+* implement a new subclass of `PersonContainsFieldsPredicate`
 * add a new enum value and token in `FindMatchType` that returns the new predicate from `createPredicate(...)`
 * update any docs that mention match types (the parser logic does not need to change if the match type continues to be provided via `m/`)
 

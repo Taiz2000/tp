@@ -19,7 +19,7 @@ Class PersonContainsFuzzyKeywordsPredicate #MODEL_COLOR
 }
 
 FindCommandParser ..> FindMatchType
-FindMatchType ..> PersonPredicate
+FindMatchType ..> PersonContainsFieldsPredicate
 FindCommandParser ..> FindCommand
 FindCommand --> PersonPredicate
 

@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import seedu.address.model.person.predicates.PersonContainsFieldsPredicate;
 import seedu.address.model.person.predicates.PersonContainsFuzzyKeywordsPredicate;
 import seedu.address.model.person.predicates.PersonContainsKeywordsPredicate;
 import seedu.address.model.person.predicates.PersonContainsSubstringsPredicate;
-import seedu.address.model.person.predicates.PersonPredicate;
 
 /**
  * Supported match types for the find command.
@@ -27,9 +27,9 @@ public enum FindMatchType {
     }
 
     /**
-     * Returns a {@code PersonPredicate} for this match type and the given keywords.
+     * Returns a {@code PersonContainsFieldsPredicate} for this match type and the given keywords.
      */
-    public PersonPredicate createPredicate(List<String> keywords) {
+    public PersonContainsFieldsPredicate createPredicate(List<String> keywords) {
         if (this == KEYWORD) {
             return new PersonContainsKeywordsPredicate(keywords);
         } else if (this == SUBSTRING) {

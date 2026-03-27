@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.predicates.PersonPredicate;
+import seedu.address.model.person.predicates.PersonContainsFieldsPredicate;
 
 /**
  * Parses input arguments and creates a new FindCommand object
@@ -30,7 +30,7 @@ public class FindCommandParser implements Parser<FindCommand> {
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
         }
 
-        PersonPredicate predicate = parsedFindArgs.matchType().createPredicate(parsedFindArgs.keywords());
+        PersonContainsFieldsPredicate predicate = parsedFindArgs.matchType().createPredicate(parsedFindArgs.keywords());
         return new FindCommand(predicate);
     }
 
