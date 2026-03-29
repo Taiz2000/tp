@@ -201,6 +201,7 @@ Format: `delete INDEX [MORE_INDICES]`
 * Deletes the person at the specified indices.
 * Indices refer to index numbers shown in the displayed person list.
 * Indices **must be positive integers** 1, 2, 3, …​
+* Deleted persons will be added to the recycle bin.
 
 Examples:
 * `list` followed by `delete 2 3` deletes the 2nd and 3rd persons in RosterBolt.
@@ -211,6 +212,8 @@ Examples:
 Clears all entries from RosterBolt.
 
 Format: `clear`
+
+* Deleted persons will be added to the recycle bin.
 
 ### Exiting the program : `exit`
 
