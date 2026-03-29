@@ -115,18 +115,14 @@ public class AddressBook implements ReadOnlyAddressBook {
     public void deletePerson(Person key) {
         assert hasKeptPerson(key) : "Person to delete is not in the list of kept persons";
         keptPersons.remove(key);
-
-        if (!hasDeletedPerson(key)) {
-            deletedPersons.add(key);
-        }
+        deletedPersons.add(key);
     }
 
     /**
      * Adds a person directly to the list of deleted persons in the address book.
-     * The person must not already exist in the list of deleted persons.
+     * If the person already exists in the list of deleted persons, it will not be added again.
      */
     public void addDeletedPerson(Person p) {
-        assert !hasDeletedPerson(p) : "Person is already in the list of deleted persons";
         deletedPersons.add(p);
     }
 
@@ -136,11 +132,9 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void deleteAllPersons() {
         for (Person person : keptPersons) {
-            if (!hasDeletedPerson(person)) {
-                deletedPersons.add(person);
-            }
+            addDeletedPerson(person);
         }
-        keptPersons.setPersons(new UniquePersonList());
+        setKeptPersons(List.of());
     }
 
     //// util methods
