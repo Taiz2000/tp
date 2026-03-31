@@ -31,7 +31,7 @@ public class CommandResult {
     public CommandResult(String feedbackToUser, ListToShow listToShow, boolean shouldShowHelp, boolean shouldExit,
             String commandTextToPopulate) {
         this.feedbackToUser = requireNonNull(feedbackToUser);
-        this.listToShow = listToShow;
+        this.listToShow = requireNonNull(listToShow);
         this.shouldShowHelp = shouldShowHelp;
         this.shouldExit = shouldExit;
         this.commandTextToPopulate = commandTextToPopulate;
