@@ -31,12 +31,9 @@ public final class StatisticsGeneratorFactory {
      */
     public StatisticsGenerator create(StatisticsCategory category) {
         requireNonNull(category);
-        if (category == StatisticsCategory.ROLE) {
-            return new RoleStatisticsGenerator(barChart);
-        } else if (category == StatisticsCategory.RECORD) {
-            return new RecordStatisticsGenerator(barChart);
-        } else {
-            throw new IllegalStateException("Unsupported statistics category: " + category);
-        }
+        return switch (category) {
+            case ROLE -> new RoleStatisticsGenerator(barChart);
+            case RECORD -> new RecordStatisticsGenerator(barChart);
+        };
     }
 }

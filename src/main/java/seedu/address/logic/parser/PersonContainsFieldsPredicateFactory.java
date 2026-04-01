@@ -20,13 +20,10 @@ public final class PersonContainsFieldsPredicateFactory {
      * Returns a {@code PersonContainsFieldsPredicate} for the given match type and keywords.
      */
     public static PersonContainsFieldsPredicate createPredicate(FindMatchType matchType, List<String> keywords) {
-        if (matchType == FindMatchType.KEYWORD) {
-            return new PersonContainsKeywordsPredicate(keywords);
-        } else if (matchType == FindMatchType.SUBSTRING) {
-            return new PersonContainsSubstringsPredicate(keywords);
-        } else if (matchType == FindMatchType.FUZZY) {
-            return new PersonContainsFuzzyKeywordsPredicate(keywords);
-        }
-        throw new IllegalStateException("Unsupported FindMatchType: " + matchType);
+        return switch (matchType) {
+            case KEYWORD -> new PersonContainsKeywordsPredicate(keywords);
+            case SUBSTRING -> new PersonContainsSubstringsPredicate(keywords);
+            case FUZZY -> new PersonContainsFuzzyKeywordsPredicate(keywords);
+        };
     }
 }
