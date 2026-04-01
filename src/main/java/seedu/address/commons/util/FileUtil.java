@@ -1,17 +1,19 @@
 package seedu.address.commons.util;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Writes and reads files
+ * Writes and reads files.
  */
 public class FileUtil {
 
-    private static final String CHARSET = "UTF-8";
+    private static final Charset CHARSET = StandardCharsets.UTF_8;
 
     public static boolean isFileExists(Path file) {
         return Files.exists(file) && Files.isRegularFile(file);
@@ -69,7 +71,7 @@ public class FileUtil {
      * Assumes file exists
      */
     public static String readFromFile(Path file) throws IOException {
-        return new String(Files.readAllBytes(file), CHARSET);
+        return Files.readString(file, CHARSET);
     }
 
     /**
@@ -77,7 +79,7 @@ public class FileUtil {
      * Will create the file if it does not exist yet.
      */
     public static void writeToFile(Path file, String content) throws IOException {
-        Files.write(file, content.getBytes(CHARSET));
+        Files.writeString(file, content, CHARSET);
     }
 
 }
