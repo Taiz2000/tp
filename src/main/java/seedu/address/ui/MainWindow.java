@@ -179,7 +179,7 @@ public class MainWindow extends UiPart<Stage> {
             logger.info("Result: " + commandResult.getFeedbackToUser());
             resultDisplay.setFeedbackToUser(commandResult.getFeedbackToUser());
 
-            personListView = commandResult.getListToShow();
+            personListView = commandResult.getPersonListView();
             updatePersonListPanel();
 
             if (commandResult.shouldShowHelp()) {

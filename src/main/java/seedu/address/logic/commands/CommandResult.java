@@ -62,7 +62,7 @@ public class CommandResult {
         return feedbackToUser;
     }
 
-    public PersonListView getListToShow() {
+    public PersonListView getPersonListView() {
         return personListView;
     }
 
