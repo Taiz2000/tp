@@ -14,7 +14,7 @@ public class ExitCommand extends Command {
 
     @Override
     public CommandResult execute(Model model) {
-        return new CommandResult(MESSAGE_EXIT_ACKNOWLEDGEMENT, PersonListView.SAME_AS_PREVIOUS, false, true);
+        return new CommandResult(MESSAGE_EXIT_ACKNOWLEDGEMENT, PersonListView.KEPT_PERSONS, false, true);
     }
 
 }

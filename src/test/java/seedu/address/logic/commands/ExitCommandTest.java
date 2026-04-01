@@ -16,7 +16,7 @@ public class ExitCommandTest {
     @Test
     public void execute_exit_success() {
         CommandResult expectedCommandResult = new CommandResult(
-                MESSAGE_EXIT_ACKNOWLEDGEMENT, PersonListView.SAME_AS_PREVIOUS, false, true);
+                MESSAGE_EXIT_ACKNOWLEDGEMENT, PersonListView.KEPT_PERSONS, false, true);
         assertCommandSuccess(new ExitCommand(), model, expectedCommandResult, expectedModel);
     }
 }

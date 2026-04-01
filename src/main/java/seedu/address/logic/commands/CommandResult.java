@@ -55,7 +55,7 @@ public class CommandResult {
      * and other fields set to their default value.
      */
     public CommandResult(String feedbackToUser) {
-        this(feedbackToUser, PersonListView.SAME_AS_PREVIOUS);
+        this(feedbackToUser, PersonListView.KEPT_PERSONS);
     }
 
     public String getFeedbackToUser() {
