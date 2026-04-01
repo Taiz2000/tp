@@ -16,7 +16,7 @@ public enum FindMatchType {
     public static final String FUZZY_TOKEN = FUZZY.token;
 
     private final String token;
-    
+
     FindMatchType(String token) {
         this.token = token;
     }
