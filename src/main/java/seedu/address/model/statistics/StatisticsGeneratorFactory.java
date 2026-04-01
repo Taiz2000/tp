@@ -31,9 +31,12 @@ public final class StatisticsGeneratorFactory {
      */
     public StatisticsGenerator create(StatisticsCategory category) {
         requireNonNull(category);
+        // Indented case blocks in lambda-style switch statements are allowed
+        // CHECKSTYLE.OFF: Indentation
         return switch (category) {
-            case ROLE -> new RoleStatisticsGenerator(barChart);
-            case RECORD -> new RecordStatisticsGenerator(barChart);
+        case ROLE -> new RoleStatisticsGenerator(barChart);
+        case RECORD -> new RecordStatisticsGenerator(barChart);
         };
+        // CHECKSTYLE.ON: Indentation
     }
 }
