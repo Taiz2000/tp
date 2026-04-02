@@ -84,10 +84,12 @@ public class AliasCommandTest {
     public void isAllowedAliasTarget() {
         assertTrue(AliasCommand.isAllowedAliasTarget("list"));
         assertTrue(AliasCommand.isAllowedAliasTarget("clear"));
+        assertTrue(AliasCommand.isAllowedAliasTarget(BinCommand.COMMAND_WORD));
+        assertTrue(AliasCommand.isAllowedAliasTarget(StatsCommand.COMMAND_WORD));
         assertFalse(AliasCommand.isAllowedAliasTarget(AliasCommand.COMMAND_WORD));
         assertFalse(AliasCommand.isAllowedAliasTarget(AliasesCommand.COMMAND_WORD));
         assertFalse(AliasCommand.isAllowedAliasTarget(UnaliasCommand.COMMAND_WORD));
-        assertFalse(AliasCommand.isAllowedAliasTarget(CommandWords.EDIT_PREVIOUS_COMMAND_WORD));
+        assertFalse(AliasCommand.isAllowedAliasTarget(EditPreviousCommand.COMMAND_WORD));
     }
 
     @Test

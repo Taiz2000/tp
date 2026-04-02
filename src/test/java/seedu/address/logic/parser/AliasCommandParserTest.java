@@ -21,6 +21,8 @@ public class AliasCommandParserTest {
     @Test
     public void parse_validArgs_success() {
         assertParseSuccess(parser, "ls list", new AliasCommand("ls", "list"));
+        assertParseSuccess(parser, "rb bin", new AliasCommand("rb", "bin"));
+        assertParseSuccess(parser, "st stats", new AliasCommand("st", "stats"));
     }
 
     @Test
@@ -37,6 +39,8 @@ public class AliasCommandParserTest {
     @Test
     public void parse_reservedAliasName_failure() {
         assertParseFailure(parser, "list help", AliasCommand.MESSAGE_RESERVED_ALIAS_NAME);
+        assertParseFailure(parser, "bin help", AliasCommand.MESSAGE_RESERVED_ALIAS_NAME);
+        assertParseFailure(parser, "stats help", AliasCommand.MESSAGE_RESERVED_ALIAS_NAME);
         assertParseFailure(parser, "editprev help", AliasCommand.MESSAGE_RESERVED_ALIAS_NAME);
     }
 
