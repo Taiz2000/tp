@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
@@ -236,12 +235,6 @@ public class ExportCommandTest {
         @Override
         public void deleteAllPersons() {
             fail("This method should not be called.");
-        }
-
-        @Override
-        public Optional<Person> findDuplicatePerson(Person person) {
-            fail("This method should not be called.");
-            return Optional.empty();
         }
 
         @Override

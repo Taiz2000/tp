@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -165,14 +164,6 @@ public class ModelManager implements Model {
     @Override
     public ObservableList<Person> getFilteredDeletedPersonList() {
         return filteredDeletedPersons;
-    }
-
-    @Override
-    public Optional<Person> findDuplicatePerson(Person person) {
-        requireNonNull(person);
-        return addressBook.getKeptPersonList().stream()
-                .filter(existingPerson -> existingPerson.isSamePerson(person))
-                .findFirst();
     }
 
     @Override

@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.csv.CsvImportFileResult;
@@ -64,7 +63,7 @@ public class ImportCommand extends Command {
         for (CsvImportRowSuccess successRow : result.getValidRows()) {
             Person person = successRow.getPerson();
 
-            if (findDuplicatePerson(model, personsImportedThisRun, person) != null) {
+            if (hasDuplicatePerson(model, personsImportedThisRun, person)) {
                 duplicateRows.add(new CsvImportRowError(
                         successRow.getRowNumber(),
                         "duplicate"));
@@ -78,21 +77,11 @@ public class ImportCommand extends Command {
         return new CommandResult(buildSummaryMessage(importedCount, duplicateRows, invalidRows));
     }
 
-    private Person findDuplicatePerson(Model model, List<Person> personsImportedThisRun, Person person) {
-        Optional<Person> duplicateFromCurrentImport = personsImportedThisRun.stream()
-                .filter(importedPerson -> importedPerson.isSamePerson(person))
-                .findFirst();
-        if (duplicateFromCurrentImport.isPresent()) {
-            return duplicateFromCurrentImport.get();
-        }
-
-        Optional<Person> duplicateFromAddressBook = model.findDuplicatePerson(person);
-        if (duplicateFromAddressBook.isPresent()) {
-            return duplicateFromAddressBook.get();
-        }
-
-        return null;
+    private boolean hasDuplicatePerson(Model model, List<Person> personsImportedThisRun, Person person) {
+        return model.hasPerson(person)
+                || personsImportedThisRun.stream().anyMatch(importedPerson -> importedPerson.isSamePerson(person));
     }
+
     private String buildSummaryMessage(int importedCount,
                                        List<CsvImportRowError> duplicateRows,
                                        List<CsvImportRowError> invalidRows) {
