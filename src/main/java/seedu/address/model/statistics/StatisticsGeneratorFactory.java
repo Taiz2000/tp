@@ -34,7 +34,7 @@ public final class StatisticsGeneratorFactory {
         // Indented case blocks in lambda-style switch statements are allowed
         // CHECKSTYLE.OFF: Indentation
         return switch (category) {
-        case ROLE -> new RoleStatisticsGenerator(barChart);
+            case ROLE -> new RoleStatisticsGenerator(barChart);
         case RECORD -> new RecordStatisticsGenerator(barChart);
         };
         // CHECKSTYLE.ON: Indentation

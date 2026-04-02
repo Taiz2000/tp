@@ -23,9 +23,9 @@ public final class PersonContainsFieldsPredicateFactory {
         // Indented case blocks in lambda-style switch statements are allowed
         // CHECKSTYLE.OFF: Indentation
         return switch (matchType) {
-        case KEYWORD -> new PersonContainsKeywordsPredicate(keywords);
-        case SUBSTRING -> new PersonContainsSubstringsPredicate(keywords);
-        case FUZZY -> new PersonContainsFuzzyKeywordsPredicate(keywords);
+            case KEYWORD -> new PersonContainsKeywordsPredicate(keywords);
+            case SUBSTRING -> new PersonContainsSubstringsPredicate(keywords);
+            case FUZZY -> new PersonContainsFuzzyKeywordsPredicate(keywords);
         };
         // CHECKSTYLE.ON: Indentation
     }
