@@ -56,8 +56,11 @@ public class CommandResult {
     /**
      * Constructs a {@code CommandResult} with the specified {@code feedbackToUser},
      * and other fields set to their default value.
+     *
+     * @deprecated Use {@link #CommandResult(String, PersonListView)} instead, which specifies
+     *         the personListView of the result.
      */
-    public CommandResult(String feedbackToUser) {
+    @Deprecated public CommandResult(String feedbackToUser) {
         this(feedbackToUser, PersonListView.KEPT_PERSONS);
     }
 
