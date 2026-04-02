@@ -179,12 +179,12 @@ Format: `find [m/MATCH_TYPE] [va/DAY,HH:mm,HH:mm] [KEYWORD [MORE_KEYWORDS]]`
 * `m/kw` matches full words only. e.g. `Han` will not match `Hans`
 * `m/ss` matches substrings. e.g. `Han` will match `Hans`
 * `m/fz` allows small spelling mistakes. Words that are up to 2 simple edits away (in terms of adding, removing, or changing a letter) can still match. e.g. `michigan` will match `michegan`
+* `va/DAY,HH:mm,HH:mm` filters for volunteers whose availability **fully covers** the specified time period. `DAY` is a full day name (e.g., `MONDAY`), and start time must be before end time.
+* When both keywords and `va/` are provided, only persons matching **both** the keyword search **and** the availability filter are returned.
 * Persons matching at least one keyword will be returned (i.e. `OR` search).
   e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
 * `MATCH_TYPE` is optional. When omitted, keyword matching is used.
 * Currently supported `MATCH_TYPE`: `kw`, `ss`, `fz`.
-* `va/DAY,HH:mm,HH:mm` filters for volunteers whose availability **fully covers** the specified time period. `DAY` is a full day name (e.g., `MONDAY`), and start time must be before end time.
-* When both keywords and `va/` are provided, only persons matching **both** the keyword search **and** the availability filter are returned.
 * At least one of keywords or `va/` must be provided.
 * If `m/MATCH_TYPE` is specified, at least one keyword must also be provided.
 

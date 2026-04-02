@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.model.person.VolunteerAvailability;
-import seedu.address.model.person.predicates.CombinedPersonPredicate;
+import seedu.address.model.person.predicates.CombinedAndPersonPredicate;
 import seedu.address.model.person.predicates.PersonAvailableDuringPredicate;
 import seedu.address.model.person.predicates.PersonContainsFuzzyKeywordsPredicate;
 import seedu.address.model.person.predicates.PersonContainsKeywordsPredicate;
@@ -95,7 +95,7 @@ public class FindCommandParserTest {
         PersonContainsKeywordsPredicate textPredicate =
                 new PersonContainsKeywordsPredicate(Arrays.asList("Alice"));
         FindCommand expectedCommand = new FindCommand(
-                new CombinedPersonPredicate(List.of(textPredicate, availPredicate)));
+                new CombinedAndPersonPredicate(List.of(textPredicate, availPredicate)));
         assertParseSuccess(parser, PREFIX_AVAILABILITY + "MONDAY,14:00,17:00 Alice", expectedCommand);
     }
 
@@ -106,7 +106,7 @@ public class FindCommandParserTest {
         PersonContainsKeywordsPredicate textPredicate =
                 new PersonContainsKeywordsPredicate(Arrays.asList("Bob", "Charlie"));
         FindCommand expectedCommand = new FindCommand(
-                new CombinedPersonPredicate(List.of(textPredicate, availPredicate)));
+                new CombinedAndPersonPredicate(List.of(textPredicate, availPredicate)));
         assertParseSuccess(parser, PREFIX_MATCH_TYPE + KEYWORD_TOKEN + " "
                 + PREFIX_AVAILABILITY + "TUESDAY,09:00,12:00 Bob Charlie", expectedCommand);
     }
@@ -118,7 +118,7 @@ public class FindCommandParserTest {
         PersonContainsSubstringsPredicate textPredicate =
                 new PersonContainsSubstringsPredicate(Arrays.asList("ali"));
         FindCommand expectedCommand = new FindCommand(
-                new CombinedPersonPredicate(List.of(textPredicate, availPredicate)));
+                new CombinedAndPersonPredicate(List.of(textPredicate, availPredicate)));
         assertParseSuccess(parser, PREFIX_MATCH_TYPE + SUBSTRING_TOKEN + " "
                 + PREFIX_AVAILABILITY + "WEDNESDAY,10:00,15:00 ali", expectedCommand);
     }
@@ -130,7 +130,7 @@ public class FindCommandParserTest {
         PersonContainsFuzzyKeywordsPredicate textPredicate =
                 new PersonContainsFuzzyKeywordsPredicate(Arrays.asList("meyr"));
         FindCommand expectedCommand = new FindCommand(
-                new CombinedPersonPredicate(List.of(textPredicate, availPredicate)));
+                new CombinedAndPersonPredicate(List.of(textPredicate, availPredicate)));
         assertParseSuccess(parser, PREFIX_MATCH_TYPE + FUZZY_TOKEN + " "
                 + PREFIX_AVAILABILITY + "FRIDAY,08:00,12:00 meyr", expectedCommand);
     }
@@ -155,6 +155,18 @@ public class FindCommandParserTest {
 
         // Empty availability value
         assertParseFailure(parser, " " + PREFIX_AVAILABILITY,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+
+        // Invalid time format
+        assertParseFailure(parser, " " + PREFIX_AVAILABILITY + "MONDAY,25:00,17:00",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+
+        // Missing end time
+        assertParseFailure(parser, " " + PREFIX_AVAILABILITY + "MONDAY,14:00",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+
+        // Non-time garbage
+        assertParseFailure(parser, " " + PREFIX_AVAILABILITY + "MONDAY,abc,def",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
     }
 

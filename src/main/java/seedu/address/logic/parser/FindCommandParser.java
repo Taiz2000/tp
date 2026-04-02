@@ -10,7 +10,7 @@ import java.util.Optional;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.VolunteerAvailability;
-import seedu.address.model.person.predicates.CombinedPersonPredicate;
+import seedu.address.model.person.predicates.CombinedAndPersonPredicate;
 import seedu.address.model.person.predicates.PersonAvailableDuringPredicate;
 import seedu.address.model.person.predicates.PersonContainsFieldsPredicate;
 import seedu.address.model.person.predicates.PersonPredicate;
@@ -188,7 +188,7 @@ public class FindCommandParser implements Parser<FindCommand> {
                             parsed.matchType(), parsed.keywords());
             PersonAvailableDuringPredicate availPredicate =
                     new PersonAvailableDuringPredicate(parsed.availability().get());
-            return new CombinedPersonPredicate(List.of(textPredicate, availPredicate));
+            return new CombinedAndPersonPredicate(List.of(textPredicate, availPredicate));
         }
 
         if (hasAvailability) {

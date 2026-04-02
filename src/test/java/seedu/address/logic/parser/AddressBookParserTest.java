@@ -113,6 +113,12 @@ public class AddressBookParserTest {
     }
 
     @Test
+    public void parseCommand_findWithAvailabilityAndKeywords() throws Exception {
+        assertTrue(parser.parseCommand(
+                FindCommand.COMMAND_WORD + " va/MONDAY,14:00,17:00 alice") instanceof FindCommand);
+    }
+
+    @Test
     public void parseCommand_find() throws Exception {
         List<String> keywords = Arrays.asList("foo", "bar", "baz");
         FindCommand defaultCommand = (FindCommand) parser.parseCommand(
