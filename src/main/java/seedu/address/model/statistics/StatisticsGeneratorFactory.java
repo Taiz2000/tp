@@ -35,7 +35,7 @@ public final class StatisticsGeneratorFactory {
         // CHECKSTYLE.OFF: Indentation
         return switch (category) {
             case ROLE -> new RoleStatisticsGenerator(barChart);
-        case RECORD -> new RecordStatisticsGenerator(barChart);
+            case RECORD -> new RecordStatisticsGenerator(barChart);
         };
         // CHECKSTYLE.ON: Indentation
     }
