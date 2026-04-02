@@ -7,11 +7,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import seedu.address.commons.util.CsvImportFileResult;
-import seedu.address.commons.util.CsvImportRowError;
-import seedu.address.commons.util.CsvImportRowSuccess;
-import seedu.address.commons.util.CsvReaderUtil;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.logic.csv.CsvImportFileResult;
+import seedu.address.logic.csv.CsvImportRowError;
+import seedu.address.logic.csv.CsvImportRowSuccess;
+import seedu.address.logic.csv.CsvReaderUtil;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
 

@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import seedu.address.commons.util.CsvWriterUtil;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.logic.csv.CsvWriterUtil;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
 
