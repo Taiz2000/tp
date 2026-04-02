@@ -9,6 +9,11 @@ import seedu.address.model.Model;
  */
 public abstract class Command {
 
+    public static final String MESSAGE_NOT_VIEWING_KEPT_PERSONS =
+            "You must be viewing the working list of kept contacts to perform this command.";
+    public static final String MESSAGE_NOT_VIEWING_DELETED_PERSONS =
+            "You must be viewing the recycle bin of recently deleted contacts to perform this command.";
+
     /**
      * Executes the command and returns the result message.
      *
@@ -29,6 +34,28 @@ public abstract class Command {
      */
     @Deprecated public CommandResult execute(Model model) throws CommandException {
         return execute(model, PersonListView.KEPT_PERSONS);
+    }
+
+    /**
+     * Checks if the user is currently viewing the kept persons list.
+     *
+     * @throws CommandException If the user is not viewing the kept persons list.
+     */
+    protected static void requireViewingKeptPersons(PersonListView personListView) throws CommandException {
+        if (personListView != PersonListView.KEPT_PERSONS) {
+            throw new CommandException(MESSAGE_NOT_VIEWING_KEPT_PERSONS);
+        }
+    }
+
+    /**
+     * Checks if the user is currently viewing the deleted persons list.
+     *
+     * @throws CommandException If the user is not viewing the deleted persons list.
+     */
+    protected static void requireViewingDeletedPersons(PersonListView personListView) throws CommandException {
+        if (personListView != PersonListView.DELETED_PERSONS) {
+            throw new CommandException(MESSAGE_NOT_VIEWING_DELETED_PERSONS);
+        }
     }
 
 }
