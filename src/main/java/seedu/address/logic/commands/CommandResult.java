@@ -46,6 +46,9 @@ public class CommandResult {
         this(feedbackToUser, personListView, shouldShowHelp, shouldExit, null);
     }
 
+    /**
+     * Constructs a {@code CommandResult} with the specified fields.
+     */
     public CommandResult(String feedbackToUser, PersonListView personListView) {
         this(feedbackToUser, personListView, false, false);
     }
