@@ -15,6 +15,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.logic.PersonListView;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
@@ -37,6 +38,7 @@ public class ExportCommandTest {
 
         assertEquals(String.format(ExportCommand.MESSAGE_SUCCESS, 0, outputFile),
                 result.getFeedbackToUser());
+        assertEquals(PersonListView.KEPT_PERSONS, result.getPersonListView());
 
         assertTrue(Files.exists(outputFile));
         String content = Files.readString(outputFile);
@@ -76,6 +78,7 @@ public class ExportCommandTest {
 
         assertEquals(String.format(ExportCommand.MESSAGE_SUCCESS, 2, outputFile),
                 result.getFeedbackToUser());
+        assertEquals(PersonListView.KEPT_PERSONS, result.getPersonListView());
 
         assertTrue(Files.exists(outputFile));
 
@@ -115,6 +118,7 @@ public class ExportCommandTest {
 
         assertEquals(String.format(ExportCommand.MESSAGE_SUCCESS, 1, outputFile),
                 result.getFeedbackToUser());
+        assertEquals(PersonListView.KEPT_PERSONS, result.getPersonListView());
 
         String content = Files.readString(outputFile);
         assertTrue(content.contains("name,phone,email,address,role,notes,tags,availabilities,records"));

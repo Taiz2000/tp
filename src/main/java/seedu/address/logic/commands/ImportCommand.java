@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.logic.PersonListView;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.csv.CsvImportFileResult;
 import seedu.address.logic.csv.CsvImportRowError;
@@ -75,7 +76,9 @@ public class ImportCommand extends Command {
             }
         }
 
-        return new CommandResult(buildSummaryMessage(importedCount, duplicateRows, invalidRows));
+        return new CommandResult(
+                buildSummaryMessage(importedCount, duplicateRows, invalidRows),
+                PersonListView.KEPT_PERSONS);
     }
 
     private boolean hasDuplicatePerson(Model model, List<Person> personsImportedThisRun, Person person) {

@@ -17,6 +17,7 @@ import org.junit.jupiter.api.io.TempDir;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.logic.PersonListView;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
@@ -46,6 +47,7 @@ public class ImportCommandTest {
         CommandResult result = command.execute(model);
 
         assertEquals("Imported 2 volunteers from " + inputFile + ".", result.getFeedbackToUser());
+        assertEquals(PersonListView.KEPT_PERSONS, result.getPersonListView());
         assertEquals(2, model.personsAdded.size());
     }
 
@@ -70,6 +72,7 @@ public class ImportCommandTest {
                 "Duplicate row details: 3 (duplicate)",
                 "Invalid row details: 4 (missing phone)"), result.getFeedbackToUser());
 
+        assertEquals(PersonListView.KEPT_PERSONS, result.getPersonListView());
         assertEquals(1, model.personsAdded.size());
     }
 
@@ -97,6 +100,7 @@ public class ImportCommandTest {
                 "Imported 1 volunteers from " + inputFile + ".",
                 "Duplicate rows: 1, Invalid rows: 0",
                 "Duplicate row details: 2 (duplicate)"), result.getFeedbackToUser());
+        assertEquals(PersonListView.KEPT_PERSONS, result.getPersonListView());
         assertEquals(1, model.personsAdded.size());
     }
 
