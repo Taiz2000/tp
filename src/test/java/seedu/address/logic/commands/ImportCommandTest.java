@@ -64,7 +64,7 @@ public class ImportCommandTest {
 
         CommandResult result = command.execute(model);
 
-        assertEquals(String.join(System.lineSeparator(),
+        assertEquals(String.join("\n",
                 "Imported 1 volunteers from " + inputFile + ".",
                 "Duplicate rows: 1, Invalid rows: 1",
                 "Duplicate row details: 3 (duplicate)",
@@ -93,7 +93,7 @@ public class ImportCommandTest {
 
         CommandResult result = command.execute(model);
 
-        assertEquals(String.join(System.lineSeparator(),
+        assertEquals(String.join("\n",
                 "Imported 1 volunteers from " + inputFile + ".",
                 "Duplicate rows: 1, Invalid rows: 0",
                 "Duplicate row details: 2 (duplicate)"), result.getFeedbackToUser());

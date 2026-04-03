@@ -90,18 +90,18 @@ public class ImportCommand extends Command {
         sb.append(String.format("Imported %1$d volunteers from %2$s.", importedCount, filePath));
 
         if (!duplicateRows.isEmpty() || !invalidRows.isEmpty()) {
-            sb.append(System.lineSeparator())
+            sb.append("\n")
                     .append("Duplicate rows: ").append(duplicateRows.size())
                     .append(", Invalid rows: ").append(invalidRows.size());
 
             if (!duplicateRows.isEmpty()) {
-                sb.append(System.lineSeparator())
+                sb.append("\n")
                         .append("Duplicate row details: ")
                         .append(formatRowErrors(duplicateRows));
             }
 
             if (!invalidRows.isEmpty()) {
-                sb.append(System.lineSeparator())
+                sb.append("\n")
                         .append("Invalid row details: ")
                         .append(formatRowErrors(invalidRows));
             }
