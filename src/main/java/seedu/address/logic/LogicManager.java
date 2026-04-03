@@ -58,7 +58,7 @@ public class LogicManager implements Logic {
 
         String expandedCommandText = expandAlias(commandText);
         Command command = addressBookParser.parseCommand(expandedCommandText);
-        CommandResult commandResult = command.execute(model);
+        CommandResult commandResult = command.execute(model, personListView);
 
         // EditPreviousCommand preserves the current view instead of switching.
         if (command instanceof EditPreviousCommand) {

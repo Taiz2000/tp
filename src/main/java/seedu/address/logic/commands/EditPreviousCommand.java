@@ -22,7 +22,7 @@ public class EditPreviousCommand extends Command {
     public static final String MESSAGE_SUCCESS = "Loaded previous command for editing: %1$s";
 
     @Override
-    public CommandResult execute(Model model) throws CommandException {
+    public CommandResult execute(Model model, PersonListView personListView) throws CommandException {
         requireNonNull(model);
 
         String lastCommandText = model.getLastCommandText();

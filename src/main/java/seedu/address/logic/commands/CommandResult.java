@@ -46,6 +46,9 @@ public class CommandResult {
         this(feedbackToUser, personListView, shouldShowHelp, shouldExit, null);
     }
 
+    /**
+     * Constructs a {@code CommandResult} with the specified fields.
+     */
     public CommandResult(String feedbackToUser, PersonListView personListView) {
         this(feedbackToUser, personListView, false, false);
     }
@@ -53,7 +56,11 @@ public class CommandResult {
     /**
      * Constructs a {@code CommandResult} with the specified {@code feedbackToUser},
      * and other fields set to their default value.
+     *
+     * @deprecated Use {@link #CommandResult(String, PersonListView)} instead, which specifies
+     *         the personListView of the result.
      */
+    @Deprecated
     public CommandResult(String feedbackToUser) {
         this(feedbackToUser, PersonListView.KEPT_PERSONS);
     }

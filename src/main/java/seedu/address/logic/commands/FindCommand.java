@@ -9,6 +9,7 @@ import static seedu.address.logic.parser.FindMatchType.SUBSTRING_TOKEN;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
+import seedu.address.logic.PersonListView;
 import seedu.address.model.Model;
 import seedu.address.model.person.predicates.PersonPredicate;
 
@@ -41,7 +42,7 @@ public class FindCommand extends Command {
     }
 
     @Override
-    public CommandResult execute(Model model) {
+    public CommandResult execute(Model model, PersonListView personListView) {
         requireNonNull(model);
         model.updateFilteredKeptPersonList(predicate);
         return new CommandResult(

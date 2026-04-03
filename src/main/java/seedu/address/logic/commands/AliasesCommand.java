@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import seedu.address.logic.PersonListView;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 
@@ -21,7 +22,7 @@ public class AliasesCommand extends Command {
     public static final String MESSAGE_ALIASES_HEADER = "Command aliases:";
 
     @Override
-    public CommandResult execute(Model model) throws CommandException {
+    public CommandResult execute(Model model, PersonListView personListView) throws CommandException {
         requireNonNull(model);
 
         Map<String, String> aliases = model.getCommandAliases();

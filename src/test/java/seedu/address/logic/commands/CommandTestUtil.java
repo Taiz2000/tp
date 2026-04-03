@@ -22,6 +22,7 @@ import seedu.address.logic.PersonListView;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
+import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.predicates.PersonContainsKeywordsPredicate;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
@@ -105,7 +106,10 @@ public class CommandTestUtil {
      * Executes the given {@code command}, confirms that <br>
      * - the returned {@link CommandResult} matches {@code expectedCommandResult} <br>
      * - the {@code actualModel} matches {@code expectedModel}
+     *
+     * @deprecated Use {@link #assertCommandSuccess(Command, Model, PersonListView, CommandResult, Model)} instead.
      */
+    @Deprecated
     public static void assertCommandSuccess(Command command, Model actualModel, CommandResult expectedCommandResult,
             Model expectedModel) {
         try {
@@ -118,9 +122,29 @@ public class CommandTestUtil {
     }
 
     /**
+     * Executes the given {@code command} with the specified {@code personListView}, confirms that <br>
+     * - the returned {@link CommandResult} matches {@code expectedCommandResult} <br>
+     * - the {@code actualModel} matches {@code expectedModel}
+     */
+    public static void assertCommandSuccess(Command command, Model actualModel, PersonListView personListView,
+            CommandResult expectedCommandResult, Model expectedModel) {
+        try {
+            CommandResult result = command.execute(actualModel, personListView);
+            assertEquals(expectedCommandResult, result);
+            assertEquals(expectedModel, actualModel);
+        } catch (CommandException ce) {
+            throw new AssertionError("Execution of command should not fail.", ce);
+        }
+    }
+
+    /**
      * Convenience wrapper to {@link #assertCommandSuccess(Command, Model, CommandResult, Model)}
      * that takes a string {@code expectedMessage}.
+     *
+     * @deprecated Use {@link #assertCommandSuccess(Command, Model, PersonListView, String, PersonListView, Model)}
+     *         instead.
      */
+    @Deprecated
     public static void assertCommandSuccess(Command command, Model actualModel, String expectedMessage,
             Model expectedModel) {
         CommandResult expectedCommandResult = new CommandResult(expectedMessage);
@@ -130,11 +154,50 @@ public class CommandTestUtil {
     /**
      * Convenience wrapper to {@link #assertCommandSuccess(Command, Model, CommandResult, Model)}
      * that takes a string {@code expectedMessage} and PersonListView {@code expectedPersonListView}.
+     *
+     * @deprecated Use {@link #assertCommandSuccess(Command, Model, PersonListView, String, PersonListView, Model)}
+     *         instead.
      */
+    @Deprecated
     public static void assertCommandSuccess(Command command, Model actualModel, String expectedMessage,
-                                            PersonListView expectedPersonListView, Model expectedModel) {
+            PersonListView expectedPersonListView, Model expectedModel) {
         CommandResult expectedCommandResult = new CommandResult(expectedMessage, expectedPersonListView);
         assertCommandSuccess(command, actualModel, expectedCommandResult, expectedModel);
+    }
+
+    /**
+     * Convenience wrapper to {@link #assertCommandSuccess(Command, Model, PersonListView, CommandResult, Model)}
+     * that takes a string {@code expectedMessage} and PersonListView {@code expectedPersonListView}.
+     */
+    public static void assertCommandSuccess(Command command, Model actualModel, PersonListView personListView,
+            String expectedMessage, PersonListView expectedPersonListView,
+            Model expectedModel) {
+        CommandResult expectedCommandResult = new CommandResult(expectedMessage, expectedPersonListView);
+        assertCommandSuccess(command, actualModel, personListView, expectedCommandResult, expectedModel);
+    }
+
+    /**
+     * Executes the given {@code command}, confirms that <br>
+     * - a {@code CommandException} is thrown <br>
+     * - the CommandException message matches {@code expectedMessage} <br>
+     * - the address book, filtered person list and selected person in {@code actualModel} remain unchanged
+     *
+     * @deprecated Use {@link #assertCommandFailure(Command, Model, PersonListView, String)} instead.
+     */
+    @Deprecated
+    public static void assertCommandFailure(Command command, Model actualModel, String expectedMessage) {
+        // we are unable to defensively copy the model for comparison later, so we can
+        // only do so by copying its components.
+        AddressBook expectedAddressBook = new AddressBook(actualModel.getAddressBook());
+        UserPrefs expectedUserPrefs = new UserPrefs(actualModel.getUserPrefs());
+        List<Person> expectedFilteredKeptList = new ArrayList<>(actualModel.getFilteredKeptPersonList());
+        List<Person> expectedFilteredDeletedList = new ArrayList<>(actualModel.getFilteredDeletedPersonList());
+
+        assertThrows(CommandException.class, expectedMessage, () -> command.execute(actualModel));
+        assertEquals(expectedAddressBook, actualModel.getAddressBook());
+        assertEquals(expectedUserPrefs, actualModel.getUserPrefs());
+        assertEquals(expectedFilteredKeptList, actualModel.getFilteredKeptPersonList());
+        assertEquals(expectedFilteredDeletedList, actualModel.getFilteredDeletedPersonList());
     }
 
     /**
@@ -143,15 +206,20 @@ public class CommandTestUtil {
      * - the CommandException message matches {@code expectedMessage} <br>
      * - the address book, filtered person list and selected person in {@code actualModel} remain unchanged
      */
-    public static void assertCommandFailure(Command command, Model actualModel, String expectedMessage) {
+    public static void assertCommandFailure(Command command, Model actualModel, PersonListView personListView,
+            String expectedMessage) {
         // we are unable to defensively copy the model for comparison later, so we can
         // only do so by copying its components.
         AddressBook expectedAddressBook = new AddressBook(actualModel.getAddressBook());
-        List<Person> expectedFilteredList = new ArrayList<>(actualModel.getFilteredKeptPersonList());
+        UserPrefs expectedUserPrefs = new UserPrefs(actualModel.getUserPrefs());
+        List<Person> expectedFilteredKeptList = new ArrayList<>(actualModel.getFilteredKeptPersonList());
+        List<Person> expectedFilteredDeletedList = new ArrayList<>(actualModel.getFilteredDeletedPersonList());
 
-        assertThrows(CommandException.class, expectedMessage, () -> command.execute(actualModel));
+        assertThrows(CommandException.class, expectedMessage, () -> command.execute(actualModel, personListView));
         assertEquals(expectedAddressBook, actualModel.getAddressBook());
-        assertEquals(expectedFilteredList, actualModel.getFilteredKeptPersonList());
+        assertEquals(expectedUserPrefs, actualModel.getUserPrefs());
+        assertEquals(expectedFilteredKeptList, actualModel.getFilteredKeptPersonList());
+        assertEquals(expectedFilteredDeletedList, actualModel.getFilteredDeletedPersonList());
     }
 
     /**

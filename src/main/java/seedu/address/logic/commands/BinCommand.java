@@ -16,7 +16,7 @@ public class BinCommand extends Command {
     public static final String MESSAGE_SUCCESS = "Listed all recently deleted contacts in the bin.";
 
     @Override
-    public CommandResult execute(Model model) {
+    public CommandResult execute(Model model, PersonListView personListView) {
         requireNonNull(model);
         model.updateFilteredKeptPersonList(PREDICATE_SHOW_ALL_PERSONS);
         return new CommandResult(MESSAGE_SUCCESS, PersonListView.DELETED_PERSONS, false, false);

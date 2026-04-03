@@ -5,6 +5,7 @@ import static seedu.address.model.statistics.StatisticsCategory.RECORD_TOKEN;
 import static seedu.address.model.statistics.StatisticsCategory.ROLE_TOKEN;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.logic.PersonListView;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.statistics.StatisticsCategory;
@@ -48,11 +49,12 @@ public class StatsCommand extends Command {
     }
 
     @Override
-    public CommandResult execute(Model model) throws CommandException {
+    public CommandResult execute(Model model, PersonListView personListView) throws CommandException {
         requireNonNull(model);
+        requireNonNull(personListView);
         StatisticsGenerator generator = generatorFactory.create(category);
         StatisticsReport report = generator.generate(model.getAddressBook().getKeptPersonList());
-        return new CommandResult(report.render());
+        return new CommandResult(report.render(), PersonListView.KEPT_PERSONS);
     }
 
     @Override

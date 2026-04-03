@@ -45,7 +45,7 @@ public class ListCommand extends Command {
     }
 
     @Override
-    public CommandResult execute(Model model) {
+    public CommandResult execute(Model model, PersonListView personListView) {
         requireNonNull(model);
         model.updateFilteredKeptPersonList(PREDICATE_SHOW_ALL_PERSONS);
 

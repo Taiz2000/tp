@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.logic.PersonListView;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.csv.CsvWriterUtil;
 import seedu.address.model.Model;
@@ -40,7 +41,7 @@ public class ExportCommand extends Command {
     }
 
     @Override
-    public CommandResult execute(Model model) throws CommandException {
+    public CommandResult execute(Model model, PersonListView personListView) throws CommandException {
         requireNonNull(model);
 
         List<Person> persons = model.getKeptPersonList();
@@ -51,7 +52,9 @@ public class ExportCommand extends Command {
             throw new CommandException(String.format(MESSAGE_EXPORT_FAILURE, filePath, e.getMessage()));
         }
 
-        return new CommandResult(String.format(MESSAGE_SUCCESS, persons.size(), filePath));
+        return new CommandResult(
+                String.format(MESSAGE_SUCCESS, persons.size(), filePath),
+                PersonListView.KEPT_PERSONS);
     }
 
     @Override
