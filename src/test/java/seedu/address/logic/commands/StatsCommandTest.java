@@ -7,6 +7,7 @@ import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.PersonListView;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -55,7 +56,8 @@ public class StatsCommandTest {
                 "Medic      | ##### 25.0% (1)",
                 "Unassigned | ##### 25.0% (1)");
 
-        assertCommandSuccess(command, model, expected, expectedModel);
+        assertCommandSuccess(command, model, PersonListView.DELETED_PERSONS,
+                expected, PersonListView.KEPT_PERSONS, expectedModel);
     }
 
     @Test

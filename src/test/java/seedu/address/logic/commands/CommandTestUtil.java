@@ -118,6 +118,22 @@ public class CommandTestUtil {
     }
 
     /**
+     * Executes the given {@code command} with the specified {@code personListView}, confirms that <br>
+     * - the returned {@link CommandResult} matches {@code expectedCommandResult} <br>
+     * - the {@code actualModel} matches {@code expectedModel}
+     */
+    public static void assertCommandSuccess(Command command, Model actualModel, PersonListView personListView,
+            CommandResult expectedCommandResult, Model expectedModel) {
+        try {
+            CommandResult result = command.execute(actualModel, personListView);
+            assertEquals(expectedCommandResult, result);
+            assertEquals(expectedModel, actualModel);
+        } catch (CommandException ce) {
+            throw new AssertionError("Execution of command should not fail.", ce);
+        }
+    }
+
+    /**
      * Convenience wrapper to {@link #assertCommandSuccess(Command, Model, CommandResult, Model)}
      * that takes a string {@code expectedMessage}.
      */
@@ -135,6 +151,17 @@ public class CommandTestUtil {
                                             PersonListView expectedPersonListView, Model expectedModel) {
         CommandResult expectedCommandResult = new CommandResult(expectedMessage, expectedPersonListView);
         assertCommandSuccess(command, actualModel, expectedCommandResult, expectedModel);
+    }
+
+    /**
+     * Convenience wrapper to {@link #assertCommandSuccess(Command, Model, PersonListView, CommandResult, Model)}
+     * that takes a string {@code expectedMessage} and PersonListView {@code expectedPersonListView}.
+     */
+    public static void assertCommandSuccess(Command command, Model actualModel, PersonListView personListView,
+                                            String expectedMessage, PersonListView expectedPersonListView,
+                                            Model expectedModel) {
+        CommandResult expectedCommandResult = new CommandResult(expectedMessage, expectedPersonListView);
+        assertCommandSuccess(command, actualModel, personListView, expectedCommandResult, expectedModel);
     }
 
     /**

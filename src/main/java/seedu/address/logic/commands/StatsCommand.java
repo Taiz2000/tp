@@ -51,9 +51,10 @@ public class StatsCommand extends Command {
     @Override
     public CommandResult execute(Model model, PersonListView personListView) throws CommandException {
         requireNonNull(model);
+        requireNonNull(personListView);
         StatisticsGenerator generator = generatorFactory.create(category);
         StatisticsReport report = generator.generate(model.getAddressBook().getKeptPersonList());
-        return new CommandResult(report.render());
+        return new CommandResult(report.render(), PersonListView.KEPT_PERSONS);
     }
 
     @Override
