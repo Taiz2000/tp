@@ -8,7 +8,6 @@ participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
 participant ":FindCommandParser" as FindCommandParser LOGIC_COLOR
 participant "<<class>>\nFindMatchType" as FindMatchTypeClass LOGIC_COLOR
 participant "<<class>>\nVolunteerAvailability" as VolunteerAvailability MODEL_COLOR
-participant "<<class>>\nPersonContainsFieldsPredicateFactory" as PersonContainsFieldsPredicateFactory LOGIC_COLOR
 participant ":ParsedFindArgs" as ParsedFindArgs LOGIC_COLOR
 participant "f:FindCommand" as FindCommand LOGIC_COLOR
 end box
@@ -23,15 +22,15 @@ create FindCommandParser
 AddressBookParser -> FindCommandParser : parse(arguments)
 activate FindCommandParser
 
-FindCommandParser -> FindCommandParser : parseFindArgs(...)
+FindCommandParser -> FindCommandParser : parseArgs(...)
 activate FindCommandParser
-alt m/ prefix provided
+opt m/ prefix provided
     FindCommandParser -> FindMatchTypeClass : fromToken()
     activate FindMatchTypeClass
     FindMatchTypeClass --> FindCommandParser : matchType
     deactivate FindMatchTypeClass
 end
-alt va/ prefix provided
+opt va/ prefix provided
     FindCommandParser -> VolunteerAvailability : fromString()
     activate VolunteerAvailability
     VolunteerAvailability --> FindCommandParser : availability
@@ -47,7 +46,8 @@ deactivate FindCommandParser
 FindCommandParser -> FindCommandParser : buildPredicate(parsed)
 activate FindCommandParser
 note right
-  keywords only → text predicate via factory
+  keywords only → text predicate via
+  PersonContainsFieldsPredicateFactory
   va/ only → PersonAvailableDuringPredicate
   both → CombinedAndPersonPredicate
 end note
