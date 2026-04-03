@@ -14,8 +14,9 @@ import java.util.Objects;
 public class VolunteerAvailability {
 
     public static final String MESSAGE_CONSTRAINTS =
-        "Availability must be in format DAY,HH:mm,HH:mm (e.g. MONDAY,14:00,17:00), "
-                + "and start time must be before end time.";
+        "Availability must be in format DAY,HH:mm,HH:mm (e.g. MONDAY,14:00,17:00). "
+                + "DAY is case-insensitive and must be a full day name. "
+                + "Start time must be before end time.";
 
     public final DayOfWeek dayOfWeek;
     public final LocalTime startTime;

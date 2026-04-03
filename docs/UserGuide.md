@@ -84,7 +84,7 @@ A person can have any number of tags, availabilities, and records (including 0).
 </div>
 
 * A person is considered a duplicate if the phone number matches exactly, or the email matches case-insensitively.
-* `AVAILABILITIES` must be in the format `DAY,HH:mm,HH:mm` (day, start time, end time) where `DAY` is a full uppercase day name (e.g., `MONDAY`) and start time is earlier than end time.
+* `AVAILABILITIES` must be in the format `DAY,HH:mm,HH:mm` (day, start time, end time) where `DAY` is a full day name (case-insensitive, e.g., `MONDAY`, `monday`, or `Monday`) and start time is earlier than end time.
 * `RECORDS` must be in the format `yyyy-MM-ddTHH:mm,yyyy-MM-ddTHH:mm` (start date-time, end date-time) and start date-time must be earlier than end date-time.
 
 Examples:
@@ -160,7 +160,7 @@ Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [r/ROLE] [nt/NOTES]
 * When editing tags, availabilities, or records, existing values of that field will be replaced (i.e. adding is not cumulative).
 * You can remove all the person’s tags, availabilities, or records by typing `t/`, `va/`, or `vr/` without specifying values after the prefix.
 * You can remove a person’s role or notes by typing `r/` or `nt/` without specifying values after the prefix.
-* `AVAILABILITY` format: `DAY,HH:mm,HH:mm` (e.g., `MONDAY,14:00,17:00`).
+* `AVAILABILITY` format: `DAY,HH:mm,HH:mm` where `DAY` is case-insensitive (e.g., `MONDAY,14:00,17:00`).
 * `RECORD` format: `yyyy-MM-ddTHH:mm,yyyy-MM-ddTHH:mm` (e.g., `2026-03-20T14:00,2026-03-20T17:00`).
 
 Examples:
@@ -179,7 +179,7 @@ Format: `find [m/MATCH_TYPE] [va/DAY,HH:mm,HH:mm] [KEYWORD [MORE_KEYWORDS]]`
 * `m/kw` matches full words only. e.g. `Han` will not match `Hans`
 * `m/ss` matches substrings. e.g. `Han` will match `Hans`
 * `m/fz` allows small spelling mistakes. Words that are up to 2 simple edits away (in terms of adding, removing, or changing a letter) can still match. e.g. `michigan` will match `michegan`
-* `va/DAY,HH:mm,HH:mm` filters for volunteers whose availability covers the specified time period, i.e. the volunteer's availability is on the same day, starts at or before the specified start time, and ends at or after the specified end time. `DAY` is a full day name (e.g., `MONDAY`), and start time must be before end time.
+* `va/DAY,HH:mm,HH:mm` filters for volunteers whose availability covers the specified time period, i.e. the volunteer's availability is on the same day, starts at or before the specified start time, and ends at or after the specified end time. `DAY` is a full day name (case-insensitive, e.g., `MONDAY`), and start time must be before end time.
 * At least one of keywords or `va/` must be provided.
 * When both keywords and `va/` are provided, only persons matching **both** the keyword search **and** the availability filter are returned.
 * If `m/MATCH_TYPE` is specified, at least one keyword must also be provided.
