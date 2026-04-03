@@ -100,4 +100,39 @@ public class VolunteerAvailabilityTest {
         assertEquals(new VolunteerAvailability(DayOfWeek.MONDAY, LocalTime.of(14, 0), LocalTime.of(16, 0)),
                 parsed);
     }
+
+    @Test
+    public void isValidAvailability_caseInsensitiveDayName() {
+        // lowercase day name
+        assertTrue(VolunteerAvailability.isValidAvailability("monday,14:00,16:00"));
+
+        // mixed case day name
+        assertTrue(VolunteerAvailability.isValidAvailability("Monday,14:00,16:00"));
+        assertTrue(VolunteerAvailability.isValidAvailability("tUeSdAy,09:00,12:00"));
+
+        // all valid days in lowercase
+        assertTrue(VolunteerAvailability.isValidAvailability("tuesday,14:00,16:00"));
+        assertTrue(VolunteerAvailability.isValidAvailability("wednesday,14:00,16:00"));
+        assertTrue(VolunteerAvailability.isValidAvailability("thursday,14:00,16:00"));
+        assertTrue(VolunteerAvailability.isValidAvailability("friday,14:00,16:00"));
+        assertTrue(VolunteerAvailability.isValidAvailability("saturday,14:00,16:00"));
+        assertTrue(VolunteerAvailability.isValidAvailability("sunday,14:00,16:00"));
+
+        // invalid day name regardless of case
+        assertFalse(VolunteerAvailability.isValidAvailability("notaday,14:00,16:00"));
+        assertFalse(VolunteerAvailability.isValidAvailability("MON,14:00,16:00"));
+    }
+
+    @Test
+    public void fromString_caseInsensitiveDayName_parsesCorrectly() {
+        VolunteerAvailability expected =
+                new VolunteerAvailability(DayOfWeek.MONDAY, LocalTime.of(14, 0), LocalTime.of(16, 0));
+
+        // lowercase
+        assertEquals(expected, VolunteerAvailability.fromString("monday,14:00,16:00"));
+
+        // mixed case
+        assertEquals(expected, VolunteerAvailability.fromString("Monday,14:00,16:00"));
+        assertEquals(expected, VolunteerAvailability.fromString("moNDay,14:00,16:00"));
+    }
 }
