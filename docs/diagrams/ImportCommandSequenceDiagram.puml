@@ -1,0 +1,110 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":ImportCommandParser" as ImportCommandParser LOGIC_COLOR
+participant "cmd:ImportCommand" as ImportCommand LOGIC_COLOR
+participant "<<class>>\nCsvReaderUtil" as CsvReaderUtil LOGIC_COLOR
+participant "result:CsvImportFileResult" as CsvImportFileResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant "m:Model" as Model MODEL_COLOR
+end box
+
+[-> LogicManager : execute("import FILE_PATH")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("import FILE_PATH")
+activate AddressBookParser
+
+create ImportCommandParser
+AddressBookParser -> ImportCommandParser : parse(arguments)
+activate ImportCommandParser
+
+create ImportCommand
+ImportCommandParser -> ImportCommand : ImportCommand(filePath)
+activate ImportCommand
+ImportCommand --> ImportCommandParser : cmd
+deactivate ImportCommand
+
+ImportCommandParser --> AddressBookParser : cmd
+deactivate ImportCommandParser
+destroy ImportCommandParser
+
+AddressBookParser --> LogicManager : cmd
+deactivate AddressBookParser
+
+LogicManager -> ImportCommand : execute(model)
+activate ImportCommand
+
+ImportCommand -> CsvReaderUtil : readPersons(filePath)
+activate CsvReaderUtil
+
+loop for each non-blank CSV row
+    CsvReaderUtil -> CsvReaderUtil : parse row
+    activate CsvReaderUtil
+    deactivate CsvReaderUtil
+end
+
+create CsvImportFileResult
+CsvReaderUtil -> CsvImportFileResult : CsvImportFileResult(validRows, invalidRows)
+activate CsvImportFileResult
+CsvImportFileResult --> CsvReaderUtil : result
+deactivate CsvImportFileResult
+
+CsvReaderUtil --> ImportCommand : result
+deactivate CsvReaderUtil
+
+ImportCommand -> CsvImportFileResult : getInvalidRows()
+activate CsvImportFileResult
+CsvImportFileResult --> ImportCommand : invalidRows
+deactivate CsvImportFileResult
+
+ImportCommand -> CsvImportFileResult : getValidRows()
+activate CsvImportFileResult
+CsvImportFileResult --> ImportCommand : validRows
+deactivate CsvImportFileResult
+
+loop for each valid row
+    ImportCommand -> ImportCommand : hasDuplicatePerson(...)
+    activate ImportCommand
+
+    ImportCommand -> Model : hasPerson(person)
+    activate Model
+    Model --> ImportCommand : true / false
+    deactivate Model
+
+    ImportCommand --> ImportCommand : duplicate / not duplicate
+    deactivate ImportCommand
+
+    alt duplicate
+        ImportCommand -> ImportCommand : record duplicate row
+        activate ImportCommand
+        deactivate ImportCommand
+    else not duplicate
+        ImportCommand -> Model : addPerson(person)
+        activate Model
+        Model --> ImportCommand
+        deactivate Model
+
+        ImportCommand -> ImportCommand : add to personsImportedThisRun\nincrement importedCount
+        activate ImportCommand
+        deactivate ImportCommand
+    end
+end
+
+ImportCommand -> ImportCommand : buildSummaryMessage(...)
+activate ImportCommand
+ImportCommand --> ImportCommand : summary
+deactivate ImportCommand
+
+ImportCommand --> LogicManager : CommandResult
+deactivate ImportCommand
+
+[<-- LogicManager
+deactivate LogicManager
+@enduml

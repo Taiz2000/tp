@@ -303,6 +303,46 @@ _{more aspects and alternatives to be added}_
 
 _{Explain here how the data archiving feature will be implemented}_
 
+### CSV import/export commands
+
+The `import` and `export` commands extend the application with CSV file support. Both commands follow a similar flow: user input is parsed into a command object, and CSV-specific processing is handled by dedicated classes.
+
+![CSV Import Export Class Diagram](images/CsvImportExportCommandClassDiagram.png)
+
+At a high level:
+
+* `AddressBookParser#parseCommand()` identifies the command word and passes control to either `ImportCommandParser` or `ExportCommandParser`.
+* The respective parser validates the file path and creates an `ImportCommand` or `ExportCommand`.
+
+For the `export` command:
+
+* `ExportCommand` retrieves the active list of persons from `Model`.
+* It then calls `CsvWriterUtil` to convert the data into CSV format and write it to the file.
+
+For the `import` command:
+
+* `ImportCommand` calls `CsvReaderUtil` to read and process the CSV file.
+* `CsvReaderUtil` validates the file (e.g. header row), parses each non-blank row, and returns a `CsvImportFileResult` containing:
+    * successfully parsed rows (`CsvImportRowSuccess`)
+    * invalid rows (`CsvImportRowError`)
+* `ImportCommand` retrieves valid and invalid rows from `CsvImportFileResult`.
+* For each valid row, `ImportCommand`:
+    * checks for duplicates using `Model#hasPerson(...)` and previously imported entries
+    * skips duplicates and records them
+    * adds non-duplicate persons to the model
+* Finally, `ImportCommand` returns a summary showing the number of imported, duplicate, and invalid rows.
+
+The sequence diagram below illustrates the execution of the `import` command.
+
+![Import Command Execution Sequence Diagram](images/ImportCommandSequenceDiagram.png)
+
+The CSV-specific logic is contained in the `logic.csv` package:
+
+* `CsvReaderUtil` reads the file, validates its structure, and converts rows into structured results.
+* `CsvWriterUtil` converts `Person` objects into CSV format and writes them to a file.
+* `CsvImportFileResult` and related classes store parsed data and row-level errors.
+
+This design keeps command classes focused on coordinating the workflow, while CSV-related processing is handled by specialised classes.
 
 --------------------------------------------------------------------------------------------------------------------
 

@@ -1,0 +1,67 @@
+@startuml
+!include style.puml
+skinparam arrowThickness 1.1
+skinparam arrowColor LOGIC_COLOR_T4
+skinparam classBackgroundColor LOGIC_COLOR
+
+package Logic {
+
+  package commands {
+    class "{abstract}\nCommand" as Command LOGIC_COLOR
+    class ExportCommand LOGIC_COLOR
+    class ImportCommand LOGIC_COLOR
+  }
+
+  package parser {
+    class AddressBookParser LOGIC_COLOR
+
+    interface "Parser<T>" as Parser LOGIC_COLOR
+    interface "Parser<ExportCommand>" as ExportCommandParserType LOGIC_COLOR
+    interface "Parser<ImportCommand>" as ImportCommandParserType LOGIC_COLOR
+
+    class ExportCommandParser LOGIC_COLOR
+    class ImportCommandParser LOGIC_COLOR
+    class ParserUtil LOGIC_COLOR
+  }
+
+  package csv {
+    class CsvWriterUtil LOGIC_COLOR
+    class CsvReaderUtil LOGIC_COLOR
+    class CsvImportFileResult LOGIC_COLOR
+    class CsvImportRowSuccess LOGIC_COLOR
+    class CsvImportRowError LOGIC_COLOR
+  }
+}
+
+package Model {
+  class Person MODEL_COLOR
+}
+
+AddressBookParser ..> ExportCommandParser
+AddressBookParser ..> ImportCommandParser
+
+ExportCommandParser --|> ExportCommandParserType
+ImportCommandParser --|> ImportCommandParserType
+
+ExportCommandParserType ..> Parser
+ImportCommandParserType ..> Parser
+
+ExportCommand --|> Command
+ImportCommand --|> Command
+
+ExportCommand ..> CsvWriterUtil
+
+ImportCommand ..> CsvReaderUtil
+ImportCommand ..> CsvImportRowSuccess
+ImportCommand ..> CsvImportRowError
+
+CsvWriterUtil ..> Person
+
+CsvReaderUtil ..> ParserUtil
+CsvReaderUtil ..> Person
+CsvReaderUtil ..> CsvImportFileResult
+
+CsvImportFileResult *-- "0..*" CsvImportRowSuccess
+CsvImportFileResult *-- "0..*" CsvImportRowError
+CsvImportRowSuccess --> Person
+@enduml
