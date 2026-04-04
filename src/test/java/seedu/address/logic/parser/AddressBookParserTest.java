@@ -31,6 +31,7 @@ import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ImportCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.RestoreCommand;
 import seedu.address.logic.commands.StatsCommand;
 import seedu.address.logic.commands.UnaliasCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -165,6 +166,13 @@ public class AddressBookParserTest {
     }
 
     @Test
+    public void parseCommand_restore() throws Exception {
+        RestoreCommand command = (RestoreCommand) parser.parseCommand(
+                RestoreCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased());
+        assertEquals(new RestoreCommand(List.of(INDEX_FIRST_PERSON)), command);
+    }
+
+    @Test
     public void parseCommand_unalias() throws Exception {
         UnaliasCommand command = (UnaliasCommand) parser.parseCommand(UnaliasCommand.COMMAND_WORD + " ls");
         assertEquals(new UnaliasCommand("ls"), command);
@@ -187,6 +195,7 @@ public class AddressBookParserTest {
                 Map.entry(HelpCommand.COMMAND_WORD, "help"),
                 Map.entry(ImportCommand.COMMAND_WORD, "import data/volunteers.csv"),
                 Map.entry(ListCommand.COMMAND_WORD, "list"),
+                Map.entry(RestoreCommand.COMMAND_WORD, "restore 1"),
                 Map.entry(StatsCommand.COMMAND_WORD, "stats role"),
                 Map.entry(UnaliasCommand.COMMAND_WORD, "unalias ls"));
 

@@ -211,6 +211,11 @@ public class ImportCommandTest {
         }
 
         @Override
+        public void restorePerson(Person target) {
+            fail("This method should not be called.");
+        }
+
+        @Override
         public void addPerson(Person person) {
             fail("This method should not be called.");
         }
@@ -243,6 +248,11 @@ public class ImportCommandTest {
 
         @Override
         public void updateFilteredKeptPersonList(Predicate<Person> predicate) {
+            fail("This method should not be called.");
+        }
+
+        @Override
+        public void updateFilteredDeletedPersonList(Predicate<Person> predicate) {
             fail("This method should not be called.");
         }
 

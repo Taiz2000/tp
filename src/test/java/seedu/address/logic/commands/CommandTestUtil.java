@@ -236,4 +236,18 @@ public class CommandTestUtil {
         assertEquals(1, model.getFilteredKeptPersonList().size());
     }
 
+    /**
+     * Updates {@code model}'s filtered deleted list to show only the person at the given {@code targetIndex} in the
+     * {@code model}'s address book.
+     */
+    public static void showDeletedPersonAtIndex(Model model, Index targetIndex) {
+        assertTrue(targetIndex.getZeroBased() < model.getFilteredDeletedPersonList().size());
+
+        Person person = model.getFilteredDeletedPersonList().get(targetIndex.getZeroBased());
+        final String[] splitName = person.getName().fullName.split("\\s+");
+        model.updateFilteredDeletedPersonList(new PersonContainsKeywordsPredicate(Arrays.asList(splitName[0])));
+
+        assertEquals(1, model.getFilteredDeletedPersonList().size());
+    }
+
 }

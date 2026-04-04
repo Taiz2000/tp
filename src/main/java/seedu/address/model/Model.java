@@ -86,6 +86,12 @@ public interface Model {
     void deletePerson(Person target);
 
     /**
+     * Restores the given person.
+     * The person must exist in the deleted persons list.
+     */
+    void restorePerson(Person target);
+
+    /**
      * Adds the given person.
      * {@code person} must not already exist in the address book.
      */
@@ -117,6 +123,12 @@ public interface Model {
      * @throws NullPointerException if {@code predicate} is null.
      */
     void updateFilteredKeptPersonList(Predicate<Person> predicate);
+
+    /**
+     * Updates the filter of the filtered deleted person list to filter by the given {@code predicate}.
+     * @throws NullPointerException if {@code predicate} is null.
+     */
+    void updateFilteredDeletedPersonList(Predicate<Person> predicate);
 
     /**
      * Updates the sorting of the filtered person list using the given {@code comparator}.

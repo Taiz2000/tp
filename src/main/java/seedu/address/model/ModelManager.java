@@ -133,6 +133,11 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public void restorePerson(Person target) {
+        addressBook.restorePerson(target);
+    }
+
+    @Override
     public void addPerson(Person person) {
         addressBook.addPerson(person);
         updateFilteredKeptPersonList(PREDICATE_SHOW_ALL_PERSONS);
@@ -171,6 +176,12 @@ public class ModelManager implements Model {
     public void updateFilteredKeptPersonList(Predicate<Person> predicate) {
         requireNonNull(predicate);
         filteredKeptPersons.setPredicate(predicate);
+    }
+
+    @Override
+    public void updateFilteredDeletedPersonList(Predicate<Person> predicate) {
+        requireNonNull(predicate);
+        filteredDeletedPersons.setPredicate(predicate);
     }
 
     @Override

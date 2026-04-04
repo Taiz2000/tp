@@ -187,6 +187,16 @@ public class AddressBookTest {
     }
 
     @Test
+    public void restorePerson() {
+        AddressBook expectedAddressBook = new AddressBook();
+        expectedAddressBook.setKeptPersons(List.of(ALICE));
+
+        addressBook.addDeletedPerson(ALICE);
+        addressBook.restorePerson(ALICE);
+        assertEquals(expectedAddressBook, addressBook);
+    }
+
+    @Test
     public void deleteAllPersons_noKeptPersons_success() {
         addressBook.deleteAllPersons();
         assertEquals(new AddressBook(), addressBook);

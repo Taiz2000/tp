@@ -111,6 +111,18 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void restorePerson_deletedPersonMovesBackToKeptPersons() {
+        AddressBook addressBook = new AddressBook();
+        addressBook.addDeletedPerson(ALICE);
+        modelManager.setAddressBook(addressBook);
+
+        modelManager.restorePerson(ALICE);
+
+        assertTrue(modelManager.hasPerson(ALICE));
+        assertTrue(modelManager.getFilteredDeletedPersonList().isEmpty());
+    }
+
+    @Test
     public void getFilteredKeptPersonList_modifyList_throwsUnsupportedOperationException() {
         assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredKeptPersonList().remove(0));
     }

@@ -27,6 +27,7 @@ public final class CommandWords {
             HelpCommand.COMMAND_WORD,
             ImportCommand.COMMAND_WORD,
             ListCommand.COMMAND_WORD,
+            RestoreCommand.COMMAND_WORD,
             StatsCommand.COMMAND_WORD,
             UnaliasCommand.COMMAND_WORD);
 

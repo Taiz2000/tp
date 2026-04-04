@@ -124,6 +124,19 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
+     * Moves {@code key} from the list of deleted persons to the list of kept persons.
+     * {@code key} must exist in the list of deleted persons.
+     * {@code key} must not already exist in the list of kept persons.
+     */
+    public void restorePerson(Person key) {
+        requireNonNull(key);
+        assert hasDeletedPerson(key) : "Person to restore is not in the list of deleted persons";
+        assert !hasKeptPerson(key) : "Person to restore already exists in the list of kept persons";
+        deletedPersons.remove(key);
+        keptPersons.add(key);
+    }
+
+    /**
      * Adds a person directly to the list of deleted persons in the address book.
      * If the person already exists in the list of deleted persons, it will not be added again.
      */
