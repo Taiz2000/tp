@@ -135,7 +135,7 @@ public class DeleteCommandTest {
 
     @Test
     public void execute_invalidIndexListEmptyFilteredList_throwsCommandException() {
-        model.updateFilteredKeptPersonList(p -> false);
+        showNoPerson(model);
 
         DeleteCommand deleteCommand = new DeleteCommand(List.of(INDEX_FIRST_PERSON));
         assertCommandFailure(deleteCommand, model, PersonListView.KEPT_PERSONS,
