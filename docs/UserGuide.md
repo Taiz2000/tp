@@ -140,6 +140,15 @@ Format: `unalias SHORT`
 Examples:
 * `unalias ls`
 
+### Showing recycle bin of recently deleted persons : `bin`
+
+Shows the recycle bin, which contains all recently deleted persons in RosterBolt.
+
+Format: `bin`
+
+* Persons deleted by the `clear` and `delete` commands will be added to the recycle bin.
+* The recycle bin is cleared when the application is closed.
+
 ### Editing a person : `edit`
 
 Edits an existing person in RosterBolt.
