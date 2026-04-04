@@ -52,7 +52,7 @@ public class DeleteCommand extends Command {
             model.deletePerson(person);
         }
 
-        return new CommandResult(buildSuccessMessage(personsToDelete));
+        return new CommandResult(buildSuccessMessage(personsToDelete), PersonListView.KEPT_PERSONS);
     }
 
     private void requireIndicesInRange(Model model) throws CommandException {
