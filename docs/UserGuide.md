@@ -207,6 +207,8 @@ Examples:
 
 Deletes the specified persons from RosterBolt.
 
+You must be viewing the working list to use this command. Otherwise, an error message will be shown, and no persons will be deleted.
+
 Format: `delete INDEX [MORE_INDICES]`
 
 * Deletes the person at the specified indices.
