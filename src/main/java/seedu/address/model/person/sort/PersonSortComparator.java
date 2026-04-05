@@ -2,6 +2,7 @@ package seedu.address.model.person.sort;
 
 import static java.util.Objects.requireNonNull;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
@@ -44,6 +45,9 @@ public class PersonSortComparator implements Comparator<Person> {
         case TAG:
             result = STRING_COMPARATOR.compare(getTagKey(first), getTagKey(second));
             break;
+        case VR:
+            result = getLatestVolunteerRecordEnd(first).compareTo(getLatestVolunteerRecordEnd(second));
+            break;
         default:
             throw new UnsupportedOperationException("Unsupported sort attribute: " + attribute);
         }
@@ -56,6 +60,13 @@ public class PersonSortComparator implements Comparator<Person> {
                 .map(tag -> tag.tagName)
                 .sorted(STRING_COMPARATOR)
                 .collect(Collectors.joining(","));
+    }
+
+    private static LocalDateTime getLatestVolunteerRecordEnd(Person person) {
+        return person.getRecords().stream()
+                .map(record -> record.endDateTime)
+                .max(Comparator.naturalOrder())
+                .orElse(LocalDateTime.MIN);
     }
 
     @Override

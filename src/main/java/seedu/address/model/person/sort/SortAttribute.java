@@ -11,7 +11,8 @@ public enum SortAttribute {
     PHONE("phone"),
     EMAIL("email"),
     ROLE("role"),
-    TAG("tag");
+    TAG("tag"),
+    VR("vr");
 
     private final String token;
 
