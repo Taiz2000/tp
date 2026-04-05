@@ -57,13 +57,14 @@ public class PersonSortComparatorTest {
     }
 
     @Test
-    public void compare_allAttributesAscending_returnsExpectedOrder() {
+    public void compare_allAttributesAscendingAndDescending_returnsExpectedOrder() {
         Person first = new PersonBuilder()
                 .withName("alice")
                 .withPhone("12345")
                 .withEmail("a@example.com")
                 .withRole("Developer")
                 .withTags("beta", "alpha")
+                .withRecords("2026-03-20T09:00,2026-03-20T12:00")
                 .build();
         Person second = new PersonBuilder()
                 .withName("BOB")
@@ -71,6 +72,7 @@ public class PersonSortComparatorTest {
                 .withEmail("b@example.com")
                 .withRole("Tester")
                 .withTags("beta", "charlie")
+                .withRecords("2026-04-01T09:00,2026-04-01T12:00")
                 .build();
 
         assertTrue(new PersonSortComparator(SortAttribute.NAME, SortOrder.ASC).compare(first, second) < 0);
@@ -78,6 +80,14 @@ public class PersonSortComparatorTest {
         assertTrue(new PersonSortComparator(SortAttribute.EMAIL, SortOrder.ASC).compare(first, second) < 0);
         assertTrue(new PersonSortComparator(SortAttribute.ROLE, SortOrder.ASC).compare(first, second) < 0);
         assertTrue(new PersonSortComparator(SortAttribute.TAG, SortOrder.ASC).compare(first, second) < 0);
+        assertTrue(new PersonSortComparator(SortAttribute.VR, SortOrder.ASC).compare(first, second) < 0);
+
+        assertTrue(new PersonSortComparator(SortAttribute.NAME, SortOrder.DESC).compare(first, second) > 0);
+        assertTrue(new PersonSortComparator(SortAttribute.PHONE, SortOrder.DESC).compare(first, second) > 0);
+        assertTrue(new PersonSortComparator(SortAttribute.EMAIL, SortOrder.DESC).compare(first, second) > 0);
+        assertTrue(new PersonSortComparator(SortAttribute.ROLE, SortOrder.DESC).compare(first, second) > 0);
+        assertTrue(new PersonSortComparator(SortAttribute.TAG, SortOrder.DESC).compare(first, second) > 0);
+        assertTrue(new PersonSortComparator(SortAttribute.VR, SortOrder.DESC).compare(first, second) > 0);
     }
 
     @Test
@@ -96,5 +106,37 @@ public class PersonSortComparatorTest {
 
         PersonSortComparator comparator = new PersonSortComparator(SortAttribute.NAME, SortOrder.DESC);
         assertTrue(comparator.compare(first, second) > 0);
+    }
+
+    @Test
+    public void compare_volunteerRecordsEmptyVsNonEmpty_expectedOrdersForBothOrders() {
+        Person noRecords = new PersonBuilder().withName("Alice").build();
+        Person withRecords = new PersonBuilder().withName("Bob")
+                .withRecords("2026-03-20T09:00,2026-03-20T12:00")
+                .build();
+
+        PersonSortComparator ascComparator = new PersonSortComparator(SortAttribute.VR, SortOrder.ASC);
+        assertTrue(ascComparator.compare(noRecords, withRecords) < 0);
+
+        PersonSortComparator descComparator = new PersonSortComparator(SortAttribute.VR, SortOrder.DESC);
+        assertTrue(descComparator.compare(noRecords, withRecords) > 0);
+    }
+
+    @Test
+    public void compare_multipleVolunteerRecordsPerPerson_ordersByLatestRecordEnd() {
+        Person earlierLatest = new PersonBuilder().withName("Alice")
+                .withRecords("2026-03-20T09:00,2026-03-20T12:00",
+                        "2026-03-25T14:00,2026-03-25T16:00")
+                .build();
+        Person laterLatest = new PersonBuilder().withName("Bob")
+                .withRecords("2026-03-18T09:00,2026-03-18T12:00",
+                        "2026-04-01T14:00,2026-04-01T16:00")
+                .build();
+
+        PersonSortComparator ascComparator = new PersonSortComparator(SortAttribute.VR, SortOrder.ASC);
+        assertTrue(ascComparator.compare(earlierLatest, laterLatest) < 0);
+
+        PersonSortComparator descComparator = new PersonSortComparator(SortAttribute.VR, SortOrder.DESC);
+        assertTrue(descComparator.compare(earlierLatest, laterLatest) > 0);
     }
 }

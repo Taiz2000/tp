@@ -25,6 +25,7 @@ public class ListCommandParserTest {
         assertParseSuccess(parser, "name", new ListCommand(SortAttribute.NAME, SortOrder.ASC));
         assertParseSuccess(parser, "email desc", new ListCommand(SortAttribute.EMAIL, SortOrder.DESC));
         assertParseSuccess(parser, "  NaMe   dEsC  ", new ListCommand(SortAttribute.NAME, SortOrder.DESC));
+        assertParseSuccess(parser, "vr desc", new ListCommand(SortAttribute.VR, SortOrder.DESC));
     }
 
     @Test

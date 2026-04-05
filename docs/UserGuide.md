@@ -98,14 +98,17 @@ Shows a list of all persons in RosterBolt, optionally sorted by an attribute.
 
 Format: `list [ATTRIBUTE [asc|desc]]`
 
-* Currently supported `ATTRIBUTE`: `name`, `phone`, `email`, `role`, or `tag`.
+* Currently supported `ATTRIBUTE`: `name`, `phone`, `email`, `role`, `tag`, or `vr`.
 * Order defaults to `asc` when omitted.
 * Omitting `ATTRIBUTE` shows the list in the default order.
+* `vr` sorts by the end time of each volunteer's most recent record (i.e., `asc` lists least-recently served first, while `desc` lists most-recently served first).
+  * Volunteers without records are treated as least-recently served.
 
 Examples:
 * `list`
 * `list name`
 * `list email desc`
+* `list vr desc`
 
 ### Creating a command alias : `alias`
 
@@ -341,7 +344,7 @@ Action | Format, Examples
 **Export** | `export FILE_PATH`<br> e.g., `export data/volunteers.csv`
 **Find** | `find [m/MATCH_TYPE] [va/DAY,HH:mm,HH:mm] [KEYWORD [MORE_KEYWORDS]]`<br> e.g., `find m/kw James Jake`, `find m/ss ali`, `find m/fz michigan`, `find va/MONDAY,14:00,17:00`, `find va/MONDAY,14:00,17:00 alice`
 **Import** | `import FILE_PATH`<br> e.g., `import data/volunteers.csv`
-**List** | `list [ATTRIBUTE [asc|desc]]`<br> e.g., `list name desc`
+**List** | `list [ATTRIBUTE [asc|desc]]`<br> e.g., `list name desc`, `list vr desc`
 **Exit** | `exit`
 **Help** | `help`
 **Restore** | `restore INDEX [MORE_INDICES]`<br> e.g., `restore 2 3`
