@@ -109,13 +109,16 @@ public class PersonSortComparatorTest {
     }
 
     @Test
-    public void compare_volunteerRecordsEmptyVsNonEmpty_ordersEmptyFirst() {
+    public void compare_volunteerRecordsEmptyVsNonEmpty_expectedOrdersForBothOrders() {
         Person noRecords = new PersonBuilder().withName("Alice").build();
         Person withRecords = new PersonBuilder().withName("Bob")
                 .withRecords("2026-03-20T09:00,2026-03-20T12:00")
                 .build();
 
-        PersonSortComparator comparator = new PersonSortComparator(SortAttribute.VR, SortOrder.ASC);
-        assertTrue(comparator.compare(noRecords, withRecords) < 0);
+        PersonSortComparator ascComparator = new PersonSortComparator(SortAttribute.VR, SortOrder.ASC);
+        assertTrue(ascComparator.compare(noRecords, withRecords) < 0);
+
+        PersonSortComparator descComparator = new PersonSortComparator(SortAttribute.VR, SortOrder.DESC);
+        assertTrue(descComparator.compare(noRecords, withRecords) > 0);
     }
 }
