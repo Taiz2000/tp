@@ -31,7 +31,6 @@ import seedu.address.testutil.PersonBuilder;
 /**
  * Reused from Codex suggestions upon providing specifications
  */
-
 public class AddCommandTest {
 
     @Test
