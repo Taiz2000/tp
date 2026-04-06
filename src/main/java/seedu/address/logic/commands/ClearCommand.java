@@ -20,6 +20,6 @@ public class ClearCommand extends Command {
         requireNonNull(model);
         requireViewingKeptPersons(personListView);
         model.deleteAllPersons();
-        return new CommandResult(MESSAGE_SUCCESS);
+        return new CommandResult(MESSAGE_SUCCESS, PersonListView.KEPT_PERSONS);
     }
 }

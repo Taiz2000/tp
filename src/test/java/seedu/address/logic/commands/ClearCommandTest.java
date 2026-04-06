@@ -31,7 +31,8 @@ public class ClearCommandTest {
         Model model = new ModelManager();
         Model expectedModel = new ModelManager();
 
-        assertCommandSuccess(new ClearCommand(), model, ClearCommand.MESSAGE_SUCCESS, expectedModel);
+        assertCommandSuccess(new ClearCommand(), model, PersonListView.KEPT_PERSONS,
+                ClearCommand.MESSAGE_SUCCESS, PersonListView.KEPT_PERSONS, expectedModel);
     }
 
     @Test
@@ -45,7 +46,8 @@ public class ClearCommandTest {
         expectedAddressBook.setDeletedPersons(List.of(ALICE, CARL, BENSON));
         Model expectedModel = new ModelManager(expectedAddressBook, new UserPrefs());
 
-        assertCommandSuccess(new ClearCommand(), model, ClearCommand.MESSAGE_SUCCESS, expectedModel);
+        assertCommandSuccess(new ClearCommand(), model, PersonListView.KEPT_PERSONS,
+                ClearCommand.MESSAGE_SUCCESS, PersonListView.KEPT_PERSONS, expectedModel);
     }
 
 }
