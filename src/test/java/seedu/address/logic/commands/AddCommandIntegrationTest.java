@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.Messages;
+import seedu.address.logic.PersonListView;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
@@ -24,6 +25,15 @@ public class AddCommandIntegrationTest {
     @BeforeEach
     public void setUp() {
         model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+    }
+
+    @Test
+    public void execute_notViewingKeptPersons_throwsCommandException() {
+        Person validPerson = new PersonBuilder().build();
+        AddCommand addCommand = new AddCommand(validPerson);
+
+        assertCommandFailure(addCommand, model, PersonListView.DELETED_PERSONS,
+                Messages.MESSAGE_NOT_VIEWING_KEPT_PERSONS);
     }
 
     @Test
