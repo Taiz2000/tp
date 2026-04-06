@@ -77,6 +77,8 @@ Format: `help`
 
 Adds a person to RosterBolt.
 
+You must be viewing the working list to use this command. Otherwise, an error message will be shown, and the person will not be added.
+
 Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​ [r/ROLE] [nt/NOTES] [va/AVAILABILITIES]…​ [vr/RECORDS]…​`
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
