@@ -85,6 +85,19 @@ Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​ [r/ROLE] [nt/
 A person can have any number of tags, availabilities, and records (including 0). Role and notes are optional.
 </div>
 
+<div markdown="block" class="alert alert-info">
+
+**:information_source: Constraints on values in each field:**<br>
+
+* **Name**: Letters, numbers, and spaces only. Must start with letters or numbers, and must not be blank.
+* **Phone**: Numbers only, at least 3 digits.
+* **Email**: Must be in `name@example.com` format. The part before `@` can include letters, numbers, and `+_.-` characters. The domain must end with a label at least 2 characters long.
+* **Address**: Must not be blank.
+* **Tag**: Letters and numbers only. Must not be blank.
+* **Role / Notes**: Can contain any characters. If left blank, the role will be shown as `Unassigned`, and the notes will be shown as `None`.
+
+</div>
+
 * A person is considered a duplicate if the phone number matches exactly, or the email matches case-insensitively.
 * `AVAILABILITIES` must be in the format `DAY,HH:mm,HH:mm` (day, start time, end time) where `DAY` is a full day name (case-insensitive, e.g., `MONDAY`, `monday`, or `Monday`) and start time is earlier than end time.
 * `RECORDS` must be in the format `yyyy-MM-ddTHH:mm,yyyy-MM-ddTHH:mm` (start date-time, end date-time) and start date-time must be earlier than end date-time.
