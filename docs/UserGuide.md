@@ -252,7 +252,7 @@ Format: `restore INDEX [MORE_INDICES]`
 * Indices **must be positive integers** 1, 2, 3, …​
 * Duplicate indices will be ignored.
 * Restored persons will be removed from the recycle bin and added to the working list of kept contacts.
-* Persons are considered duplicate if their phone matches exactly, or email matches case-insensitively
+* Persons are considered duplicate if their phone matches exactly, or email matches case-insensitively.
   * You cannot restore persons who are duplicates of existing contacts in the working list.
   * You cannot restore two persons who are duplicates of each other in the recycle bin.
 
