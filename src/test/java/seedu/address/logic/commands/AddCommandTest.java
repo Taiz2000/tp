@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.Messages;
+import seedu.address.logic.PersonListView;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
@@ -43,7 +44,7 @@ public class AddCommandTest {
         ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
         Person validPerson = new PersonBuilder().build();
 
-        CommandResult commandResult = new AddCommand(validPerson).execute(modelStub);
+        CommandResult commandResult = new AddCommand(validPerson).execute(modelStub, PersonListView.KEPT_PERSONS);
 
         assertEquals(String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(validPerson)),
                 commandResult.getFeedbackToUser());
@@ -61,11 +62,19 @@ public class AddCommandTest {
                 .withNotes("Prefers morning shifts")
                 .build();
 
-        CommandResult commandResult = new AddCommand(validPerson).execute(modelStub);
+        CommandResult commandResult = new AddCommand(validPerson).execute(modelStub, PersonListView.KEPT_PERSONS);
 
         assertEquals(String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(validPerson)),
                 commandResult.getFeedbackToUser());
         assertEquals(Arrays.asList(validPerson), modelStub.personsAdded);
+    }
+
+    private void assertThrowsExceptionForDuplicatePerson(AddCommand command, Model model) {
+        // Using a lambda as an argument on a new line
+        // CHECKSTYLE.OFF: SeparatorWrap
+        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON,
+                () -> command.execute(model, PersonListView.KEPT_PERSONS));
+        // CHECKSTYLE.ON: SeparatorWrap
     }
 
     @Test
@@ -74,7 +83,7 @@ public class AddCommandTest {
         AddCommand addCommand = new AddCommand(validPerson);
         ModelStub modelStub = new ModelStubWithPerson(validPerson);
 
-        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
+        assertThrowsExceptionForDuplicatePerson(addCommand, modelStub);
     }
 
     @Test
@@ -87,7 +96,7 @@ public class AddCommandTest {
         AddCommand addCommand = new AddCommand(duplicateByPhone);
         ModelStub modelStub = new ModelStubWithPerson(existingPerson);
 
-        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
+        assertThrowsExceptionForDuplicatePerson(addCommand, modelStub);
     }
 
     @Test
@@ -101,7 +110,7 @@ public class AddCommandTest {
         AddCommand addCommand = new AddCommand(duplicateByEmail);
         ModelStub modelStub = new ModelStubWithPerson(existingPerson);
 
-        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
+        assertThrowsExceptionForDuplicatePerson(addCommand, modelStub);
     }
 
     @Test
@@ -116,7 +125,7 @@ public class AddCommandTest {
         AddCommand addCommand = new AddCommand(duplicateByPhoneAndEmail);
         ModelStub modelStub = new ModelStubWithPerson(existingPerson);
 
-        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
+        assertThrowsExceptionForDuplicatePerson(addCommand, modelStub);
     }
 
     @Test

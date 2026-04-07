@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.Messages;
+import seedu.address.logic.PersonListView;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
@@ -27,6 +28,15 @@ public class AddCommandIntegrationTest {
     }
 
     @Test
+    public void execute_notViewingKeptPersons_throwsCommandException() {
+        Person validPerson = new PersonBuilder().build();
+        AddCommand addCommand = new AddCommand(validPerson);
+
+        assertCommandFailure(addCommand, model, PersonListView.DELETED_PERSONS,
+                Messages.MESSAGE_NOT_VIEWING_KEPT_PERSONS);
+    }
+
+    @Test
     public void execute_newPerson_success() {
         Person validPerson = new PersonBuilder().build();
 
@@ -34,14 +44,16 @@ public class AddCommandIntegrationTest {
         expectedModel.addPerson(validPerson);
 
         assertCommandSuccess(new AddCommand(validPerson), model,
+                PersonListView.KEPT_PERSONS,
                 String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(validPerson)),
+                PersonListView.KEPT_PERSONS,
                 expectedModel);
     }
 
     @Test
     public void execute_duplicatePerson_throwsCommandException() {
         Person personInList = model.getAddressBook().getKeptPersonList().get(0);
-        assertCommandFailure(new AddCommand(personInList), model,
+        assertCommandFailure(new AddCommand(personInList), model, PersonListView.KEPT_PERSONS,
                 AddCommand.MESSAGE_DUPLICATE_PERSON);
     }
 
@@ -54,7 +66,7 @@ public class AddCommandIntegrationTest {
                 .withEmail(personInList.getEmail().value.toUpperCase())
                 .build();
 
-        assertCommandFailure(new AddCommand(duplicateByEmail), model,
+        assertCommandFailure(new AddCommand(duplicateByEmail), model, PersonListView.KEPT_PERSONS,
                 AddCommand.MESSAGE_DUPLICATE_PERSON);
     }
 
@@ -70,7 +82,9 @@ public class AddCommandIntegrationTest {
         expectedModel.addPerson(sameNameDifferentContacts);
 
         assertCommandSuccess(new AddCommand(sameNameDifferentContacts), model,
+                PersonListView.KEPT_PERSONS,
                 String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(sameNameDifferentContacts)),
+                PersonListView.KEPT_PERSONS,
                 expectedModel);
     }
 
@@ -82,7 +96,7 @@ public class AddCommandIntegrationTest {
                 .withEmail("sarah.teo@example.com")
                 .build();
 
-        assertCommandFailure(new AddCommand(duplicateByPhone), model,
+        assertCommandFailure(new AddCommand(duplicateByPhone), model, PersonListView.KEPT_PERSONS,
                 AddCommand.MESSAGE_DUPLICATE_PERSON);
     }
 
@@ -95,7 +109,7 @@ public class AddCommandIntegrationTest {
                 .withNotes("Experienced event runner")
                 .build();
 
-        assertCommandFailure(new AddCommand(duplicateByBoth), model,
+        assertCommandFailure(new AddCommand(duplicateByBoth), model, PersonListView.KEPT_PERSONS,
                 AddCommand.MESSAGE_DUPLICATE_PERSON);
     }
 
