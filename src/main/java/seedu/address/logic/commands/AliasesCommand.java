@@ -27,7 +27,7 @@ public class AliasesCommand extends Command {
 
         Map<String, String> aliases = model.getCommandAliases();
         if (aliases.isEmpty()) {
-            return new CommandResult(MESSAGE_NO_ALIASES);
+            return new CommandResult(MESSAGE_NO_ALIASES, personListView);
         }
 
         String aliasList = aliases.entrySet().stream()
@@ -35,6 +35,7 @@ public class AliasesCommand extends Command {
                 .map(entry -> entry.getKey() + " -> " + entry.getValue())
                 .collect(Collectors.joining("\n"));
 
-        return new CommandResult(MESSAGE_ALIASES_HEADER + "\n" + aliasList);
+        return new CommandResult(MESSAGE_ALIASES_HEADER + "\n" + aliasList,
+                personListView);
     }
 }

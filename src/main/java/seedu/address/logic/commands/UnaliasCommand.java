@@ -42,7 +42,7 @@ public class UnaliasCommand extends Command {
         }
 
         model.removeCommandAlias(shortName);
-        return new CommandResult(String.format(MESSAGE_SUCCESS, shortName));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, shortName), personListView);
     }
 
     @Override

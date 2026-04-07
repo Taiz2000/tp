@@ -9,6 +9,7 @@ import static seedu.address.testutil.Assert.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.PersonListView;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 
@@ -24,20 +25,35 @@ public class UnaliasCommandTest {
     }
 
     @Test
-    public void execute_existingAlias_success() {
+    public void execute_existingAliasWhileViewingKeptPersons_success() {
         Model model = new ModelManager();
         model.setCommandAlias("ls", ListCommand.COMMAND_WORD);
         Model expectedModel = new ModelManager();
 
         assertCommandSuccess(new UnaliasCommand("ls"), model,
-                String.format(UnaliasCommand.MESSAGE_SUCCESS, "ls"), expectedModel);
+                PersonListView.KEPT_PERSONS,
+                String.format(UnaliasCommand.MESSAGE_SUCCESS, "ls"),
+                PersonListView.KEPT_PERSONS, expectedModel);
+    }
+
+    @Test
+    public void execute_existingAliasWhileViewingDeletedPersons_success() {
+        Model model = new ModelManager();
+        model.setCommandAlias("ls", ListCommand.COMMAND_WORD);
+        Model expectedModel = new ModelManager();
+
+        assertCommandSuccess(new UnaliasCommand("ls"), model,
+                PersonListView.DELETED_PERSONS,
+                String.format(UnaliasCommand.MESSAGE_SUCCESS, "ls"),
+                PersonListView.DELETED_PERSONS, expectedModel);
     }
 
     @Test
     public void execute_missingAlias_throwsCommandException() {
         Model model = new ModelManager();
 
-        assertCommandFailure(new UnaliasCommand("ls"), model, UnaliasCommand.MESSAGE_ALIAS_NOT_FOUND);
+        assertCommandFailure(new UnaliasCommand("ls"), model, PersonListView.KEPT_PERSONS,
+                UnaliasCommand.MESSAGE_ALIAS_NOT_FOUND);
     }
 
     @Test
