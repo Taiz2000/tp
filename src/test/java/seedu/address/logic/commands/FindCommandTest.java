@@ -12,6 +12,7 @@ import static seedu.address.testutil.TypicalPersons.DANIEL;
 import static seedu.address.testutil.TypicalPersons.ELLE;
 import static seedu.address.testutil.TypicalPersons.FIONA;
 import static seedu.address.testutil.TypicalPersons.GEORGE;
+import static seedu.address.testutil.TypicalPersons.YVETTE;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.util.Arrays;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.PersonListView;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -67,13 +69,35 @@ public class FindCommandTest {
         assertFalse(findFirstCommand.equals(findSecondCommand));
     }
 
+    /* This is the only test where the FindCommand is executed while viewing deleted persons.
+     *
+     * It is expected that the logical flow of FindCommand is identical to the case where the
+     * user views kept persons, with the only difference being the list which the FindCommand
+     * acts on and displays after execution. This test aims to check that difference.
+     *
+     * For more robust integration testing of FindCommand with Predicate classes,
+     * refer to the tests which are executed while viewing kept persons.
+     */
+    @Test
+    public void execute_viewingDeletedPersons_success() {
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
+        PersonContainsKeywordsPredicate predicate = preparePredicate("street");
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredDeletedPersonList(predicate);
+        assertCommandSuccess(command, model, PersonListView.DELETED_PERSONS,
+                expectedMessage, PersonListView.DELETED_PERSONS, expectedModel);
+        assertEquals(Collections.singletonList(YVETTE), model.getFilteredDeletedPersonList());
+    }
+
+    // This test and all subsequent tests of execute() are executed while viewing kept persons.
     @Test
     public void execute_zeroKeywords_noPersonFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
         PersonContainsKeywordsPredicate predicate = preparePredicate(" ");
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredKeptPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertCommandSuccess(command, model, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedModel);
         assertEquals(Collections.emptyList(), model.getFilteredKeptPersonList());
     }
 
@@ -83,7 +107,8 @@ public class FindCommandTest {
         PersonContainsKeywordsPredicate predicate = preparePredicate("street");
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredKeptPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertCommandSuccess(command, model, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedModel);
         assertEquals(Arrays.asList(CARL, DANIEL, GEORGE), model.getFilteredKeptPersonList());
     }
 
@@ -93,7 +118,8 @@ public class FindCommandTest {
         PersonContainsKeywordsPredicate predicate = preparePredicate("Kurz Elle Kunz");
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredKeptPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertCommandSuccess(command, model, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedModel);
         assertEquals(Arrays.asList(CARL, ELLE, FIONA), model.getFilteredKeptPersonList());
     }
 
@@ -104,7 +130,8 @@ public class FindCommandTest {
                 new PersonContainsSubstringsPredicate(Collections.singletonList("ell"));
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredKeptPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertCommandSuccess(command, model, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedModel);
         assertEquals(Collections.singletonList(ELLE), model.getFilteredKeptPersonList());
     }
 
@@ -115,7 +142,8 @@ public class FindCommandTest {
                 new PersonContainsSubstringsPredicate(Collections.singletonList("meie"));
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredKeptPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertCommandSuccess(command, model, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedModel);
         assertEquals(Arrays.asList(BENSON, DANIEL), model.getFilteredKeptPersonList());
     }
 
@@ -126,7 +154,8 @@ public class FindCommandTest {
                 new PersonContainsFuzzyKeywordsPredicate(Collections.singletonList("michigan"));
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredKeptPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertCommandSuccess(command, model, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedModel);
         assertEquals(Collections.singletonList(ELLE), model.getFilteredKeptPersonList());
     }
 
@@ -137,7 +166,8 @@ public class FindCommandTest {
                 new PersonContainsFuzzyKeywordsPredicate(Collections.singletonList("stret"));
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredKeptPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertCommandSuccess(command, model, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedModel);
         assertEquals(Arrays.asList(CARL, DANIEL, GEORGE), model.getFilteredKeptPersonList());
     }
 
@@ -162,7 +192,8 @@ public class FindCommandTest {
 
         expectedAvailModel.updateFilteredKeptPersonList(predicate);
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
-        assertCommandSuccess(command, availModel, expectedMessage, expectedAvailModel);
+        assertCommandSuccess(command, availModel, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedAvailModel);
         assertEquals(List.of(available), availModel.getFilteredKeptPersonList());
     }
 
@@ -184,7 +215,8 @@ public class FindCommandTest {
 
         expectedAvailModel.updateFilteredKeptPersonList(predicate);
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
-        assertCommandSuccess(command, availModel, expectedMessage, expectedAvailModel);
+        assertCommandSuccess(command, availModel, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedAvailModel);
     }
 
     @Test
@@ -219,7 +251,8 @@ public class FindCommandTest {
 
         expectedCombinedModel.updateFilteredKeptPersonList(combinedPredicate);
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
-        assertCommandSuccess(command, combinedModel, expectedMessage, expectedCombinedModel);
+        assertCommandSuccess(command, combinedModel, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedCombinedModel);
         assertEquals(List.of(matchesBoth), combinedModel.getFilteredKeptPersonList());
     }
 
@@ -250,7 +283,8 @@ public class FindCommandTest {
 
         expectedCombinedModel.updateFilteredKeptPersonList(combinedPredicate);
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
-        assertCommandSuccess(command, combinedModel, expectedMessage, expectedCombinedModel);
+        assertCommandSuccess(command, combinedModel, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedCombinedModel);
         assertEquals(Collections.emptyList(), combinedModel.getFilteredKeptPersonList());
     }
 
