@@ -95,7 +95,8 @@ public class AliasCommand extends Command {
         }
 
         model.setCommandAlias(shortName, targetCommandWord);
-        return new CommandResult(String.format(MESSAGE_SUCCESS, shortName, targetCommandWord));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, shortName, targetCommandWord),
+                personListView);
     }
 
     @Override

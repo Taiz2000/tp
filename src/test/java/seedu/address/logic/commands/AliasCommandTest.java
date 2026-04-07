@@ -9,6 +9,7 @@ import static seedu.address.testutil.Assert.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.PersonListView;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 
@@ -42,13 +43,29 @@ public class AliasCommandTest {
     }
 
     @Test
-    public void execute_validAlias_success() {
+    public void execute_validAliasWhileViewingKeptPersons_success() {
         Model model = new ModelManager();
         Model expectedModel = new ModelManager();
         expectedModel.setCommandAlias("ls", ListCommand.COMMAND_WORD);
 
         assertCommandSuccess(new AliasCommand("ls", ListCommand.COMMAND_WORD), model,
-                String.format(AliasCommand.MESSAGE_SUCCESS, "ls", ListCommand.COMMAND_WORD), expectedModel);
+                PersonListView.KEPT_PERSONS,
+                String.format(AliasCommand.MESSAGE_SUCCESS, "ls", ListCommand.COMMAND_WORD),
+                PersonListView.KEPT_PERSONS, expectedModel);
+    }
+
+    @Test
+    public void execute_validAliasWhileViewingDeletedPersons_success() {
+        // This is the only test case where we view the list of deleted persons before command execution,
+        // as the main logic of the command should be identical regardless of the viewed list.
+        Model model = new ModelManager();
+        Model expectedModel = new ModelManager();
+        expectedModel.setCommandAlias("ls", ListCommand.COMMAND_WORD);
+
+        assertCommandSuccess(new AliasCommand("ls", ListCommand.COMMAND_WORD), model,
+                PersonListView.DELETED_PERSONS,
+                String.format(AliasCommand.MESSAGE_SUCCESS, "ls", ListCommand.COMMAND_WORD),
+                PersonListView.DELETED_PERSONS, expectedModel);
     }
 
     @Test
@@ -58,7 +75,9 @@ public class AliasCommandTest {
         expectedModel.setCommandAlias("wipe", ClearCommand.COMMAND_WORD);
 
         assertCommandSuccess(new AliasCommand("wipe", ClearCommand.COMMAND_WORD), model,
-                String.format(AliasCommand.MESSAGE_SUCCESS, "wipe", ClearCommand.COMMAND_WORD), expectedModel);
+                PersonListView.KEPT_PERSONS,
+                String.format(AliasCommand.MESSAGE_SUCCESS, "wipe", ClearCommand.COMMAND_WORD),
+                PersonListView.KEPT_PERSONS, expectedModel);
     }
 
     @Test
@@ -67,7 +86,7 @@ public class AliasCommandTest {
         model.setCommandAlias("ls", ListCommand.COMMAND_WORD);
 
         assertCommandFailure(new AliasCommand("ls", HelpCommand.COMMAND_WORD), model,
-                AliasCommand.MESSAGE_DUPLICATE_ALIAS);
+                PersonListView.KEPT_PERSONS, AliasCommand.MESSAGE_DUPLICATE_ALIAS);
     }
 
     @Test

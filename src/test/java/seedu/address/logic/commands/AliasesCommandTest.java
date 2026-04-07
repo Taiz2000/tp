@@ -4,6 +4,7 @@ import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.PersonListView;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 
@@ -17,7 +18,10 @@ public class AliasesCommandTest {
         Model model = new ModelManager();
         Model expectedModel = new ModelManager();
 
-        assertCommandSuccess(new AliasesCommand(), model, AliasesCommand.MESSAGE_NO_ALIASES, expectedModel);
+        assertCommandSuccess(new AliasesCommand(), model, PersonListView.KEPT_PERSONS,
+                AliasesCommand.MESSAGE_NO_ALIASES, PersonListView.KEPT_PERSONS, expectedModel);
+        assertCommandSuccess(new AliasesCommand(), model, PersonListView.DELETED_PERSONS,
+                AliasesCommand.MESSAGE_NO_ALIASES, PersonListView.DELETED_PERSONS, expectedModel);
     }
 
     @Test
@@ -34,6 +38,9 @@ public class AliasesCommandTest {
                 + "\nls -> " + ListCommand.COMMAND_WORD
                 + "\nrm -> " + DeleteCommand.COMMAND_WORD;
 
-        assertCommandSuccess(new AliasesCommand(), model, expectedMessage, expectedModel);
+        assertCommandSuccess(new AliasesCommand(), model, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedModel);
+        assertCommandSuccess(new AliasesCommand(), model, PersonListView.DELETED_PERSONS,
+                expectedMessage, PersonListView.DELETED_PERSONS, expectedModel);
     }
 }
