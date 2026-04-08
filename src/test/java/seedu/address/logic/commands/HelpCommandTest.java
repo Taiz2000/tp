@@ -14,9 +14,18 @@ public class HelpCommandTest {
     private Model expectedModel = new ModelManager();
 
     @Test
-    public void execute_help_success() {
+    public void execute_viewingKeptPersons_success() {
         CommandResult expectedCommandResult = new CommandResult(
                 SHOWING_HELP_MESSAGE, PersonListView.KEPT_PERSONS, true, false);
-        assertCommandSuccess(new HelpCommand(), model, expectedCommandResult, expectedModel);
+        assertCommandSuccess(new HelpCommand(), model, PersonListView.KEPT_PERSONS,
+                expectedCommandResult, expectedModel);
+    }
+
+    @Test
+    public void execute_viewingDeletedPersons_success() {
+        CommandResult expectedCommandResult = new CommandResult(
+                SHOWING_HELP_MESSAGE, PersonListView.DELETED_PERSONS, true, false);
+        assertCommandSuccess(new HelpCommand(), model, PersonListView.DELETED_PERSONS,
+                expectedCommandResult, expectedModel);
     }
 }

@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_PREFIX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_AVAILABILITY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_MATCH_TYPE;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
@@ -215,6 +216,20 @@ public class FindCommandParserTest {
         assertParseFailure(parser, " " + PREFIX_MATCH_TYPE + " "
                         + PREFIX_AVAILABILITY + "MONDAY,14:00,17:00",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_unknownPrefix_failure() {
+        assertParseFailure(parser, "n/John",
+                String.format(MESSAGE_UNKNOWN_PREFIX, "n/", "m/, va/"));
+    }
+
+    @Test
+    public void parse_abbreviationInValue_success() {
+        // "s/o" abbreviation should not be flagged as unknown prefix
+        FindCommand expectedCommand =
+                new FindCommand(new PersonContainsKeywordsPredicate(Arrays.asList("s/o")));
+        assertParseSuccess(parser, "s/o", expectedCommand);
     }
 
 }

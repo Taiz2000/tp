@@ -18,7 +18,7 @@ public class BinCommand extends Command {
     @Override
     public CommandResult execute(Model model, PersonListView personListView) {
         requireNonNull(model);
-        model.updateFilteredKeptPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        model.updateFilteredDeletedPersonList(PREDICATE_SHOW_ALL_PERSONS);
         return new CommandResult(MESSAGE_SUCCESS, PersonListView.DELETED_PERSONS, false, false);
     }
 }

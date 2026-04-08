@@ -5,6 +5,10 @@ title: User Guide
 
 RosterBolt is a **desktop app for managing team contacts, optimized for use via a Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, RosterBolt can get your contact management tasks done faster than traditional GUI apps.
 
+RosterBolt is built for **volunteer coordinators** who run recurring events and manage **20-500 volunteers** on their own. It is a **single-user, offline, CLI-first** contact management tool designed for fast typists who prefer keyboards to mouse interactions, are comfortable with CLI apps, and may operate without Internet access.
+
+RosterBolt reduces admin overhead by **streamlining repetitive tasks** (such as bulk deleting or modifying contacts) so you can manage volunteer manpower **efficiently and accurately**.
+
 * Table of Contents
 {:toc}
 
@@ -62,6 +66,16 @@ RosterBolt is a **desktop app for managing team contacts, optimized for use via 
   e.g. if the command specifies `help 123`, it will be interpreted as `help`.
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
+
+</div>
+
+<div markdown="span" class="alert alert-warning">:exclamation: **Caution:**
+RosterBolt will flag text that **looks like** an unknown prefix (e.g., `x/value`) if it appears in your input.
+Common abbreviations with a single character after the slash (such as `c/o` (care of), `w/o` (without)
+or `w/` (with)) are recognised and allowed. 
+
+RosterBolt, however, does **NOT** support multiple-character abbreviations after the slash (e.g., `he/she`, `m/w/f`),
+and you are advised to avoid using such abbreviations in your input. Instead, please consider rephrasing the input to avoid the need for such abbreviations (e.g., `he or she`), or using supported single-character abbreviations (e.g., `h/s` instead of `he/she`).
 </div>
 
 ### Viewing help : `help`
@@ -79,16 +93,17 @@ Adds a person to RosterBolt.
 
 You must be viewing the working list to use this command. Otherwise, an error message will be shown, and the person will not be added.
 
-Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​ [r/ROLE] [nt/NOTES] [va/AVAILABILITIES]…​ [vr/RECORDS]…​`
+Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​ [r/ROLE] [nt/NOTES] [va/AVAILABILITY]…​ [vr/RECORD]…​`
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 A person can have any number of tags, availabilities, and records (including 0). Role and notes are optional.
 </div>
 
-* A person is considered a duplicate if the phone number matches exactly, or the email matches case-insensitively. 
+* A person is considered a duplicate if the phone number matches exactly, or the email matches case-insensitively.
   * If a duplicate is detected, the command is rejected and an error is shown.
-* `AVAILABILITIES` must be in the format `DAY,HH:mm,HH:mm` (day, start time, end time) where `DAY` is a full day name (case-insensitive, e.g., `MONDAY`, `monday`, or `Monday`) and start time is earlier than end time.
-* `RECORDS` must be in the format `yyyy-MM-ddTHH:mm,yyyy-MM-ddTHH:mm` (start date-time, end date-time) and start date-time must be earlier than end date-time.
+  * Email comparisons are case-insensitive across RosterBolt (e.g., `A@b.com` is treated as the same as `a@b.com`).
+* `AVAILABILITY` must be in the format `DAY,HH:mm,HH:mm` (day, start time, end time) where `DAY` is a full day name (case-insensitive, e.g., `MONDAY`, `monday`, or `Monday`) and start time is earlier than end time.
+* `RECORD` must be in the format `yyyy-MM-ddTHH:mm,yyyy-MM-ddTHH:mm` (start date-time, end date-time) and start date-time must be earlier than end date-time.
 
 Examples:
 * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 r/Usher nt/Weekend only va/MONDAY,14:00,17:00 vr/2026-03-20T14:00,2026-03-20T17:00`
@@ -161,7 +176,7 @@ Edits an existing person in RosterBolt.
 
 You must be viewing the working list to use this command. Otherwise, an error message will be shown, and no person will be edited.
 
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [r/ROLE] [nt/NOTES] [t/TAG]…​ [va/AVAILABILITIES]…​ [vr/RECORDS]…​`
+Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [r/ROLE] [nt/NOTES] [t/TAG]…​ [va/AVAILABILITY]…​ [vr/RECORD]…​`
 
 * Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, ...​
 * At least one of the optional fields must be provided.
@@ -253,8 +268,9 @@ Format: `restore INDEX [MORE_INDICES]`
 * Indices **must be positive integers** 1, 2, 3, …​
 * Duplicate indices will be ignored.
 * Restored persons will be removed from the recycle bin and added to the working list of kept contacts.
-* You cannot restore persons who are duplicates of existing contacts in the working list.
-* You cannot restore two persons who are duplicates of each other in the recycle bin.
+* Persons are considered duplicate if their phone matches exactly, or email matches case-insensitively.
+  * You cannot restore persons who are duplicates of existing contacts in the working list.
+  * You cannot restore two persons who are duplicates of each other in the recycle bin.
 
 Examples:
 * `bin` followed by `restore 2 3` restores the 2nd and 3rd persons in the recycle bin.
@@ -354,7 +370,7 @@ _Details coming soon ..._
 
 Action | Format, Examples
 --------|------------------
-**Add** | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​ [r/ROLE] [nt/NOTES] [va/AVAILABILITIES]…​ [vr/RECORDS]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague r/Usher nt/Available weekends va/SUNDAY,14:00,17:00 vr/2026-03-20T14:00,2026-03-20T17:00`
+**Add** | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​ [r/ROLE] [nt/NOTES] [va/AVAILABILITY]…​ [vr/RECORD]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague r/Usher nt/Available weekends va/SUNDAY,14:00,17:00 vr/2026-03-20T14:00,2026-03-20T17:00`
 **Alias** | `alias SHORT COMMAND_WORD`<br> e.g., `alias ls list`
 **Aliases** | `aliases`
 **Unalias** | `unalias SHORT`<br> e.g., `unalias ls`
