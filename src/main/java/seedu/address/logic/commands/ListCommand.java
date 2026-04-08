@@ -47,11 +47,12 @@ public class ListCommand extends Command {
     @Override
     public CommandResult execute(Model model, PersonListView personListView) {
         requireNonNull(model);
+        requireNonNull(personListView);
         model.updateFilteredKeptPersonList(PREDICATE_SHOW_ALL_PERSONS);
 
         if (sortAttribute == null) {
             model.updateSortedPersonList(null);
-            return new CommandResult(MESSAGE_SUCCESS);
+            return new CommandResult(MESSAGE_SUCCESS, PersonListView.KEPT_PERSONS);
         }
 
         model.updateSortedPersonList(new PersonSortComparator(sortAttribute, sortOrder));
