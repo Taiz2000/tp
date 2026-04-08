@@ -32,7 +32,7 @@ public class EditPreviousCommand extends Command {
 
         return new CommandResult(
                 String.format(MESSAGE_SUCCESS, lastCommandText),
-                PersonListView.KEPT_PERSONS,
+                personListView,
                 false,
                 false,
                 lastCommandText);

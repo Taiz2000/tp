@@ -63,11 +63,6 @@ public class LogicManager implements Logic {
         Command command = addressBookParser.parseCommand(expandedCommandText);
         CommandResult commandResult = command.execute(model, personListView);
 
-        // EditPreviousCommand preserves the current view instead of switching.
-        if (command instanceof EditPreviousCommand) {
-            commandResult = replacePersonListView(commandResult, personListView);
-        }
-
         String saveFailureMessage = null;
         try {
             storage.saveAddressBook(model.getAddressBook());
@@ -157,18 +152,6 @@ public class LogicManager implements Logic {
             startupMessage = Optional.of(String.format(MESSAGE_INVALID_ALIASES_REMOVED_ON_STARTUP,
                     String.join(", ", invalidAliases)));
         }
-    }
-
-    /**
-     * Returns a new {@code CommandResult} with the same fields but a different {@code PersonListView}.
-     */
-    private static CommandResult replacePersonListView(CommandResult result, PersonListView personListView) {
-        return new CommandResult(
-                result.getFeedbackToUser(),
-                personListView,
-                result.shouldShowHelp(),
-                result.shouldExit(),
-                result.getCommandTextToPopulate().orElse(null));
     }
 
     /**
