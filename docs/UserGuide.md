@@ -74,6 +74,8 @@ For commands that validate prefixes, such as `add`, `edit`, and `find`, RosterBo
 Common abbreviations with a single character after the slash (such as `c/o` (care of), `w/o` (without)
 or `w/` (with)) are recognised and allowed.
 
+RosterBolt, however, does **NOT** support multiple-character abbreviations after the slash (e.g., `he/she`, `m/w/f`), and you are advised to avoid using such abbreviations in your input. 
+Instead, please consider rephrasing the input to avoid the need for such abbreviations (e.g., `he or she`), or using supported single-character abbreviations (e.g., `h/s` instead of `he/she`).
 </div>
 
 <div markdown="block" class="alert alert-info">
