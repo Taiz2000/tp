@@ -44,9 +44,24 @@ public class FindCommand extends Command {
     @Override
     public CommandResult execute(Model model, PersonListView personListView) {
         requireNonNull(model);
-        model.updateFilteredKeptPersonList(predicate);
-        return new CommandResult(
-                String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, model.getFilteredKeptPersonList().size()));
+        requireNonNull(personListView);
+
+        switch (personListView) {
+        case KEPT_PERSONS:
+            model.updateFilteredKeptPersonList(predicate);
+            int numberOfKeptPersons = model.getFilteredKeptPersonList().size();
+            return new CommandResult(
+                    String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, numberOfKeptPersons),
+                    PersonListView.KEPT_PERSONS);
+        case DELETED_PERSONS:
+            model.updateFilteredDeletedPersonList(predicate);
+            int numberOfDeletedPersons = model.getFilteredDeletedPersonList().size();
+            return new CommandResult(
+                    String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, numberOfDeletedPersons),
+                    PersonListView.DELETED_PERSONS);
+        default:
+            throw new IllegalArgumentException("Unexpected PersonListView: " + personListView);
+        }
     }
 
     @Override

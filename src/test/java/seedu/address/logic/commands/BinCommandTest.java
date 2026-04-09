@@ -1,6 +1,7 @@
 package seedu.address.logic.commands;
 
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.logic.commands.CommandTestUtil.showDeletedPersonAtIndex;
 import static seedu.address.logic.commands.CommandTestUtil.showPersonAtIndex;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
@@ -27,18 +28,36 @@ public class BinCommandTest {
     public void setUp() {
         model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
         expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedCommandResult = new CommandResult(
-                BinCommand.MESSAGE_SUCCESS, PersonListView.DELETED_PERSONS, false, false);
     }
 
     @Test
-    public void execute_listIsNotFiltered_showsFullList() {
-        assertCommandSuccess(new BinCommand(), model, expectedCommandResult, expectedModel);
+    public void execute_viewingAllKeptPersons_switchesToDeletedPersons() {
+        assertCommandSuccess(new BinCommand(), model, PersonListView.KEPT_PERSONS,
+                expectedCommandResult, expectedModel);
     }
 
     @Test
-    public void execute_listIsFiltered_showsFullList() {
+    public void execute_viewingFilteredKeptPersons_switchesToDeletedPersons() {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
-        assertCommandSuccess(new BinCommand(), model, expectedCommandResult, expectedModel);
+        showPersonAtIndex(expectedModel, INDEX_FIRST_PERSON);
+
+        // Kept persons list should stay filtered
+        assertCommandSuccess(new BinCommand(), model, PersonListView.KEPT_PERSONS,
+                expectedCommandResult, expectedModel);
+    }
+
+    @Test
+    public void execute_viewingAllDeletedPersons_staysOnDeletedPersons() {
+        assertCommandSuccess(new BinCommand(), model, PersonListView.DELETED_PERSONS,
+                expectedCommandResult, expectedModel);
+    }
+
+    @Test
+    public void execute_viewingFilteredDeletedPersons_showsAllDeletedPersons() {
+        showDeletedPersonAtIndex(model, INDEX_FIRST_PERSON);
+
+        // Deleted persons list becomes unfiltered
+        assertCommandSuccess(new BinCommand(), model, PersonListView.DELETED_PERSONS,
+                expectedCommandResult, expectedModel);
     }
 }

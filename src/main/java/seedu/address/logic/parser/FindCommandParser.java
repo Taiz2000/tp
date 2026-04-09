@@ -83,6 +83,7 @@ public class FindCommandParser implements Parser<FindCommand> {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(
                 " " + args, PREFIX_MATCH_TYPE, PREFIX_AVAILABILITY);
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_MATCH_TYPE, PREFIX_AVAILABILITY);
+        argMultimap.verifyNoUnknownPrefixes("m/, va/");
 
         Optional<String> rawMatchType = argMultimap.getValue(PREFIX_MATCH_TYPE);
         Optional<String> rawAvail = argMultimap.getValue(PREFIX_AVAILABILITY);

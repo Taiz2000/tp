@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_PREFIX;
 import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.AVAILABILITY_DESC_AMY;
@@ -38,6 +39,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_RECORD_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_ROLE_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
+import static seedu.address.logic.parser.CliSyntax.KNOWN_PERSON_PREFIXES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_AVAILABILITY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
@@ -293,6 +295,25 @@ public class EditCommandParserTest {
         String userInput = targetIndex.getOneBased() + " " + PREFIX_ROLE + " " + PREFIX_NOTES;
 
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withRole("").withNotes("").build();
+        EditCommand expectedCommand = new EditCommand(targetIndex, descriptor);
+
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
+    @Test
+    public void parse_unknownPrefix_failure() {
+        assertParseFailure(parser, "1" + NAME_DESC_AMY + " x/foo" + PHONE_DESC_AMY,
+                String.format(MESSAGE_UNKNOWN_PREFIX, "x/", KNOWN_PERSON_PREFIXES));
+    }
+
+    @Test
+    public void parse_abbreviationInValue_success() {
+        // "s/o" abbreviation in address should not be flagged as unknown prefix
+        Index targetIndex = INDEX_FIRST_PERSON;
+        String userInput = targetIndex.getOneBased() + " a/123 s/o Main St";
+
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                .withAddress("123 s/o Main St").build();
         EditCommand expectedCommand = new EditCommand(targetIndex, descriptor);
 
         assertParseSuccess(parser, userInput, expectedCommand);

@@ -14,9 +14,18 @@ public class ExitCommandTest {
     private Model expectedModel = new ModelManager();
 
     @Test
-    public void execute_exit_success() {
+    public void execute_exitViewingKeptPersons_success() {
         CommandResult expectedCommandResult = new CommandResult(
                 MESSAGE_EXIT_ACKNOWLEDGEMENT, PersonListView.KEPT_PERSONS, false, true);
-        assertCommandSuccess(new ExitCommand(), model, expectedCommandResult, expectedModel);
+        assertCommandSuccess(new ExitCommand(), model, PersonListView.KEPT_PERSONS,
+                expectedCommandResult, expectedModel);
+    }
+
+    @Test
+    public void execute_exitViewingDeletedPersons_success() {
+        CommandResult expectedCommandResult = new CommandResult(
+                MESSAGE_EXIT_ACKNOWLEDGEMENT, PersonListView.DELETED_PERSONS, false, true);
+        assertCommandSuccess(new ExitCommand(), model, PersonListView.DELETED_PERSONS,
+                expectedCommandResult, expectedModel);
     }
 }

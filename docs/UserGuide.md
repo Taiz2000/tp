@@ -66,6 +66,16 @@ RosterBolt reduces admin overhead by **streamlining repetitive tasks** (such as 
   e.g. if the command specifies `help 123`, it will be interpreted as `help`.
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
+
+</div>
+
+<div markdown="span" class="alert alert-warning">:exclamation: **Caution:**
+RosterBolt will flag text that **looks like** an unknown prefix (e.g., `x/value`) if it appears in your input.
+Common abbreviations with a single character after the slash (such as `c/o` (care of), `w/o` (without)
+or `w/` (with)) are recognised and allowed. 
+
+RosterBolt, however, does **NOT** support multiple-character abbreviations after the slash (e.g., `he/she`, `m/w/f`),
+and you are advised to avoid using such abbreviations in your input. Instead, please consider rephrasing the input to avoid the need for such abbreviations (e.g., `he or she`), or using supported single-character abbreviations (e.g., `h/s` instead of `he/she`).
 </div>
 
 ### Viewing help : `help`

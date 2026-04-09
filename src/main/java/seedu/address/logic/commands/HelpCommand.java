@@ -17,6 +17,6 @@ public class HelpCommand extends Command {
 
     @Override
     public CommandResult execute(Model model, PersonListView personListView) {
-        return new CommandResult(SHOWING_HELP_MESSAGE, PersonListView.KEPT_PERSONS, true, false);
+        return new CommandResult(SHOWING_HELP_MESSAGE, personListView, true, false);
     }
 }
