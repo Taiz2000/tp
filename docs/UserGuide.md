@@ -172,7 +172,7 @@ Format: `aliases`
 
 ### Removing a command alias : `unalias`
 
-Removes an existing command alias, so you can remove an alias that you no longer need.
+Removes an existing command alias, e.g. if you no longer need it.
 
 Format: `unalias SHORT`
 
@@ -287,7 +287,7 @@ Format: `restore INDEX [MORE_INDICES]`
 * If you accidentally repeat an index, the duplicate indices are simply ignored.
 * Restored volunteers are moved out of the recycle bin and added back into your active contact list.
 * You can't restore a volunteer if someone with the same phone number or email already exists in your active contact list. The command will be rejected with an error explaining the conflict.
-* Similarly, you can't restore two volunteers that share the same phone number or email in a single `restore` command.
+* Similarly, you can't restore two volunteers that share the same phone number or email in a single `restore` command. The command will be rejected with an error explaining the conflict.
 
 Examples:
 * `bin` followed by `restore 2 3` restores the 2nd and 3rd volunteers in the recycle bin.
