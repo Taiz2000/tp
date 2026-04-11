@@ -111,7 +111,7 @@ Format: `help`
 
 Adds a new volunteer to your RosterBolt contact list.
 
-You must be viewing the working list to use this command. Otherwise, you'll see an error message and the volunteer won't be added.
+You must be viewing the contact list to use this command. Otherwise, you'll see an error message and the volunteer won't be added.
 
 Format: `add n/NAME p/PHONE e/EMAIL a/ADDRESS [t/TAG]…​ [r/ROLE] [nt/NOTES] [va/AVAILABILITY]…​ [vr/RECORD]…​`
 
@@ -194,7 +194,7 @@ Format: `bin`
 
 Edits the details of a volunteer that's already in your RosterBolt contact list. Use this when a volunteer changes their phone number, email, availability, or any other information.
 
-You must be viewing the working list to use this command. Otherwise, you'll see an error message and no changes will be made.
+You must be viewing the contact list to use this command. Otherwise, you'll see an error message and no changes will be made.
 
 Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [r/ROLE] [nt/NOTES] [t/TAG]…​ [va/AVAILABILITY]…​ [vr/RECORD]…​`
 
@@ -213,7 +213,7 @@ Examples:
 
 Finds volunteers in your RosterBolt contact list matching any of the given search terms, with an optional filter for availability. This is handy when you need to quickly find a specific volunteer, or locate everyone who's free on a particular day and time for an upcoming event.
 
-You can use this command while viewing either the working list or the recycle bin, and RosterBolt will search within the currently displayed list.
+You can use this command while viewing either the contact list or the recycle bin, and RosterBolt will search within the currently displayed list.
 
 Format: `find [m/MATCH_TYPE] [va/DAY,HH:mm,HH:mm] [SEARCH_TERM [MORE_SEARCH_TERMS]]`
 
@@ -253,7 +253,7 @@ Examples:
 
 Displays a quick overview of your volunteer roster through text-based charts. Use this to spot patterns, like which roles are understaffed or who your most active volunteers are.
 
-You can use this command while viewing either the working list or the recycle bin, but RosterBolt will always calculate the statistics based on the working list, and switch your view to the working list.
+You can use this command while viewing either the contact list or the recycle bin, but RosterBolt will always calculate the statistics based on the full contact list, and switch your view to the contact list.
 
 Format: `stats CATEGORY`
 
@@ -269,7 +269,7 @@ Examples:
 
 Deletes volunteer(s) from your RosterBolt contact list. Don't worry, deleted volunteers are moved to the recycle bin, so you can [restore](#restoring-a-deleted-volunteer--restore) them if needed.
 
-You must be viewing the working list to use this command. Otherwise, you'll see an error message and no volunteer(s) will be deleted.
+You must be viewing the contact list to use this command. Otherwise, you'll see an error message and no volunteer(s) will be deleted.
 
 Format: `delete INDEX [MORE_INDICES]`
 
@@ -308,7 +308,7 @@ Examples:
 
 Imports volunteers in bulk from a CSV (spreadsheet) file. This is useful when onboarding a large group of new volunteers at once, or migrating data from another tool.
 
-You can use this command while viewing either the working list or the recycle bin, but RosterBolt will always import volunteers into the working list, and switch your view to the working list.
+You can use this command while viewing either the contact list or the recycle bin, but RosterBolt will always import volunteers into the contact list, and switch your view to the contact list.
 
 Format: `import FILE_PATH`
 
@@ -331,7 +331,7 @@ Examples:
 
 Exports all your active volunteers to a CSV (spreadsheet) file. This is useful for creating backups, sharing your roster with others, or working with the data in spreadsheet software like Excel or Google Sheets.
 
-You can use this command while viewing either the working list or the recycle bin, but RosterBolt will always export volunteers in the working list, and switch your view to the working list.
+You can use this command while viewing either the contact list or the recycle bin, but RosterBolt will always export volunteers in the full contact list, and switch your view to the contact list.
 
 Format: `export FILE_PATH`
 
@@ -344,7 +344,7 @@ Examples:
 
 Clears all volunteers from your active contact list at once. This is a quick way to start fresh, as all removed volunteers are moved to the recycle bin so you can still [restore](#restoring-a-deleted-volunteer--restore) them before closing the app.
 
-You must be viewing the working list to use this command. Otherwise, you'll see an error message and your contacts won't be cleared.
+You must be viewing the contact list to use this command. Otherwise, you'll see an error message and your contacts won't be cleared.
 
 Format: `clear`
 

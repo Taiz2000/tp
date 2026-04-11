@@ -550,6 +550,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 |             Alias             | A user-defined shortcut that maps a short command word to a supported built-in command word.                                     |
 |      Availability Window      | The time period during which a volunteer is available to participate in events.                                                  |
 |        Bulk Operation         | An operation that applies to multiple contacts within a single command (e.g., deleting or assigning several volunteers at once). |
+|        Contact List           | The main list of active (non-deleted) contacts, as opposed to the recycle bin.                                                   |
 | CSV (Comma-Separated Values)  | A text file format used to store tabular data, used by the system for importing or exporting volunteer data.                     |
 |       Duplicate Contact       | A contact that shares critical identifying fields (e.g., phone number or email address) with an existing contact in the system.  |
 |         Mainstream OS         | Windows, Linux, Unix, macOS.                                                                                                     |
@@ -560,7 +561,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 |              Tag              | A user-defined label used to categorize volunteers (e.g., “first-aid”, “logistics”).                                             |
 |    Volunteer Availability     | A recurring weekly time slot (day, start time, end time) during which a volunteer is available.                                  |
 |      Volunteer Record         | A datetime range (start and end) representing a period during which a volunteer has served.                                      |
-|        Working List           | The main list of active (non-deleted) contacts, as opposed to the recycle bin.                                                   |
 
 --------------------------------------------------------------------------------------------------------------------
 
