@@ -390,7 +390,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * *` | volunteer coordinator | delete a volunteer by index in the list | act quickly without retyping names |
 | `* * *` | volunteer coordinator | list all contacts | view my current volunteer roster |
 | `* * *` | volunteer coordinator | search volunteers by name | quickly locate a specific volunteer |
-| `* * *` | user | see confirmation messages after commands | avoid wasting time double-checking that my command was executed successfully |
+| `* * *` | user | see messages confirming that my command was executed successfully              | be confident that the application has executed my command |
 | `* * *` | user | have my data automatically saved after each command | avoid manually saving data |
 | `* * *` | returning user | automatically load my saved data on startup | continue from where I left off |
 | `* *` | user | edit and re-run previous commands | quickly correct input mistakes |
