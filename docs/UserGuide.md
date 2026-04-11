@@ -128,9 +128,9 @@ Examples:
 * `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal r/Logistics nt/Prefers morning shifts va/SATURDAY,09:00,12:00 va/SUNDAY,13:00,16:00`
 * `add n/Alex Tan p/91234567 e/alex@example.com a/NUS`
 
-### Listing all volunteers : `list`
+### Showing working list of volunteers : `list`
 
-Lists all volunteers in your RosterBolt contact list, optionally sorted by a chosen attribute. This is useful for getting an overview of your roster or finding volunteers in a particular order.
+Lists all volunteers in your RosterBolt working list, optionally sorted by a chosen attribute. This is useful for getting an overview of your roster or finding volunteers in a particular order.
 
 Format: `list [ATTRIBUTE [asc|desc]]`
 
@@ -213,6 +213,8 @@ Examples:
 
 Finds volunteers in your RosterBolt contact list matching any of the given keywords, with an optional filter for availability. This is handy when you need to quickly find a specific volunteer, or locate everyone who's free on a particular day and time for an upcoming event.
 
+You can use this command while viewing either the working list or the recycle bin, and RosterBolt will search within the currently displayed list.
+
 Format: `find [m/MATCH_TYPE] [va/DAY,HH:mm,HH:mm] [KEYWORD [MORE_KEYWORDS]]`
 
 * The search is case-insensitive. e.g. `hans` matches `Hans`
@@ -243,6 +245,8 @@ Examples:
 ### Viewing volunteer statistics : `stats`
 
 Displays a quick overview of your volunteer roster through text-based charts. Use this to spot patterns, like which roles are understaffed or who your most active volunteers are.
+
+You can use this command while viewing either the working list or the recycle bin, but RosterBolt will always calculate the statistics based on the working list, and switch your view to the working list.
 
 Format: `stats CATEGORY`
 
@@ -297,6 +301,8 @@ Examples:
 
 Imports volunteers in bulk from a CSV (spreadsheet) file. This is useful when onboarding a large group of new volunteers at once, or migrating data from another tool.
 
+You can use this command while viewing either the working list or the recycle bin, but RosterBolt will always import volunteers into the working list, and switch your view to the working list.
+
 Format: `import FILE_PATH`
 
 * Your CSV file must include the column headers `name`, `phone`, `email`, and `address`. 
@@ -317,6 +323,8 @@ Examples:
 ### Exporting volunteers to a CSV file : `export`
 
 Exports all your active volunteers to a CSV (spreadsheet) file. This is useful for creating backups, sharing your roster with others, or working with the data in spreadsheet software like Excel or Google Sheets.
+
+You can use this command while viewing either the working list or the recycle bin, but RosterBolt will always export volunteers in the working list, and switch your view to the working list.
 
 Format: `export FILE_PATH`
 
