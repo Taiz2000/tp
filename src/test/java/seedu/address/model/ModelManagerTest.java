@@ -186,13 +186,13 @@ public class ModelManagerTest {
         assertFalse(modelManager.equals(new ModelManager(differentAddressBook, userPrefs)));
 
         // different filteredList for kept persons -> returns false
-        String[] keywords = ALICE.getName().fullName.split("\\s+");
-        modelManager.updateFilteredKeptPersonList(new PersonContainsKeywordsPredicate(Arrays.asList(keywords)));
+        String[] searchTerms = ALICE.getName().fullName.split("\\s+");
+        modelManager.updateFilteredKeptPersonList(new PersonContainsKeywordsPredicate(Arrays.asList(searchTerms)));
         assertFalse(modelManager.equals(new ModelManager(addressBook, userPrefs)));
 
         // both filteredLists are same -> returns true
         modelManager.setAddressBook(deletedAddressBook);
-        modelManager.updateFilteredKeptPersonList(new PersonContainsKeywordsPredicate(Arrays.asList(keywords)));
+        modelManager.updateFilteredKeptPersonList(new PersonContainsKeywordsPredicate(Arrays.asList(searchTerms)));
         assertTrue(modelManager.equals(new ModelManager(deletedAddressBook, userPrefs)));
 
         // resets modelManager to initial state for upcoming tests

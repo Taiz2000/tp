@@ -123,7 +123,7 @@ public class AddressBookParserTest {
     }
 
     @Test
-    public void parseCommand_findWithAvailabilityAndKeywords() throws Exception {
+    public void parseCommand_findWithAvailabilityAndSearchTerms() throws Exception {
         VolunteerAvailability query = VolunteerAvailability.fromString("MONDAY,14:00,17:00");
         PersonAvailableDuringPredicate availPredicate = new PersonAvailableDuringPredicate(query);
         PersonContainsKeywordsPredicate textPredicate =
@@ -137,10 +137,10 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_find() throws Exception {
-        List<String> keywords = Arrays.asList("foo", "bar", "baz");
+        List<String> searchTerms = Arrays.asList("foo", "bar", "baz");
         FindCommand defaultCommand = (FindCommand) parser.parseCommand(
-                FindCommand.COMMAND_WORD + " " + keywords.stream().collect(Collectors.joining(" ")));
-        assertEquals(new FindCommand(new PersonContainsKeywordsPredicate(keywords)), defaultCommand);
+                FindCommand.COMMAND_WORD + " " + searchTerms.stream().collect(Collectors.joining(" ")));
+        assertEquals(new FindCommand(new PersonContainsKeywordsPredicate(searchTerms)), defaultCommand);
     }
 
     @Test
