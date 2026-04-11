@@ -44,6 +44,48 @@ RosterBolt reduces admin overhead by **streamlining repetitive tasks** (such as 
 
 --------------------------------------------------------------------------------------------------------------------
 
+## Usage tips and tricks
+
+RosterBolt is designed around practical workflows around volunteer coordination. Here are just some ways to make RosterBolt work for you:
+
+### Fill a shift fairly
+
+**Situation:** You need a few ushers for an upcoming charity event on Saturday from 09:00 to 12:00, and want to prioritize contacting **active volunteers** who haven't helped out recently.
+
+**Workflow:**
+1. `list vr asc`
+  - This sorts volunteers and surfaces those who have not served recently to the top.
+1. `find va/SATURDAY,09:00,12:00 usher`
+  - Note that [`find`](#finding-volunteers-by-keyword-find) can find keywords in any field, so searching "usher" is all it takes to find volunteers with the usher role!
+1. `edit 3 nt/Asked for Saturday usher shift; awaiting reply`
+  - After contacting volunteers, you can update their records with notes for easy bookkeeping and coordination.
+
+### Update the right volunteer from a short list
+
+**Situation:** A volunteer tells you they can't make it for a last-minute shift, but their first name is quite common (`xiaoming`) and you don't remember their exact details. You want to quickly find them from a shortlist of possible matches and update their contact information.
+
+**Workflow:**
+1. `find m/ss xiaoming`
+  - This finds volunteers with any attribute "xiaoming" (here we want their name)
+1. `edit 1 nt/Not available for Orange Parade 26`
+  - This updates the notes of the 1st volunteer in the search results. (assuming that is the right person)
+
+### Repeat nearby searches quickly
+
+**Situation:** You are checking several possible shift timings and do not want to retype almost the same availability search each time.
+
+**Workflow:**
+1. `alias f find`
+  - This lets you type `f` instead of `find`.
+1. `f va/MONDAY,18:00,20:00 logistics`
+  - This finds logistics volunteers available for that Monday evening slot.
+1. `editprev`
+  - RosterBolt loads the previous command (in its full form, e.g. `find va/MONDAY,18:00,20:00 logistics`) back into the command box for editing.
+1. Change the loaded command to `find va/MONDAY,20:00,22:00 logistics`, then press Enter.
+  - This checks the very next slot without having to retype the whole command.
+
+--------------------------------------------------------------------------------------------------------------------
+
 ## Features
 
 <div markdown="span" class="alert alert-warning">:exclamation: **Caution:**
@@ -218,9 +260,9 @@ You can use this command while viewing either the working list or the recycle bi
 Format: `find [m/MATCH_TYPE] [va/DAY,HH:mm,HH:mm] [SEARCH_TERM [MORE_SEARCH_TERMS]]`
 
 * **Search terms:**
+  * The search covers **all fields other than availability**: name, phone, email, address, role, notes, and tags.
   * The search is case-insensitive. e.g. `hans` matches `Hans`
   * The order of the search terms doesn't matter. e.g. `Hans Bo` matches `Bo Hans`
-  * The search covers all fields: name, phone, email, address, role, notes, and tags.
   * If you provide multiple search terms, volunteers matching **any** of them are shown (i.e. it's an `OR` search).
     e.g. `Hans Bo` returns `Hans Gruber`, `Bo Yang`
 * **Match type (`m/MATCH_TYPE`):**
