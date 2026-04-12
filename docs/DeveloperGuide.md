@@ -625,7 +625,7 @@ testers are expected to do more *exploratory* testing.
 
 1. Editing a person's fields
 
-   1. Prerequisites: Must be viewing the working list. List all persons using `list`. At least one person in the list and no other person shares the same phone or email as the below examples.
+   1. Prerequisites: Must be viewing the contact list. List all persons using `list`. At least one person in the list and no other person shares the same phone or email as the below examples.
 
    1. Test case: `edit 1 p/81234567`<br>
       Expected: First person's phone number is updated. Status message shows the edited contact.
@@ -768,7 +768,7 @@ testers are expected to do more *exploratory* testing.
 
 1. Clearing the address book
 
-   1. Prerequisites: Must be viewing the working list (run `list` if unsure). At least one contact in the list.
+   1. Prerequisites: Must be viewing the contact list (run `list` if unsure). At least one contact in the list.
 
    1. Test case: `clear`<br>
       Expected: All contacts are moved to the recycle bin. Status message shows "Cleared all persons."
@@ -777,7 +777,7 @@ testers are expected to do more *exploratory* testing.
 
 1. Deleting a person while all persons are being shown
 
-   1. Prerequisites: Must be viewing the working list. List all persons using the `list` command. Multiple persons in the list.
+   1. Prerequisites: Must be viewing the contact list. List all persons using the `list` command. Multiple persons in the list.
 
    1. Test case: `delete 1`<br>
       Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
