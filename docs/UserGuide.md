@@ -327,7 +327,7 @@ Format: `import FILE_PATH`
   * This is especially important for the optional structured fields `availabilities` and `records`.
   * `availabilities` values use the format `DAY,HH:mm,HH:mm`, so a valid CSV cell looks like `"MONDAY,09:00,12:00"`.
   * `records` values use the format `yyyy-MM-ddTHH:mm,yyyy-MM-ddTHH:mm`, so a valid CSV cell looks like `"2026-04-01T09:00,2026-04-01T12:00"`.
-  * Blank `availabilities` and `records` fields are allowed.
+  * Blank `availabilities` and `records` fields are allowed. An empty cell, without `""`, meaning that the volunteer has no availabilities or records for that field, is allowed.
   * CSV files exported by RosterBolt already use the correct format and can be imported back directly.
 * If the file can't be found or read, the import fails, and you'll see an error message.
 * Values in each column must conform to the [field constraints](#field-constraints).
@@ -351,11 +351,11 @@ Alice Tan,91234567,alice@example.com,NUS,,
 
 * Incorrect CSV content:
 
+  Unquoted commas are interpreted as column separators in CSV, so rows like this do not match the expected columns and may be skipped as invalid.
+
 ```csv
 Bob Lim,92345678,bob@example.com,NUS,MONDAY,09:00,12:00,2026-04-01T09:00,2026-04-01T12:00
 ```
-
-  Unquoted commas are interpreted as column separators in CSV, so rows like this do not match the expected columns and may be skipped as invalid.
 
 ### Exporting volunteers to a CSV file : `export`
 
