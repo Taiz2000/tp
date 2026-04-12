@@ -262,7 +262,9 @@ Examples:
 
 Displays a quick overview of your volunteer roster through text-based charts. Use this to spot patterns, like which roles are understaffed or who your most active volunteers are.
 
-You can use this command while viewing either the contact list or the recycle bin, but RosterBolt will always calculate the statistics based on the full contact list, and switch your view to the contact list.
+You must be viewing the contact list to use this command. Otherwise, you'll see an error message and no statistics will be displayed.
+
+If you have an active `find` filter, RosterBolt will calculate the statistics based on the filtered contact list. Use `list` first if you want statistics for the full contact list.
 
 Format: `stats CATEGORY`
 

@@ -710,16 +710,19 @@ testers are expected to do more *exploratory* testing.
 
 1. Viewing statistics
 
-   1. Prerequisites: At least one person with a role assigned.
+   1. Prerequisites: At least one person with a role assigned. Must be viewing the contact list.
 
    1. Test case: `stats role`<br>
-      Expected: Role distribution statistics are displayed.
+      Expected: Role distribution statistics are displayed for the currently displayed contact list.
 
    1. Test case: `stats record`<br>
-      Expected: Volunteer record statistics are displayed.
+      Expected: Volunteer record statistics are displayed for the currently displayed contact list.
 
    1. Test case: `stats invalid`<br>
       Expected: Error message about invalid command format, showing the valid categories.
+
+   1. Test case: `stats role` while viewing the recycle bin<br>
+      Expected: Error message indicating that the command cannot be used while viewing the recycle bin.
 
 ### Command aliases
 
