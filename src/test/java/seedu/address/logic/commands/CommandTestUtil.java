@@ -113,7 +113,7 @@ public class CommandTestUtil {
     public static void assertCommandSuccess(Command command, Model actualModel, CommandResult expectedCommandResult,
             Model expectedModel) {
         try {
-            CommandResult result = command.execute(actualModel);
+            CommandResult result = command.execute(actualModel, PersonListView.KEPT_PERSONS);
             assertEquals(expectedCommandResult, result);
             assertEquals(expectedModel, actualModel);
         } catch (CommandException ce) {
@@ -147,7 +147,7 @@ public class CommandTestUtil {
     @Deprecated
     public static void assertCommandSuccess(Command command, Model actualModel, String expectedMessage,
             Model expectedModel) {
-        CommandResult expectedCommandResult = new CommandResult(expectedMessage);
+        CommandResult expectedCommandResult = new CommandResult(expectedMessage, PersonListView.KEPT_PERSONS);
         assertCommandSuccess(command, actualModel, expectedCommandResult, expectedModel);
     }
 
@@ -193,7 +193,8 @@ public class CommandTestUtil {
         List<Person> expectedFilteredKeptList = new ArrayList<>(actualModel.getFilteredKeptPersonList());
         List<Person> expectedFilteredDeletedList = new ArrayList<>(actualModel.getFilteredDeletedPersonList());
 
-        assertThrows(CommandException.class, expectedMessage, () -> command.execute(actualModel));
+        assertThrows(CommandException.class,
+            expectedMessage, () -> command.execute(actualModel, PersonListView.KEPT_PERSONS));
         assertEquals(expectedAddressBook, actualModel.getAddressBook());
         assertEquals(expectedUserPrefs, actualModel.getUserPrefs());
         assertEquals(expectedFilteredKeptList, actualModel.getFilteredKeptPersonList());

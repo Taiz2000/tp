@@ -9,7 +9,7 @@ title: Developer Guide
 
 ## **Acknowledgements**
 
-* OpenAI Codex was used to devise boilerplate tests based on natural-language specifications (e.g. "Make sure that a Notes instance can house any valid string value"). Its footprint can be found in most testing files and setup utilities in `src/test` as as result.
+* OpenAI Codex was used to devise boilerplate tests based on natural-language specifications (e.g. "Make sure that a Notes instance can house any valid string value"). Its footprint can be found in most testing files and setup utilities in `src/test` as a result.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -161,7 +161,7 @@ This section describes some noteworthy details on how certain features are imple
 
 ### Find command
 
-The `find` command is implemented as a small "pipeline" that converts user input into a single `PersonPredicate` object, and then updates the model's filtered person list by applying that predicate. The command supports text-based keyword matching (via `m/` prefix) and volunteer availability filtering (via `va/` prefix), either independently or combined. The diagram below summarizes the key classes and their relationships.
+The `find` command is implemented as a small "pipeline" that converts user input into a single `PersonPredicate` object, and then updates the model's filtered person list by applying that predicate. The command supports text-based search term matching (via `m/` prefix) and volunteer availability filtering (via `va/` prefix), either independently or combined. The diagram below summarizes the key classes and their relationships.
 
 ![Find Command Class Diagram](images/FindCommandClassDiagram.png)
 
@@ -174,14 +174,14 @@ The sequence diagram below shows how the `find` command arguments are transforme
 The parsing flow is as follows:
 * `LogicManager` calls `AddressBookParser#parseCommand()`, which instantiates a `FindCommandParser` for the `find` command.
 * `FindCommandParser#parseArgs(...)` processes the argument multimap:
-  * If the user provides an `m/` prefix, `FindMatchType.fromToken()` determines the match type; otherwise the default keyword match type is assumed.
+  * If the user provides an `m/` prefix, `FindMatchType.fromToken()` determines the match type; otherwise the default keyword match type (`m/kw`) is assumed.
   * If the user provides a `va/` prefix, `VolunteerAvailability.fromString()` parses the availability time period.
-  * Keywords are extracted from the trailing content after the last prefix, or from the preamble when no prefixes are used.
+  * Search terms are extracted from the trailing content after the last prefix, or from the preamble when no prefixes are used.
   * All parsed arguments are stored in a `ParsedFindArgs` object.
 * `FindCommandParser#buildPredicate(...)` creates the appropriate predicate:
-  * **Keywords only**: `PersonContainsFieldsPredicateFactory.createPredicate(...)` returns a text-matching predicate.
+  * **Search terms only**: `PersonContainsFieldsPredicateFactory.createPredicate(...)` returns a text-matching predicate.
   * **Availability only**: a `PersonAvailableDuringPredicate` is created, which checks that a volunteer's availability fully covers the queried time period.
-  * **Both keywords and availability**: a `CombinedAndPersonPredicate` is created, which ANDs the text predicate and availability predicate together.
+  * **Both search terms and availability**: a `CombinedAndPersonPredicate` is created, which ANDs the text predicate and availability predicate together.
 * `FindCommandParser` constructs the `FindCommand` with the predicate and returns it to `AddressBookParser`, which returns it to `LogicManager`.
 
 #### Predicate structure
@@ -190,15 +190,15 @@ All find predicates implement `PersonPredicate`, which is a `Predicate<Person>`.
 
 **Text-matching predicates** share an abstract base class (`PersonContainsFieldsPredicate`) that:
 
-* iterates through each keyword
-* returns `true` as soon as any keyword matches any supported field (i.e. `OR` semantics across keywords)
-* checks the keyword against most `Person` fields (e.g. name, phone, email, address, role, notes, tags)
+* iterates through each search term
+* returns `true` as soon as any search term matches any supported field (i.e. `OR` semantics across search terms)
+* checks the search term against most `Person` fields (e.g. name, phone, email, address, role, notes, tags)
 * delegates the actual field-matching logic to `matchesField(...)`
 * concrete predicate classes implement the `matchesField(...)` method, keeping the overall matching logic consistent and easy to extend
 
 **`PersonAvailableDuringPredicate`** checks whether any of a person's `VolunteerAvailability` entries fully cover the queried time period (same day, starts at or before query start, ends at or after query end).
 
-**`CombinedAndPersonPredicate`** takes a list of `PersonPredicate` objects and requires all of them to match (AND logic). This is used when both keywords and availability are specified.
+**`CombinedAndPersonPredicate`** takes a list of `PersonPredicate` objects and requires all of them to match (AND logic). This is used when both search terms and availability are specified.
 
 #### Extending find
 
@@ -297,11 +297,9 @@ The following activity diagram summarizes what happens when a user executes a ne
   * Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
   * Cons: We must ensure that the implementation of each individual command are correct.
 
-_{more aspects and alternatives to be added}_
-
 ### \[Proposed\] Data archiving
 
-_{Explain here how the data archiving feature will be implemented}_
+Data archiving is planned for a future release (v2.0). Implementation details will be added when the feature is developed.
 
 ### CSV import/export commands
 
@@ -392,12 +390,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * *` | volunteer coordinator | delete a volunteer by index in the list | act quickly without retyping names |
 | `* * *` | volunteer coordinator | list all contacts | view my current volunteer roster |
 | `* * *` | volunteer coordinator | search volunteers by name | quickly locate a specific volunteer |
-| `* * *` | user | see confirmation messages after commands | avoid wasting time double-checking that my command was executed successfully |
+| `* * *` | user | see messages confirming that my command was executed successfully | be confident that the application has executed my command |
 | `* * *` | user | have my data automatically saved after each command | avoid manually saving data |
 | `* * *` | returning user | automatically load my saved data on startup | continue from where I left off |
 | `* *` | user | edit and re-run previous commands | quickly correct input mistakes |
 | `* *` | fast typist | define custom command aliases | tailor the application to my workflow |
-| `* *` | volunteer coordinator | be warned when adding contacts with duplicate email or phone | avoid redundant volunteer records |
+| `* *` | volunteer coordinator | be prevented from adding contacts with duplicate phone numbers or email addresses | avoid redundant volunteer records |
 | `* *` | volunteer coordinator | include volunteer role information when adding a contact | track manpower allocation |
 | `* *` | volunteer coordinator | include volunteer availability when adding a contact | plan recurring events efficiently |
 | `* *` | volunteer coordinator | import volunteers from a CSV file | onboard an existing roster without retyping |
@@ -406,7 +404,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* *` | volunteer coordinator | delete multiple contacts in one command | manage large volunteer rosters efficiently |
 | `* *` | volunteer coordinator | restore recently deleted contacts | recover from accidental deletions |
 | `* *` | volunteer coordinator | view deleted contacts in a recycle bin | prevent irreversible mistakes |
-| `* *` | volunteer coordinator | sort contacts by name, phone, email, address or tag | organize my volunteer roster clearly |
+| `* *` | volunteer coordinator | sort contacts by name, phone, email, address, role or tag | organize my volunteer roster clearly |
 | `* *` | volunteer coordinator | export volunteer information to a CSV file | analyze volunteer data using external tools |
 | `* *` | volunteer coordinator | search across multiple fields (name, phone, email, address, role, notes, tags) | locate volunteers using any known detail |
 | `* *` | volunteer coordinator | search using multiple criteria | filter volunteers more precisely |
@@ -458,21 +456,13 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 - On application startup, aliases loaded from preferences are revalidated against current alias rules.
 - Invalid entries are removed, and a one-time warning is shown in the result display.
 
-**Use Case: Handle Duplicate Contact**
+**Use Case: Reject Duplicate Contact**
 
 **MSS:**
 
-1. System warns user that it detected a duplicate contact.
-2. System asks the user if they wish to proceed.
-3. User chooses to proceed.
-4. System returns a “Proceed” signal to the calling use case.
+1. System detects that a contact with the same phone number or email address already exists.
+2. System rejects the operation and displays an error message indicating the duplicate.
    Use case ends.
-
-**Extensions:**
-
-* 2a. User chooses to cancel.
-  * 2a1. System returns a “Cancel” signal to the calling use case.
-  * 2a2. Use case ends.
 
 **Use Case: Add Volunteer Contact**
 
@@ -494,10 +484,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   * 2a1. System stops the addition, and displays an error message detailing the specific validation failure.
   * 2a2. Use case ends.
 
-* 2b. System detects a potential duplicate contact based on critical fields (e.g. duplicate email address or phone number).
-  * 2b1. System performs Handle Duplicate Contact.
-  * 2b2. If “Cancel” signal received, use case ends.
-  * 2b3. If “Proceed” signal received, use case resumes from Step 3.
+* 2b. System detects a duplicate contact (matching phone number or email address).
+  * 2b1. System performs Reject Duplicate Contact.
+  * 2b2. Use case ends.
 
 **Use Case: Export Roster Data to CSV**
 
@@ -552,10 +541,17 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 |             Alias             | A user-defined shortcut that maps a short command word to a supported built-in command word.                                     |
 |      Availability Window      | The time period during which a volunteer is available to participate in events.                                                  |
 |        Bulk Operation         | An operation that applies to multiple contacts within a single command (e.g., deleting or assigning several volunteers at once). |
-| CSV (Comma-Separated Values)  | A text file format used to store tabular data, used by the system for importing or exporting volunteer records.                  |
+|        Contact List           | The main list of active (non-deleted) contacts, as opposed to the recycle bin.                                                   |
+| CSV (Comma-Separated Values)  | A text file format used to store tabular data, used by the system for importing or exporting volunteer data.                     |
 |       Duplicate Contact       | A contact that shares critical identifying fields (e.g., phone number or email address) with an existing contact in the system.  |
 |         Mainstream OS         | Windows, Linux, Unix, macOS.                                                                                                     |
+|          Match Type           | The strategy used by the `find` command to match a query against contacts: keyword (`kw`), substring (`ss`), or fuzzy (`fz`).   |
+|             Notes             | A free-text field for storing additional information about a volunteer (e.g., dietary needs, special skills).                    |
+|          Recycle Bin          | Temporary in-memory storage for recently deleted contacts, accessible via the `bin` command and cleared when the app exits.      |
+|             Role              | A free-text field describing the function a volunteer performs (e.g., “Usher”, “Logistics”).                                    |
 |              Tag              | A user-defined label used to categorize volunteers (e.g., “first-aid”, “logistics”).                                             |
+|    Volunteer Availability     | A recurring weekly time slot (day, start time, end time) during which a volunteer is available.                                  |
+|      Volunteer Record         | A datetime range (start and end) representing a period during which a volunteer has served.                                      |
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -582,6 +578,13 @@ testers are expected to do more *exploratory* testing.
 
    1. Re-launch the app by double-clicking the jar file.<br>
        Expected: The most recent window size and location is retained.
+
+1. Launch from command line
+
+   1. Open a terminal in the folder containing `RosterBolt.jar`.
+
+   1. Run `java -jar RosterBolt.jar`<br>
+      Expected: GUI launches with previously saved data, or a set of sample contacts if no existing `data/rosterbolt.json` is found.
 
 1. Launching with missing data file
 
@@ -792,34 +795,43 @@ testers are expected to do more *exploratory* testing.
    1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
       Expected: Similar to previous.
 
-1. Deleting multiple persons
+1. Deleting a person while a filtered list is shown
 
-   1. Prerequisites: List all persons using `list`. At least 3 persons in the list.
-
-   1. Test case: `delete 1 2 3`<br>
-      Expected: First three contacts are deleted. Status message shows details of all deleted contacts.
-
-1. Deleting while viewing filtered results
-
-   1. Prerequisites: Run `find Alice` so the list shows filtered results.
+   1. Prerequisites: Use `find Alice` to filter the list. At least one person shown.
 
    1. Test case: `delete 1`<br>
-      Expected: The first person in the filtered list is deleted, not the first person in the full list.
+      Expected: First person in the filtered list is deleted from the address book (not just removed from the view).
+
+1. Deleting multiple persons at once
+
+   1. Prerequisites: List all persons using the `list` command. At least 3 persons in the list.
+
+   1. Test case: `delete 1 2 3`<br>
+      Expected: The first three contacts are deleted. Status message shows details of all deleted persons.
+
+   1. Test case: `delete 1 0`<br>
+      Expected: Error message shown. Index must be a positive integer.
 
 ### Saving data
 
-1. Dealing with missing data file
+1. Dealing with missing/corrupted data files
 
-   1. Navigate to the `data/` folder and delete `rosterbolt.json`. Re-launch the app.<br>
-      Expected: The app starts with sample contacts. A new `rosterbolt.json` is created after the next command that modifies data.
+   1. Simulating a missing data file
 
-1. Dealing with corrupted data file
+      1. Navigate to the `data/` folder in the application's home directory and delete (or rename) `rosterbolt.json`.
 
-   1. Open `data/rosterbolt.json` in a text editor. Replace its contents with invalid JSON (e.g., `{invalid}`).<br>
-      Expected: The app starts with an empty address book. A warning is logged about the corrupted file.
+      1. Re-launch the app.<br>
+         Expected: App starts with a set of sample contacts. A new `rosterbolt.json` is created in `data/`.
 
-   1. Open `data/rosterbolt.json` in a text editor. Change a `phone` field value to `"ab"` (invalid phone).<br>
-      Expected: The app starts with an empty address book because the data file fails validation.
+1. Verifying data persistence after modifications
+
+   1. Launch the app. Add a new person using `add n/Alex Tan p/91234567 e/alex@example.com a/NUS`.
+
+   1. Close the app. Open `data/rosterbolt.json` in a text editor.<br>
+      Expected: The newly added person appears in the JSON file. Data is saved automatically after each command.
+
+   1. Re-launch the app.<br>
+      Expected: The newly added person is still present in the contact list.
 
 1. Verifying data persistence
 

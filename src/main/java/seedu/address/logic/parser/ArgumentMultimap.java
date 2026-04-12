@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import seedu.address.logic.Messages;
@@ -18,6 +20,12 @@ import seedu.address.logic.parser.exceptions.ParseException;
  * can be inserted multiple times for the same prefix.
  */
 public class ArgumentMultimap {
+
+    /**
+     * Matches prefix-like tokens: one or two lowercase letters followed by a slash,
+     * preceded by whitespace or at the start of the string.
+     */
+    private static final Pattern PREFIX_PATTERN = Pattern.compile("(?:^|\\s)([a-z]{1,2}/)");
 
     /** Prefixes mapped to their respective arguments**/
     private final Map<Prefix, List<String>> argMultimap = new HashMap<>();
@@ -60,6 +68,68 @@ public class ArgumentMultimap {
      */
     public String getPreamble() {
         return getValue(new Prefix("")).orElse("");
+    }
+
+    /**
+     * Throws a {@code ParseException} if any parsed value contains a prefix-like token
+     * that was not recognised during tokenization.
+     * This catches unknown prefixes (e.g. {@code x/value}) that were silently absorbed
+     * into the preceding field's value. Common abbreviations like {@code s/o} and
+     * {@code c/o} are excluded from detection.
+     *
+     * @param knownPrefixList Human-readable list of valid prefixes for the error message
+     */
+    public void verifyNoUnknownPrefixes(String knownPrefixList) throws ParseException {
+        List<String> unknown = new ArrayList<>();
+
+        for (Map.Entry<Prefix, List<String>> entry : argMultimap.entrySet()) {
+            for (String value : entry.getValue()) {
+                collectUnknownPrefixesFromValue(value, unknown);
+            }
+        }
+
+        if (!unknown.isEmpty()) {
+            throw new ParseException(String.format(Messages.MESSAGE_UNKNOWN_PREFIX,
+                    String.join(", ", unknown), knownPrefixList));
+        }
+    }
+
+    /**
+     * Scans a single field value for prefix-like tokens that are not in the known prefix set,
+     * adding any new unknown prefixes to the given list.
+     */
+    private void collectUnknownPrefixesFromValue(String value, List<String> unknown) {
+        Matcher matcher = PREFIX_PATTERN.matcher(value);
+        while (matcher.find()) {
+            String found = matcher.group(1);
+            int afterSlash = matcher.end();
+            if (isLikelyNotPrefix(value, afterSlash)) {
+                continue;
+            }
+            if (!argMultimap.containsKey(new Prefix(found)) && !unknown.contains(found)) {
+                unknown.add(found);
+            }
+        }
+    }
+
+    /**
+     * Returns true if the text after a slash is unlikely to be an unknown prefix's value.
+     * Filters out common abbreviations (s/o, c/o, f/t) where a single character follows
+     * the slash before a word break, and "with" patterns (w/ garden) where a space
+     * follows the slash.
+     */
+    private static boolean isLikelyNotPrefix(String value, int afterSlashPos) {
+        // Nothing after slash (e.g., trailing "x/") — could be a prefix with empty value
+        if (afterSlashPos >= value.length()) {
+            return false;
+        }
+        // Space immediately after slash (e.g., "w/ garden") — natural text, not a prefix
+        if (Character.isWhitespace(value.charAt(afterSlashPos))) {
+            return true;
+        }
+        // Single non-whitespace char then whitespace or end (e.g., "s/o", "c/o", "f/t")
+        return afterSlashPos + 1 >= value.length()
+                || Character.isWhitespace(value.charAt(afterSlashPos + 1));
     }
 
     /**

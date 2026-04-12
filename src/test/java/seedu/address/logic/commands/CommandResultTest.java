@@ -12,10 +12,9 @@ import seedu.address.logic.PersonListView;
 public class CommandResultTest {
     @Test
     public void equals() {
-        CommandResult commandResult = new CommandResult("feedback");
+        CommandResult commandResult = new CommandResult("feedback", PersonListView.KEPT_PERSONS);
 
         // same values -> returns true
-        assertTrue(commandResult.equals(new CommandResult("feedback")));
         assertTrue(commandResult.equals(new CommandResult("feedback", PersonListView.KEPT_PERSONS)));
         assertTrue(commandResult.equals(new CommandResult("feedback", PersonListView.KEPT_PERSONS, false, false)));
 
@@ -29,7 +28,7 @@ public class CommandResultTest {
         assertFalse(commandResult.equals(0.5f));
 
         // different feedbackToUser value -> returns false
-        assertFalse(commandResult.equals(new CommandResult("different")));
+        assertFalse(commandResult.equals(new CommandResult("different", PersonListView.KEPT_PERSONS)));
 
         // different personListView value -> returns false
         assertFalse(commandResult.equals(new CommandResult("feedback", PersonListView.DELETED_PERSONS, false, false)));
@@ -47,13 +46,15 @@ public class CommandResultTest {
 
     @Test
     public void hashcode() {
-        CommandResult commandResult = new CommandResult("feedback");
+        CommandResult commandResult = new CommandResult("feedback", PersonListView.KEPT_PERSONS);
 
         // same values -> returns same hashcode
-        assertEquals(commandResult.hashCode(), new CommandResult("feedback").hashCode());
+        assertEquals(commandResult.hashCode(),
+                new CommandResult("feedback", PersonListView.KEPT_PERSONS).hashCode());
 
         // different feedbackToUser value -> returns different hashcode
-        assertNotEquals(commandResult.hashCode(), new CommandResult("different").hashCode());
+        assertNotEquals(commandResult.hashCode(),
+                new CommandResult("different", PersonListView.KEPT_PERSONS).hashCode());
 
         // different showBin value -> returns different hashcode
         assertNotEquals(commandResult.hashCode(),
@@ -74,7 +75,7 @@ public class CommandResultTest {
 
     @Test
     public void toStringMethod() {
-        CommandResult commandResult = new CommandResult("feedback");
+        CommandResult commandResult = new CommandResult("feedback", PersonListView.KEPT_PERSONS);
         String expected = CommandResult.class.getCanonicalName()
                 + "{feedbackToUser=" + commandResult.getFeedbackToUser()
                 + ", personListView=" + commandResult.getPersonListView()

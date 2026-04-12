@@ -160,7 +160,7 @@ public class LogicManagerTest {
 
         Model expectedModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
         expectedModel.setCommandAlias("wipe", ClearCommand.COMMAND_WORD);
-        new ClearCommand().execute(expectedModel);
+        new ClearCommand().execute(expectedModel, PersonListView.KEPT_PERSONS);
 
         assertCommandSuccess("wipe", PersonListView.KEPT_PERSONS,
                 ClearCommand.MESSAGE_SUCCESS, expectedModel);

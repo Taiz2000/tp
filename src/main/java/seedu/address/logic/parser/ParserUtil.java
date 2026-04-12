@@ -1,7 +1,10 @@
 package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -66,6 +69,22 @@ public class ParserUtil {
             return List.of();
         }
         return tokenizeSpaceSeparated(rawValue.get());
+    }
+
+    /**
+     * Parses {@code args} into a {@code Path}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code args} is empty.
+     */
+    public static Path parseFilePath(String args, String messageUsage) throws ParseException {
+        requireNonNull(args);
+        String trimmedArgs = args.trim();
+        if (trimmedArgs.isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, messageUsage));
+        }
+
+        return Paths.get(trimmedArgs);
     }
 
     /**

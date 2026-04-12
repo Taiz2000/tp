@@ -12,6 +12,7 @@ import static seedu.address.testutil.TypicalPersons.DANIEL;
 import static seedu.address.testutil.TypicalPersons.ELLE;
 import static seedu.address.testutil.TypicalPersons.FIONA;
 import static seedu.address.testutil.TypicalPersons.GEORGE;
+import static seedu.address.testutil.TypicalPersons.YVETTE;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.util.Arrays;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.PersonListView;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -67,33 +69,57 @@ public class FindCommandTest {
         assertFalse(findFirstCommand.equals(findSecondCommand));
     }
 
+    /* This is the only test where the FindCommand is executed while viewing deleted persons.
+     *
+     * It is expected that the logical flow of FindCommand is identical to the case where the
+     * user views kept persons, with the only difference being the list which the FindCommand
+     * acts on and displays after execution. This test aims to check that difference.
+     *
+     * For more robust integration testing of FindCommand with Predicate classes,
+     * refer to the tests which are executed while viewing kept persons.
+     */
     @Test
-    public void execute_zeroKeywords_noPersonFound() {
+    public void execute_viewingDeletedPersons_success() {
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
+        PersonContainsKeywordsPredicate predicate = preparePredicate("street");
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredDeletedPersonList(predicate);
+        assertCommandSuccess(command, model, PersonListView.DELETED_PERSONS,
+                expectedMessage, PersonListView.DELETED_PERSONS, expectedModel);
+        assertEquals(Collections.singletonList(YVETTE), model.getFilteredDeletedPersonList());
+    }
+
+    // This test and all subsequent tests of execute() are executed while viewing kept persons.
+    @Test
+    public void execute_zeroSearchTerms_noPersonFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
         PersonContainsKeywordsPredicate predicate = preparePredicate(" ");
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredKeptPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertCommandSuccess(command, model, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedModel);
         assertEquals(Collections.emptyList(), model.getFilteredKeptPersonList());
     }
 
     @Test
-    public void execute_singleKeyword_multiplePersonsFound() {
+    public void execute_singleSearchTerm_multiplePersonsFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 3);
         PersonContainsKeywordsPredicate predicate = preparePredicate("street");
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredKeptPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertCommandSuccess(command, model, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedModel);
         assertEquals(Arrays.asList(CARL, DANIEL, GEORGE), model.getFilteredKeptPersonList());
     }
 
     @Test
-    public void execute_multipleKeywords_multiplePersonsFound() {
+    public void execute_multipleSearchTerms_multiplePersonsFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 3);
         PersonContainsKeywordsPredicate predicate = preparePredicate("Kurz Elle Kunz");
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredKeptPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertCommandSuccess(command, model, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedModel);
         assertEquals(Arrays.asList(CARL, ELLE, FIONA), model.getFilteredKeptPersonList());
     }
 
@@ -104,7 +130,8 @@ public class FindCommandTest {
                 new PersonContainsSubstringsPredicate(Collections.singletonList("ell"));
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredKeptPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertCommandSuccess(command, model, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedModel);
         assertEquals(Collections.singletonList(ELLE), model.getFilteredKeptPersonList());
     }
 
@@ -115,7 +142,8 @@ public class FindCommandTest {
                 new PersonContainsSubstringsPredicate(Collections.singletonList("meie"));
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredKeptPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertCommandSuccess(command, model, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedModel);
         assertEquals(Arrays.asList(BENSON, DANIEL), model.getFilteredKeptPersonList());
     }
 
@@ -126,7 +154,8 @@ public class FindCommandTest {
                 new PersonContainsFuzzyKeywordsPredicate(Collections.singletonList("michigan"));
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredKeptPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertCommandSuccess(command, model, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedModel);
         assertEquals(Collections.singletonList(ELLE), model.getFilteredKeptPersonList());
     }
 
@@ -137,7 +166,8 @@ public class FindCommandTest {
                 new PersonContainsFuzzyKeywordsPredicate(Collections.singletonList("stret"));
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredKeptPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertCommandSuccess(command, model, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedModel);
         assertEquals(Arrays.asList(CARL, DANIEL, GEORGE), model.getFilteredKeptPersonList());
     }
 
@@ -162,7 +192,8 @@ public class FindCommandTest {
 
         expectedAvailModel.updateFilteredKeptPersonList(predicate);
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
-        assertCommandSuccess(command, availModel, expectedMessage, expectedAvailModel);
+        assertCommandSuccess(command, availModel, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedAvailModel);
         assertEquals(List.of(available), availModel.getFilteredKeptPersonList());
     }
 
@@ -184,21 +215,22 @@ public class FindCommandTest {
 
         expectedAvailModel.updateFilteredKeptPersonList(predicate);
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
-        assertCommandSuccess(command, availModel, expectedMessage, expectedAvailModel);
+        assertCommandSuccess(command, availModel, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedAvailModel);
     }
 
     @Test
-    public void execute_keywordsAndAvailability_bothMustMatch() {
+    public void execute_searchTermsAndAvailability_bothMustMatch() {
         AddressBook ab = new AddressBook();
-        // Matches both name keyword "Alice" and Monday availability
+        // Matches both name search term "Alice" and Monday availability
         Person matchesBoth = new PersonBuilder().withName("Alice Tan")
                 .withPhone("91111111").withEmail("alice@example.com")
                 .withAvailabilities("MONDAY,13:00,18:00").build();
-        // Matches name keyword "Alice" but NOT Monday availability
+        // Matches name search term "Alice" but NOT Monday availability
         Person matchesNameOnly = new PersonBuilder().withName("Alice Lee")
                 .withPhone("92222222").withEmail("alicelee@example.com")
                 .withAvailabilities("TUESDAY,09:00,12:00").build();
-        // Matches Monday availability but NOT name keyword "Alice"
+        // Matches Monday availability but NOT name search term "Alice"
         Person matchesAvailOnly = new PersonBuilder().withName("Bob")
                 .withPhone("93333333").withEmail("bob@example.com")
                 .withAvailabilities("MONDAY,13:00,18:00").build();
@@ -219,14 +251,57 @@ public class FindCommandTest {
 
         expectedCombinedModel.updateFilteredKeptPersonList(combinedPredicate);
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
-        assertCommandSuccess(command, combinedModel, expectedMessage, expectedCombinedModel);
+        assertCommandSuccess(command, combinedModel, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedCombinedModel);
         assertEquals(List.of(matchesBoth), combinedModel.getFilteredKeptPersonList());
     }
 
     @Test
-    public void execute_keywordsAndAvailability_noMatchingPerson() {
+    public void execute_multipleSearchTermsAndAvailability_orSearchTermsAndAvailability() {
         AddressBook ab = new AddressBook();
-        // Matches name keyword "Alice" but wrong day
+        // Matches search term "Alice" and Monday availability
+        Person aliceAvailable = new PersonBuilder().withName("Alice Tan")
+                .withPhone("91111111").withEmail("alice@example.com")
+                .withAvailabilities("MONDAY,13:00,18:00").build();
+        // Matches search term "Charlie" and Monday availability
+        Person charlieAvailable = new PersonBuilder().withName("Charlie Lim")
+                .withPhone("92222222").withEmail("charlie@example.com")
+                .withAvailabilities("MONDAY,13:00,18:00").build();
+        // Matches search term "Alice" but NOT Monday availability
+        Person aliceUnavailable = new PersonBuilder().withName("Alice Lee")
+                .withPhone("93333333").withEmail("alicelee@example.com")
+                .withAvailabilities("TUESDAY,09:00,12:00").build();
+        // Matches Monday availability but neither search term
+        Person bobAvailable = new PersonBuilder().withName("Bob")
+                .withPhone("94444444").withEmail("bob@example.com")
+                .withAvailabilities("MONDAY,13:00,18:00").build();
+        ab.addPerson(aliceAvailable);
+        ab.addPerson(charlieAvailable);
+        ab.addPerson(aliceUnavailable);
+        ab.addPerson(bobAvailable);
+
+        Model combinedModel = new ModelManager(ab, new UserPrefs());
+        Model expectedCombinedModel = new ModelManager(ab, new UserPrefs());
+
+        VolunteerAvailability query = VolunteerAvailability.fromString("MONDAY,14:00,17:00");
+        PersonContainsKeywordsPredicate textPredicate =
+                new PersonContainsKeywordsPredicate(Arrays.asList("Alice", "Charlie"));
+        PersonAvailableDuringPredicate availPredicate = new PersonAvailableDuringPredicate(query);
+        CombinedAndPersonPredicate combinedPredicate =
+                new CombinedAndPersonPredicate(List.of(textPredicate, availPredicate));
+        FindCommand command = new FindCommand(combinedPredicate);
+
+        expectedCombinedModel.updateFilteredKeptPersonList(combinedPredicate);
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 2);
+        assertCommandSuccess(command, combinedModel, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedCombinedModel);
+        assertEquals(List.of(aliceAvailable, charlieAvailable), combinedModel.getFilteredKeptPersonList());
+    }
+
+    @Test
+    public void execute_searchTermsAndAvailability_noMatchingPerson() {
+        AddressBook ab = new AddressBook();
+        // Matches name search term "Alice" but wrong day
         Person matchesNameOnly = new PersonBuilder().withName("Alice Tan")
                 .withPhone("91111111").withEmail("alice@example.com")
                 .withAvailabilities("TUESDAY,13:00,18:00").build();
@@ -250,7 +325,8 @@ public class FindCommandTest {
 
         expectedCombinedModel.updateFilteredKeptPersonList(combinedPredicate);
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
-        assertCommandSuccess(command, combinedModel, expectedMessage, expectedCombinedModel);
+        assertCommandSuccess(command, combinedModel, PersonListView.KEPT_PERSONS,
+                expectedMessage, PersonListView.KEPT_PERSONS, expectedCombinedModel);
         assertEquals(Collections.emptyList(), combinedModel.getFilteredKeptPersonList());
     }
 
@@ -263,7 +339,7 @@ public class FindCommandTest {
     }
 
     /**
-     * Parses {@code userInput} into a {@code PersonContainsKeywordsPredicate}.
+     * Parses {@code userInput} into a {@code PersonContainsKeywordsPredicate} (keyword match type).
      */
     private PersonContainsKeywordsPredicate preparePredicate(String userInput) {
         return new PersonContainsKeywordsPredicate(Arrays.asList(userInput.split("\\s+")));

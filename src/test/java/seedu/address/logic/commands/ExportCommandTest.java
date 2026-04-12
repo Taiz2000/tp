@@ -34,7 +34,7 @@ public class ExportCommandTest {
         ModelStub model = new ModelStubWithAddressBook(new AddressBook());
         ExportCommand command = new ExportCommand(outputFile);
 
-        CommandResult result = command.execute(model);
+        CommandResult result = command.execute(model, PersonListView.KEPT_PERSONS);
 
         assertEquals(String.format(ExportCommand.MESSAGE_SUCCESS, 0, outputFile),
                 result.getFeedbackToUser());
@@ -74,7 +74,7 @@ public class ExportCommandTest {
         ModelStub model = new ModelStubWithAddressBook(addressBook);
         ExportCommand command = new ExportCommand(outputFile);
 
-        CommandResult result = command.execute(model);
+        CommandResult result = command.execute(model, PersonListView.KEPT_PERSONS);
 
         assertEquals(String.format(ExportCommand.MESSAGE_SUCCESS, 2, outputFile),
                 result.getFeedbackToUser());
@@ -114,7 +114,7 @@ public class ExportCommandTest {
         ModelStub model = new ModelStubWithAddressBook(addressBook);
         ExportCommand command = new ExportCommand(outputFile);
 
-        CommandResult result = command.execute(model);
+        CommandResult result = command.execute(model, PersonListView.KEPT_PERSONS);
 
         assertEquals(String.format(ExportCommand.MESSAGE_SUCCESS, 1, outputFile),
                 result.getFeedbackToUser());

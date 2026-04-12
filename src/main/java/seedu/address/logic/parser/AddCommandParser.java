@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.parser.CliSyntax.KNOWN_PERSON_PREFIXES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_AVAILABILITY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
@@ -49,6 +50,8 @@ public class AddCommandParser implements Parser<AddCommand> {
                         PREFIX_NOTES,
                         PREFIX_AVAILABILITY,
                         PREFIX_RECORD);
+
+        argMultimap.verifyNoUnknownPrefixes(KNOWN_PERSON_PREFIXES);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_NAME, PREFIX_ADDRESS, PREFIX_PHONE, PREFIX_EMAIL)
                 || !argMultimap.getPreamble().isEmpty()) {

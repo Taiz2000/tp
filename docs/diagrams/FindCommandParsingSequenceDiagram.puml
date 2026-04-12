@@ -37,7 +37,7 @@ opt va/ prefix provided
     deactivate VolunteerAvailability
 end
 create ParsedFindArgs
-FindCommandParser -> ParsedFindArgs : ParsedFindArgs(matchType, availability, keywords)
+FindCommandParser -> ParsedFindArgs : ParsedFindArgs(matchType, availability, searchTerms)
 activate ParsedFindArgs
 ParsedFindArgs --> FindCommandParser :
 deactivate ParsedFindArgs
@@ -46,7 +46,7 @@ deactivate FindCommandParser
 FindCommandParser -> FindCommandParser : buildPredicate(parsed)
 activate FindCommandParser
 note right
-  keywords only → text predicate via
+  search terms only → text predicate via
   PersonContainsFieldsPredicateFactory
   va/ only → PersonAvailableDuringPredicate
   both → CombinedAndPersonPredicate

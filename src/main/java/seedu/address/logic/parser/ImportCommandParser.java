@@ -1,10 +1,6 @@
 package seedu.address.logic.parser;
 
-import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import seedu.address.logic.commands.ImportCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -16,15 +12,7 @@ public class ImportCommandParser implements Parser<ImportCommand> {
 
     @Override
     public ImportCommand parse(String args) throws ParseException {
-        requireNonNull(args);
-
-        String trimmedArgs = args.trim();
-        if (trimmedArgs.isEmpty()) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, ImportCommand.MESSAGE_USAGE));
-        }
-
-        Path filePath = Paths.get(trimmedArgs);
+        Path filePath = ParserUtil.parseFilePath(args, ImportCommand.MESSAGE_USAGE);
         return new ImportCommand(filePath);
     }
 }

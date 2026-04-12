@@ -19,17 +19,4 @@ public abstract class Command {
      */
     public abstract CommandResult execute(Model model, PersonListView personListView) throws CommandException;
 
-    /**
-     * Executes the command and returns the result message.
-     *
-     * @param model {@code Model} which the command should operate on.
-     * @return feedback message of the operation result for display
-     * @throws CommandException If an error occurs during command execution.
-     * @deprecated Use {@link #execute(Model, PersonListView)} instead, which specifies the currently viewed list.
-     */
-    @Deprecated
-    public CommandResult execute(Model model) throws CommandException {
-        return execute(model, PersonListView.KEPT_PERSONS);
-    }
-
 }

@@ -102,6 +102,17 @@ public class ListCommandTest {
     }
 
     @Test
+    public void execute_listWithAddressAsc_sortsList() {
+        ListCommand command = new ListCommand(SortAttribute.ADDRESS, SortOrder.ASC);
+        expectedModel.updateFilteredKeptPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        expectedModel.updateSortedPersonList(new PersonSortComparator(SortAttribute.ADDRESS, SortOrder.ASC));
+        assertCommandSuccess(command, model, PersonListView.KEPT_PERSONS,
+                String.format(ListCommand.MESSAGE_SUCCESS_SORTED, "address", "asc"),
+                PersonListView.KEPT_PERSONS, expectedModel);
+        assertEquals(sortedTypicalPersons(SortAttribute.ADDRESS, SortOrder.ASC), model.getFilteredKeptPersonList());
+    }
+
+    @Test
     public void execute_listWithSortWhileFiltered_showsAllSorted() {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
         ListCommand command = new ListCommand(SortAttribute.EMAIL, SortOrder.DESC);

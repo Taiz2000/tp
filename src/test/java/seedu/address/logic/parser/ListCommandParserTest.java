@@ -25,7 +25,14 @@ public class ListCommandParserTest {
         assertParseSuccess(parser, "name", new ListCommand(SortAttribute.NAME, SortOrder.ASC));
         assertParseSuccess(parser, "email desc", new ListCommand(SortAttribute.EMAIL, SortOrder.DESC));
         assertParseSuccess(parser, "  NaMe   dEsC  ", new ListCommand(SortAttribute.NAME, SortOrder.DESC));
+        assertParseSuccess(parser, "address asc", new ListCommand(SortAttribute.ADDRESS, SortOrder.ASC));
         assertParseSuccess(parser, "vr desc", new ListCommand(SortAttribute.VR, SortOrder.DESC));
+    }
+
+    @Test
+    public void parse_caseInsensitiveArgs_returnsListCommand() {
+        assertParseSuccess(parser, "ROLE", new ListCommand(SortAttribute.ROLE, SortOrder.ASC));
+        assertParseSuccess(parser, "EMAIL DESC", new ListCommand(SortAttribute.EMAIL, SortOrder.DESC));
     }
 
     @Test

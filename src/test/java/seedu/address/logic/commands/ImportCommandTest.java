@@ -44,7 +44,7 @@ public class ImportCommandTest {
         ModelStubAcceptingPersonsAdded model = new ModelStubAcceptingPersonsAdded();
         ImportCommand command = new ImportCommand(inputFile);
 
-        CommandResult result = command.execute(model);
+        CommandResult result = command.execute(model, PersonListView.KEPT_PERSONS);
 
         assertEquals("Imported 2 volunteers from " + inputFile + ".", result.getFeedbackToUser());
         assertEquals(PersonListView.KEPT_PERSONS, result.getPersonListView());
@@ -64,7 +64,7 @@ public class ImportCommandTest {
         ModelStubAcceptingPersonsAdded model = new ModelStubAcceptingPersonsAdded();
         ImportCommand command = new ImportCommand(inputFile);
 
-        CommandResult result = command.execute(model);
+        CommandResult result = command.execute(model, PersonListView.KEPT_PERSONS);
 
         assertEquals(String.join("\n",
                 "Imported 1 volunteers from " + inputFile + ".",
@@ -94,7 +94,7 @@ public class ImportCommandTest {
         ModelStubWithExistingPersons model = new ModelStubWithExistingPersons(existingAlice);
         ImportCommand command = new ImportCommand(inputFile);
 
-        CommandResult result = command.execute(model);
+        CommandResult result = command.execute(model, PersonListView.KEPT_PERSONS);
 
         assertEquals(String.join("\n",
                 "Imported 1 volunteers from " + inputFile + ".",
@@ -116,7 +116,7 @@ public class ImportCommandTest {
         ImportCommand command = new ImportCommand(inputFile);
 
         try {
-            command.execute(model);
+            command.execute(model, PersonListView.KEPT_PERSONS);
             fail("Expected CommandException to be thrown.");
         } catch (seedu.address.logic.commands.exceptions.CommandException e) {
             assertEquals("Import failed: missing required headers: name, phone, email, address",
