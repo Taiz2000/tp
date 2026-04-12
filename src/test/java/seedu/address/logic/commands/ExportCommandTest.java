@@ -7,16 +7,17 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.PersonListView;
-import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
@@ -31,7 +32,7 @@ public class ExportCommandTest {
     @Test
     public void execute_emptyAddressBook_exportsHeaderOnly() throws Exception {
         Path outputFile = tempDir.resolve("empty.csv");
-        ModelStub model = new ModelStubWithAddressBook(new AddressBook());
+        ModelStub model = new ModelStubWithPersonLists(List.of(), List.of(), List.of());
         ExportCommand command = new ExportCommand(outputFile);
 
         CommandResult result = command.execute(model, PersonListView.KEPT_PERSONS);
@@ -47,7 +48,7 @@ public class ExportCommandTest {
     }
 
     @Test
-    public void execute_nonEmptyAddressBook_exportsSuccessfully() throws Exception {
+    public void executeUnfilteredKeptViewExportsAllKeptPersonsAndKeepsView() throws Exception {
         Path outputFile = tempDir.resolve("volunteers.csv");
 
         Person alice = new PersonBuilder().withName("Alice Pauline")
@@ -67,11 +68,10 @@ public class ExportCommandTest {
                 .withAddress("456 Clementi Ave 3")
                 .build();
 
-        AddressBook addressBook = new AddressBook();
-        addressBook.addPerson(alice);
-        addressBook.addPerson(bob);
-
-        ModelStub model = new ModelStubWithAddressBook(addressBook);
+        ModelStub model = new ModelStubWithPersonLists(
+                List.of(alice, bob),
+                List.of(alice, bob),
+                List.of());
         ExportCommand command = new ExportCommand(outputFile);
 
         CommandResult result = command.execute(model, PersonListView.KEPT_PERSONS);
@@ -98,6 +98,42 @@ public class ExportCommandTest {
     }
 
     @Test
+    public void executeFilteredKeptViewExportsOnlyFilteredPersonsAndKeepsView() throws Exception {
+        Path outputFile = tempDir.resolve("filtered-volunteers.csv");
+
+        Person alice = new PersonBuilder().withName("Alice Pauline")
+                .withEmail("alice@example.com")
+                .build();
+        Person bob = new PersonBuilder().withName("Bob Choo")
+                .withEmail("bob@example.com")
+                .build();
+        Person clara = new PersonBuilder().withName("Clara Tan")
+                .withEmail("clara@example.com")
+                .build();
+        Person deletedDana = new PersonBuilder().withName("Dana Bin")
+                .withEmail("dana.deleted@example.com")
+                .build();
+
+        ModelStub model = new ModelStubWithPersonLists(
+                List.of(alice, bob, clara),
+                List.of(alice, clara),
+                List.of(deletedDana));
+        ExportCommand command = new ExportCommand(outputFile);
+
+        CommandResult result = command.execute(model, PersonListView.KEPT_PERSONS);
+
+        assertEquals(String.format(ExportCommand.MESSAGE_SUCCESS, 2, outputFile),
+                result.getFeedbackToUser());
+        assertEquals(PersonListView.KEPT_PERSONS, result.getPersonListView());
+
+        String content = Files.readString(outputFile);
+        assertCsvContainsPerson(content, alice);
+        assertCsvContainsPerson(content, clara);
+        assertCsvExcludesPerson(content, bob);
+        assertCsvExcludesPerson(content, deletedDana);
+    }
+
+    @Test
     public void execute_existingFile_overwritesFile() throws Exception {
         Path outputFile = tempDir.resolve("volunteers.csv");
         Files.writeString(outputFile, "old content");
@@ -108,10 +144,10 @@ public class ExportCommandTest {
                 .withAddress("123 Jurong West Ave 6")
                 .build();
 
-        AddressBook addressBook = new AddressBook();
-        addressBook.addPerson(alice);
-
-        ModelStub model = new ModelStubWithAddressBook(addressBook);
+        ModelStub model = new ModelStubWithPersonLists(
+                List.of(alice),
+                List.of(alice),
+                List.of());
         ExportCommand command = new ExportCommand(outputFile);
 
         CommandResult result = command.execute(model, PersonListView.KEPT_PERSONS);
@@ -124,6 +160,83 @@ public class ExportCommandTest {
         assertTrue(content.contains("name,phone,email,address,role,notes,tags,availabilities,records"));
         assertTrue(content.contains("Alice Pauline"));
         assertTrue(!content.contains("old content"));
+    }
+
+    @Test
+    public void executeDeletedViewExportsFullKeptListAndSwitchesToKeptView() throws Exception {
+        Path outputFile = tempDir.resolve("deleted-view-export.csv");
+
+        Person alice = new PersonBuilder().withName("Alice Pauline")
+                .withEmail("alice@example.com")
+                .build();
+        Person bob = new PersonBuilder().withName("Bob Choo")
+                .withEmail("bob@example.com")
+                .build();
+        Person clara = new PersonBuilder().withName("Clara Tan")
+                .withEmail("clara@example.com")
+                .build();
+        Person deletedDana = new PersonBuilder().withName("Dana Bin")
+                .withEmail("dana.deleted@example.com")
+                .build();
+        Person deletedEvan = new PersonBuilder().withName("Evan Goh")
+                .withEmail("evan.deleted@example.com")
+                .build();
+
+        ModelStub model = new ModelStubWithPersonLists(
+                List.of(alice, bob, clara),
+                List.of(alice),
+                List.of(deletedDana, deletedEvan));
+        ExportCommand command = new ExportCommand(outputFile);
+
+        CommandResult result = command.execute(model, PersonListView.DELETED_PERSONS);
+
+        assertEquals(String.format(ExportCommand.MESSAGE_SUCCESS, 3, outputFile),
+                result.getFeedbackToUser());
+        assertEquals(PersonListView.KEPT_PERSONS, result.getPersonListView());
+
+        String content = Files.readString(outputFile);
+        assertCsvContainsPerson(content, alice);
+        assertCsvContainsPerson(content, bob);
+        assertCsvContainsPerson(content, clara);
+        assertCsvExcludesPerson(content, deletedDana);
+        assertCsvExcludesPerson(content, deletedEvan);
+    }
+
+    @Test
+    public void execute_neverExportsDeletedPersons() throws Exception {
+        Person keptAlice = new PersonBuilder().withName("Alice Pauline")
+                .withEmail("alice@example.com")
+                .build();
+        Person keptBob = new PersonBuilder().withName("Bob Choo")
+                .withEmail("bob@example.com")
+                .build();
+        Person deletedDana = new PersonBuilder().withName("Dana Bin")
+                .withEmail("dana.deleted@example.com")
+                .build();
+
+        ModelStub model = new ModelStubWithPersonLists(
+                List.of(keptAlice, keptBob),
+                List.of(keptAlice),
+                List.of(deletedDana));
+
+        Path keptViewFile = tempDir.resolve("never-export-deleted-kept.csv");
+        CommandResult keptViewResult = new ExportCommand(keptViewFile).execute(model, PersonListView.KEPT_PERSONS);
+        assertEquals(String.format(ExportCommand.MESSAGE_SUCCESS, 1, keptViewFile),
+                keptViewResult.getFeedbackToUser());
+        String keptViewContent = Files.readString(keptViewFile);
+        assertCsvContainsPerson(keptViewContent, keptAlice);
+        assertCsvExcludesPerson(keptViewContent, keptBob);
+        assertCsvExcludesPerson(keptViewContent, deletedDana);
+
+        Path deletedViewFile = tempDir.resolve("never-export-deleted-bin.csv");
+        CommandResult deletedViewResult = new ExportCommand(deletedViewFile)
+                .execute(model, PersonListView.DELETED_PERSONS);
+        assertEquals(String.format(ExportCommand.MESSAGE_SUCCESS, 2, deletedViewFile),
+                deletedViewResult.getFeedbackToUser());
+        String deletedViewContent = Files.readString(deletedViewFile);
+        assertCsvContainsPerson(deletedViewContent, keptAlice);
+        assertCsvContainsPerson(deletedViewContent, keptBob);
+        assertCsvExcludesPerson(deletedViewContent, deletedDana);
     }
 
     @Test
@@ -282,23 +395,45 @@ public class ExportCommandTest {
     }
 
     /**
-     * A Model stub that returns a supplied address book.
+     * A Model stub that returns supplied kept and deleted person lists.
      */
-    private static class ModelStubWithAddressBook extends ModelStub {
-        private final ReadOnlyAddressBook addressBook;
+    private static class ModelStubWithPersonLists extends ModelStub {
+        private final ObservableList<Person> keptPersons;
+        private final ObservableList<Person> filteredKeptPersons;
+        private final ObservableList<Person> filteredDeletedPersons;
 
-        ModelStubWithAddressBook(ReadOnlyAddressBook addressBook) {
-            this.addressBook = addressBook;
-        }
-
-        @Override
-        public ReadOnlyAddressBook getAddressBook() {
-            return addressBook;
+        ModelStubWithPersonLists(List<Person> keptPersons, List<Person> filteredKeptPersons,
+                List<Person> filteredDeletedPersons) {
+            this.keptPersons = FXCollections.unmodifiableObservableList(FXCollections.observableArrayList(keptPersons));
+            this.filteredKeptPersons = FXCollections.unmodifiableObservableList(
+                    FXCollections.observableArrayList(filteredKeptPersons));
+            this.filteredDeletedPersons = FXCollections.unmodifiableObservableList(
+                    FXCollections.observableArrayList(filteredDeletedPersons));
         }
 
         @Override
         public ObservableList<Person> getKeptPersonList() {
-            return addressBook.getKeptPersonList();
+            return keptPersons;
         }
+
+        @Override
+        public ObservableList<Person> getFilteredKeptPersonList() {
+            return filteredKeptPersons;
+        }
+
+        @Override
+        public ObservableList<Person> getFilteredDeletedPersonList() {
+            return filteredDeletedPersons;
+        }
+    }
+
+    private static void assertCsvContainsPerson(String csvContent, Person person) {
+        assertTrue(csvContent.contains(person.getName().fullName));
+        assertTrue(csvContent.contains(person.getEmail().value));
+    }
+
+    private static void assertCsvExcludesPerson(String csvContent, Person person) {
+        assertTrue(!csvContent.contains(person.getName().fullName));
+        assertTrue(!csvContent.contains(person.getEmail().value));
     }
 }

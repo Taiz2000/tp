@@ -314,8 +314,11 @@ At a high level:
 
 For the `export` command:
 
-* `ExportCommand` retrieves the active list of persons from `Model`.
-* It then calls `CsvWriterUtil` to convert the data into CSV format and write it to the file.
+* In kept view, `ExportCommand` retrieves `Model#getFilteredKeptPersonList()`, which represents the current kept-person display list.
+* This means active `find` filters affect export only when the user is in kept view.
+* In deleted view, `ExportCommand` retrieves `Model#getKeptPersonList()` instead, so deleted persons are never exported.
+* After export from deleted view, the command returns `PersonListView.KEPT_PERSONS`, switching the UI back to the kept list.
+* `ExportCommand` then calls `CsvWriterUtil` to convert the selected kept-person list into CSV format and write it to the file.
 
 For the `import` command:
 
@@ -504,9 +507,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **MSS:**
 
 1. User requests an export of the current roster, specifying a destination file path.
-2. System serializes the current roster into a CSV file format.
-3. System executes a file write operation to the specified location on the local filesystem.
-4. System displays a success message indicating the CSV file was created.
+2. System selects the kept-person source list: the current kept-person display list in kept view, or the full kept-person list in deleted view.
+3. If the request started in deleted view, system switches the UI back to kept view.
+4. System executes a file write operation to the specified location on the local filesystem.
+5. System displays a success message indicating the CSV file was created.
    Use case ends.
 
 

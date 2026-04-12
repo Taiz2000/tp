@@ -338,9 +338,15 @@ Examples:
 
 ### Exporting volunteers to a CSV file : `export`
 
-Exports all your active volunteers to a CSV (spreadsheet) file. This is useful for creating backups, sharing your roster with others, or working with the data in spreadsheet software like Excel or Google Sheets.
+Exports kept volunteers to a CSV (spreadsheet) file. This is useful for creating backups, sharing your roster with others, or working with the data in spreadsheet software like Excel or Google Sheets.
 
-You can use this command while viewing either the contact list or the recycle bin, but RosterBolt will always export volunteers in the full contact list, and switch your view to the contact list.
+When you are viewing the contact list, RosterBolt exports the contacts currently displayed on screen. This means any active `find` filter is respected.
+
+When you are viewing the normal unfiltered contact list, RosterBolt exports all kept contacts.
+
+Deleted contacts are never exported.
+
+If you run `export` while viewing the recycle bin, RosterBolt exports the kept contact list instead and switches your view back to the contact list.
 
 Format: `export FILE_PATH`
 
@@ -423,7 +429,7 @@ Action | Format, Examples
 **Delete** | `delete INDEX [MORE_INDICES]`<br> e.g., `delete 2 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [r/ROLE] [nt/NOTES] [t/TAG]…​ [va/AVAILABILITY]…​ [vr/RECORD]…​`<br> e.g., `edit 2 n/James Lee e/jameslee@example.com va/MONDAY,14:00,17:00`
 **Edit Previous** | `editprev`
-**Export** | `export FILE_PATH`<br> e.g., `export data/volunteers.csv`
+**Export** | `export FILE_PATH`<br> Exports displayed kept contacts; from recycle bin, exports kept contacts and returns to contact list.<br> e.g., `export data/volunteers.csv`
 **Find** | `find [m/MATCH_TYPE] [va/DAY,HH:mm,HH:mm] [SEARCH_TERM [MORE_SEARCH_TERMS]]`<br> e.g., `find m/kw James Jake`, `find m/ss ali`, `find m/fz michigan`, `find va/MONDAY,14:00,17:00`, `find va/MONDAY,14:00,17:00 alice`
 **Import** | `import FILE_PATH`<br> e.g., `import data/volunteers.csv`
 **List** | `list [ATTRIBUTE [asc｜desc]]`<br> e.g., `list name desc`, `list vr desc`
