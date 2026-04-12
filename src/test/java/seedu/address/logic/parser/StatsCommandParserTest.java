@@ -20,11 +20,14 @@ public class StatsCommandParserTest {
     }
 
     @Test
-    public void parse_invalidArgs_throwsParseException() {
-        assertParseFailure(parser, "role extra", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                StatsCommand.MESSAGE_USAGE));
-        assertParseFailure(parser, "unknown", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                StatsCommand.MESSAGE_USAGE));
+    public void parse_extraArguments_throwsParseException() {
+        assertParseFailure(parser, "role extra", StatsCommand.MESSAGE_EXTRA_ARGUMENTS);
+    }
+
+    @Test
+    public void parse_unknownCategory_throwsParseException() {
+        assertParseFailure(parser, "unknown", String.format(StatsCommand.MESSAGE_UNKNOWN_CATEGORY, "unknown"));
+        assertParseFailure(parser, "roles", String.format(StatsCommand.MESSAGE_UNKNOWN_CATEGORY, "roles"));
     }
 
     @Test

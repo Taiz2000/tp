@@ -25,6 +25,12 @@ public class StatsCommand extends Command {
             + "Currently supported CATEGORY: " + ROLE_TOKEN + ", " + RECORD_TOKEN + "\n"
             + "Example: " + COMMAND_WORD + " " + ROLE_TOKEN;
 
+    public static final String MESSAGE_UNKNOWN_CATEGORY = "Unknown statistics category: %1$s\n"
+            + "Currently supported CATEGORY: " + ROLE_TOKEN + ", " + RECORD_TOKEN;
+
+    public static final String MESSAGE_EXTRA_ARGUMENTS = "Too many arguments provided!\n"
+            + MESSAGE_USAGE;
+
     private final StatisticsCategory category;
     private final StatisticsGeneratorFactory generatorFactory;
 

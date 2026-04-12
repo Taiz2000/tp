@@ -26,12 +26,12 @@ public class StatsCommandParser implements Parser<StatsCommand> {
 
         List<String> tokens = ParserUtil.tokenizeSpaceSeparated(trimmedArgs);
         if (tokens.size() != 1) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, StatsCommand.MESSAGE_USAGE));
+            throw new ParseException(StatsCommand.MESSAGE_EXTRA_ARGUMENTS);
         }
 
         StatisticsCategory category = StatisticsCategory.fromToken(tokens.get(0))
                 .orElseThrow(() -> new ParseException(
-                        String.format(MESSAGE_INVALID_COMMAND_FORMAT, StatsCommand.MESSAGE_USAGE)));
+                        String.format(StatsCommand.MESSAGE_UNKNOWN_CATEGORY, tokens.get(0))));
 
         return new StatsCommand(category);
     }
