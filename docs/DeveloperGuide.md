@@ -710,7 +710,7 @@ testers are expected to do more *exploratory* testing.
 
 1. Viewing statistics
 
-   1. Prerequisites: At least one person with a role assigned. Must be viewing the contact list.
+   1. Prerequisites: Must be viewing the contact list.
 
    1. Test case: `stats role`<br>
       Expected: Role distribution statistics are displayed for the currently displayed contact list.
