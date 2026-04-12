@@ -751,8 +751,6 @@ testers are expected to do more *exploratory* testing.
 
 1. Exporting contacts
 
-   1. Prerequisites: At least one contact in the list.
-
    1. Test case: `export test_output.csv`<br>
       Expected: CSV file created at `test_output.csv`. Status message shows "Exported X volunteers to test_output.csv".
 
