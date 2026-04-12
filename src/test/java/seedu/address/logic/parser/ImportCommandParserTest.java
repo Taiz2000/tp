@@ -25,4 +25,14 @@ public class ImportCommandParserTest {
         assertParseSuccess(parser, " data/volunteers.csv",
                 new ImportCommand(Paths.get("data/volunteers.csv")));
     }
+
+    @Test
+    public void parse_extraArgs_throwsParseException() {
+        assertParseFailure(parser, " data/volunteers.csv extra",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ImportCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, " data/volunteers.csv foo bar",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ImportCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, " data/volunteers.csv --force",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ImportCommand.MESSAGE_USAGE));
+    }
 }

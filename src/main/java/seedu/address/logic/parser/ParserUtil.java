@@ -84,7 +84,12 @@ public class ParserUtil {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, messageUsage));
         }
 
-        return Paths.get(trimmedArgs);
+        List<String> tokens = tokenizeSpaceSeparated(trimmedArgs);
+        if (tokens.size() != 1) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, messageUsage));
+        }
+
+        return Paths.get(tokens.get(0));
     }
 
     /**

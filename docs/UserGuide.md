@@ -321,6 +321,9 @@ You can use this command while viewing either the contact list or the recycle bi
 
 Format: `import FILE_PATH`
 
+* Enter exactly one file path after `import`.
+* Do not type anything after the file path, or the command will be rejected as invalid.
+* File paths with spaces are not supported.
 * Your CSV file must include the column headers `name`, `phone`, `email`, and `address`. 
   * The following headers are optional: `role`, `notes`, `tags`, `availabilities`, `records`.
 * If the file can't be found or read, the import fails, and you'll see an error message.
@@ -344,6 +347,9 @@ You can use this command while viewing either the contact list or the recycle bi
 
 Format: `export FILE_PATH`
 
+* Enter exactly one file path after `export`.
+* Do not type anything after the file path, or the command will be rejected as invalid.
+* File paths with spaces are not supported.
 * If a file already exists at the given path, it's overwritten without warning, so double-check the path to avoid accidentally replacing an important file.
 
 Examples:
