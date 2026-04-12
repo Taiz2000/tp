@@ -395,7 +395,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * *` | returning user | automatically load my saved data on startup | continue from where I left off |
 | `* *` | user | edit and re-run previous commands | quickly correct input mistakes |
 | `* *` | fast typist | define custom command aliases | tailor the application to my workflow |
-| `* *` | volunteer coordinator | be warned when adding contacts with duplicate email or phone | avoid redundant volunteer records |
+| `* *` | volunteer coordinator | be prevented from adding contacts with duplicate phone numbers or email addresses | avoid redundant volunteer records |
 | `* *` | volunteer coordinator | include volunteer role information when adding a contact | track manpower allocation |
 | `* *` | volunteer coordinator | include volunteer availability when adding a contact | plan recurring events efficiently |
 | `* *` | volunteer coordinator | import volunteers from a CSV file | onboard an existing roster without retyping |
@@ -456,21 +456,13 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 - On application startup, aliases loaded from preferences are revalidated against current alias rules.
 - Invalid entries are removed, and a one-time warning is shown in the result display.
 
-**Use Case: Handle Duplicate Contact**
+**Use Case: Reject Duplicate Contact**
 
 **MSS:**
 
-1. System warns user that it detected a duplicate contact.
-2. System asks the user if they wish to proceed.
-3. User chooses to proceed.
-4. System returns a “Proceed” signal to the calling use case.
+1. System detects that a contact with the same phone number or email address already exists.
+2. System rejects the operation and displays an error message indicating the duplicate.
    Use case ends.
-
-**Extensions:**
-
-* 2a. User chooses to cancel.
-  * 2a1. System returns a “Cancel” signal to the calling use case.
-  * 2a2. Use case ends.
 
 **Use Case: Add Volunteer Contact**
 
@@ -492,10 +484,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   * 2a1. System stops the addition, and displays an error message detailing the specific validation failure.
   * 2a2. Use case ends.
 
-* 2b. System detects a potential duplicate contact based on critical fields (e.g. duplicate email address or phone number).
-  * 2b1. System performs Handle Duplicate Contact.
-  * 2b2. If “Cancel” signal received, use case ends.
-  * 2b3. If “Proceed” signal received, use case resumes from Step 3.
+* 2b. System detects a duplicate contact (matching phone number or email address).
+  * 2b1. System performs Reject Duplicate Contact.
+  * 2b2. Use case ends.
 
 **Use Case: Export Roster Data to CSV**
 
