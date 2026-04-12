@@ -586,11 +586,6 @@ testers are expected to do more *exploratory* testing.
    1. Run `java -jar RosterBolt.jar`<br>
       Expected: GUI launches with previously saved data, or a set of sample contacts if no existing `data/rosterbolt.json` is found.
 
-1. Launching with missing data file
-
-   1. Delete the `data/rosterbolt.json` file (if it exists) and launch the app.<br>
-      Expected: The app launches with sample contacts pre-loaded. A new data file is created after the first command.
-
 ### Adding a person
 
 1. Adding a person with all required fields
@@ -833,7 +828,3 @@ testers are expected to do more *exploratory* testing.
    1. Re-launch the app.<br>
       Expected: The newly added person is still present in the contact list.
 
-1. Verifying data persistence
-
-   1. Add a new contact using `add n/Test p/12345678 e/test@example.com a/Test Address`. Close the app and re-launch it.<br>
-      Expected: The newly added contact persists and is visible after re-launch.
