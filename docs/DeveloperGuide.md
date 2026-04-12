@@ -579,7 +579,12 @@ testers are expected to do more *exploratory* testing.
    1. Re-launch the app by double-clicking the jar file.<br>
        Expected: The most recent window size and location is retained.
 
-1. _{ more test cases …​ }_
+1. Launch from command line
+
+   1. Open a terminal in the folder containing `RosterBolt.jar`.
+
+   1. Run `java -jar RosterBolt.jar`<br>
+      Expected: GUI launches with previously saved data, or a set of sample contacts if no existing `data/rosterbolt.json` is found.
 
 ### Deleting a person
 
@@ -596,12 +601,40 @@ testers are expected to do more *exploratory* testing.
    1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
       Expected: Similar to previous.
 
-1. _{ more test cases …​ }_
+1. Deleting a person while a filtered list is shown
+
+   1. Prerequisites: Use `find Alice` to filter the list. At least one person shown.
+
+   1. Test case: `delete 1`<br>
+      Expected: First person in the filtered list is deleted from the address book (not just removed from the view).
+
+1. Deleting multiple persons at once
+
+   1. Prerequisites: List all persons using the `list` command. At least 3 persons in the list.
+
+   1. Test case: `delete 1 2 3`<br>
+      Expected: The first three contacts are deleted. Status message shows details of all deleted persons.
+
+   1. Test case: `delete 1 0`<br>
+      Expected: Error message shown. Index must be a positive integer.
 
 ### Saving data
 
 1. Dealing with missing/corrupted data files
 
-   1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
+   1. Simulating a missing data file
 
-1. _{ more test cases …​ }_
+      1. Navigate to the `data/` folder in the application's home directory and delete (or rename) `rosterbolt.json`.
+
+      1. Re-launch the app.<br>
+         Expected: App starts with a set of sample contacts. A new `rosterbolt.json` is created in `data/`.
+
+1. Verifying data persistence after modifications
+
+   1. Launch the app. Add a new person using `add n/Alex Tan p/91234567 e/alex@example.com a/NUS`.
+
+   1. Close the app. Open `data/rosterbolt.json` in a text editor.<br>
+      Expected: The newly added person appears in the JSON file. Data is saved automatically after each command.
+
+   1. Re-launch the app.<br>
+      Expected: The newly added person is still present in the contact list.
