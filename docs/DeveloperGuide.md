@@ -590,7 +590,7 @@ testers are expected to do more *exploratory* testing.
 
 1. Adding a person with all required fields
 
-   1. Prerequisites: Must be viewing the working list (run `list` if unsure).
+   1. Prerequisites: Must be viewing the contact list (run `list` if unsure).
 
    1. Test case: `add n/John Doe p/98765432 e/johnd@example.com a/311 Clementi Ave 2`<br>
       Expected: A new contact is added with the given details. Status message shows the added contact's details.
@@ -625,9 +625,9 @@ testers are expected to do more *exploratory* testing.
 
 1. Editing a person's fields
 
-   1. Prerequisites: Must be viewing the working list. List all persons using `list`. At least one person in the list.
+   1. Prerequisites: Must be viewing the working list. List all persons using `list`. At least one person in the list and no other person shares the same phone or email as the below examples.
 
-   1. Test case: `edit 1 p/91234567`<br>
+   1. Test case: `edit 1 p/81234567`<br>
       Expected: First person's phone number is updated. Status message shows the edited contact.
 
    1. Test case: `edit 1 n/New Name e/new@example.com`<br>
@@ -827,4 +827,3 @@ testers are expected to do more *exploratory* testing.
 
    1. Re-launch the app.<br>
       Expected: The newly added person is still present in the contact list.
-
