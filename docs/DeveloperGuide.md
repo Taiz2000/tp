@@ -515,7 +515,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Usability**
 
 3. The system should provide clear feedback messages after each command to confirm successful execution or explain errors.
-4. In a usability test with at least 5 first-time users who have read the User Guide thoroughly once, at least 4 users should be able to complete the following tasks within 20 minutes total without external help, but with access to the User Guide: add a volunteer, find a volunteer, edit a volunteer, delete a volunteer, and export the roster. A task is considered successfully completed if the user finishes it with no more than 1 recoverable command-format error.
+4. In a usability test with at least 5 first-time users who have read the User Guide thoroughly once, at least 4 users should be able to complete the following tasks within 20 minutes total without external help, but with access to the User Guide: add a volunteer, find a volunteer, edit a volunteer, delete a volunteer, and export the roster. A user is considered successful if they complete all five tasks.
 5. A user with above-average typing speed should be able to accomplish most tasks faster using commands than using a mouse-driven interface.
 
 **Reliability**
