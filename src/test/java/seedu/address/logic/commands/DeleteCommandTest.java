@@ -165,7 +165,6 @@ public class DeleteCommandTest {
 
         assertCommandSuccess(deleteCommand, model, PersonListView.KEPT_PERSONS,
                 expectedMessage, PersonListView.KEPT_PERSONS, expectedModel);
-        assertEquals(List.of(secondPersonToRemain), model.getFilteredKeptPersonList());
     }
 
     @Test

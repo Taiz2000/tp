@@ -130,11 +130,13 @@ public class ModelManager implements Model {
     @Override
     public void deletePerson(Person target) {
         addressBook.deletePerson(target);
+        updateFilteredKeptPersonList(PREDICATE_SHOW_ALL_PERSONS);
     }
 
     @Override
     public void restorePerson(Person target) {
         addressBook.restorePerson(target);
+        updateFilteredDeletedPersonList(PREDICATE_SHOW_ALL_PERSONS);
     }
 
     @Override
@@ -148,11 +150,13 @@ public class ModelManager implements Model {
         requireAllNonNull(target, editedPerson);
 
         addressBook.setKeptPerson(target, editedPerson);
+        updateFilteredKeptPersonList(PREDICATE_SHOW_ALL_PERSONS);
     }
 
     @Override
     public void deleteAllPersons() {
         addressBook.deleteAllPersons();
+        updateFilteredKeptPersonList(PREDICATE_SHOW_ALL_PERSONS);
     }
 
     //=========== Filtered Person List Accessors =============================================================
