@@ -194,6 +194,8 @@ Shows the recycle bin, where you can see volunteers you've recently deleted. Thi
 
 Format: `bin`
 
+![Recycle bin view](images/binView.png)
+
 * Volunteers removed by the `delete` or `clear` commands are automatically placed in the recycle bin.
 * The recycle bin can contain duplicate volunteers with the same phone number or email. For example, if you delete a volunteer, add a new one with the same phone number, and then delete the new one too, both appear in the recycle bin, so long as they aren't **completely identical** in every field.
    * If both volunteers are **completely identical** in every field, only one of them is kept in the recycle bin.
@@ -314,6 +316,8 @@ Format: `restore INDEX [MORE_INDICES]`
 Examples:
 * `bin` followed by `restore 2 3` restores the 2nd and 3rd volunteers in the recycle bin.
 * `bin` followed by `restore 3 3 2` has the same behavior, as duplicate indices are ignored and the order of indices doesn't matter.
+
+![result for 'restore 1'](images/restoreResult.png)
 
 ### Importing volunteers from a CSV file : `import`
 
