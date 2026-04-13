@@ -10,6 +10,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
+import static seedu.address.testutil.TypicalPersons.AMY;
 import static seedu.address.testutil.TypicalPersons.BOB;
 
 import java.util.Arrays;
@@ -147,9 +148,19 @@ public class UniquePersonListTest {
 
     @Test
     public void setPerson_editedPersonHasNonUniqueIdentity_throwsDuplicatePersonException() {
-        uniquePersonList.add(ALICE);
+        uniquePersonList.add(AMY);
         uniquePersonList.add(BOB);
-        assertThrows(DuplicatePersonException.class, () -> uniquePersonList.setPerson(ALICE, BOB));
+
+        // Edited person is identical to another
+        assertThrows(DuplicatePersonException.class, () -> uniquePersonList.setPerson(BOB, AMY));
+
+        // Edited person has the same phone as another
+        Person bobWithAmyPhone = new PersonBuilder(BOB).withPhone(VALID_PHONE_AMY).build();
+        assertThrows(DuplicatePersonException.class, () -> uniquePersonList.setPerson(BOB, bobWithAmyPhone));
+
+        // Edited person has the same email as another
+        Person bobWithAmyEmail = new PersonBuilder(BOB).withEmail(VALID_EMAIL_AMY).build();
+        assertThrows(DuplicatePersonException.class, () -> uniquePersonList.setPerson(BOB, bobWithAmyEmail));
     }
 
     @Test

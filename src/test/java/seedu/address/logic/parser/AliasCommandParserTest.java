@@ -49,6 +49,10 @@ public class AliasCommandParserTest {
         assertParseFailure(parser, "ls rm", AliasCommand.MESSAGE_INVALID_ALIAS_TEMPLATE);
         assertParseFailure(parser, "ls ls", AliasCommand.MESSAGE_INVALID_ALIAS_TEMPLATE);
         assertParseFailure(parser, "ss find m/ss meie", AliasCommand.MESSAGE_INVALID_ALIAS_TEMPLATE);
+    }
+
+    @Test
+    public void parse_extraArguments_throwsParseException() {
         assertParseFailure(parser, "wipe clear now", AliasCommand.MESSAGE_INVALID_ALIAS_TEMPLATE);
     }
 

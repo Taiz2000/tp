@@ -48,7 +48,7 @@ public class FindCommandParserTest {
                 new FindCommand(new PersonContainsFuzzyKeywordsPredicate(Arrays.asList("Alice", "Bob")));
         assertParseSuccess(parser, PREFIX_MATCH_TYPE + FUZZY_TOKEN + " Alice Bob", expectedFuzzyFindCommand);
 
-        // multiple whitespaces between keywords
+        // multiple whitespaces between search terms
         assertParseSuccess(parser, " \n Alice \n \t Bob  \t", expectedFindCommand);
         assertParseSuccess(parser, " \n " + PREFIX_MATCH_TYPE + KEYWORD_TOKEN + " \n \t Alice  \t Bob  \t",
                 expectedFindCommand);
@@ -56,6 +56,21 @@ public class FindCommandParserTest {
                 expectedSubstringFindCommand);
         assertParseSuccess(parser, " \n " + PREFIX_MATCH_TYPE + FUZZY_TOKEN + " \n \t Alice  \t Bob  \t",
                 expectedFuzzyFindCommand);
+    }
+
+    @Test
+    public void parse_caseInsensitiveMatchType_returnsFindCommand() {
+        FindCommand expectedKeyword =
+                new FindCommand(new PersonContainsKeywordsPredicate(Arrays.asList("Alice")));
+        assertParseSuccess(parser, PREFIX_MATCH_TYPE + "KW Alice", expectedKeyword);
+
+        FindCommand expectedSubstring =
+                new FindCommand(new PersonContainsSubstringsPredicate(Arrays.asList("ali")));
+        assertParseSuccess(parser, PREFIX_MATCH_TYPE + "SS ali", expectedSubstring);
+
+        FindCommand expectedFuzzy =
+                new FindCommand(new PersonContainsFuzzyKeywordsPredicate(Arrays.asList("meyr")));
+        assertParseSuccess(parser, PREFIX_MATCH_TYPE + "Fz meyr", expectedFuzzy);
     }
 
     @Test
@@ -90,7 +105,7 @@ public class FindCommandParserTest {
     }
 
     @Test
-    public void parse_keywordsAndAvailability_returnsFindCommand() {
+    public void parse_searchTermsAndAvailability_returnsFindCommand() {
         VolunteerAvailability query = VolunteerAvailability.fromString("MONDAY,14:00,17:00");
         PersonAvailableDuringPredicate availPredicate = new PersonAvailableDuringPredicate(query);
         PersonContainsKeywordsPredicate textPredicate =
@@ -101,7 +116,7 @@ public class FindCommandParserTest {
     }
 
     @Test
-    public void parse_matchTypeKeywordAndAvailability_returnsFindCommand() {
+    public void parse_matchTypeSearchTermsAndAvailability_returnsFindCommand() {
         VolunteerAvailability query = VolunteerAvailability.fromString("TUESDAY,09:00,12:00");
         PersonAvailableDuringPredicate availPredicate = new PersonAvailableDuringPredicate(query);
         PersonContainsKeywordsPredicate textPredicate =
@@ -114,7 +129,7 @@ public class FindCommandParserTest {
 
     @Test
     public void parse_availabilityBeforeMatchType_returnsFindCommand() {
-        // va/ before m/ — keywords trail after m/ (the last prefix)
+        // va/ before m/ — search terms trail after m/ (the last prefix)
         VolunteerAvailability query = VolunteerAvailability.fromString("TUESDAY,09:00,12:00");
         PersonAvailableDuringPredicate availPredicate = new PersonAvailableDuringPredicate(query);
         PersonContainsKeywordsPredicate textPredicate =
@@ -150,8 +165,8 @@ public class FindCommandParserTest {
     }
 
     @Test
-    public void parse_matchTypeWithAvailabilityButNoKeywords_throwsParseException() {
-        // m/kw with availability but no keywords should fail
+    public void parse_matchTypeWithAvailabilityButNoSearchTerms_throwsParseException() {
+        // m/kw with availability but no search terms should fail
         assertParseFailure(parser, PREFIX_MATCH_TYPE + KEYWORD_TOKEN + " "
                         + PREFIX_AVAILABILITY + "MONDAY,14:00,17:00",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
@@ -161,11 +176,11 @@ public class FindCommandParserTest {
     public void parse_invalidAvailability_throwsParseException() {
         // Invalid day
         assertParseFailure(parser, " " + PREFIX_AVAILABILITY + "NOTADAY,14:00,17:00",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+                VolunteerAvailability.MESSAGE_CONSTRAINTS);
 
         // Start after end
         assertParseFailure(parser, " " + PREFIX_AVAILABILITY + "MONDAY,17:00,14:00",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+                VolunteerAvailability.MESSAGE_CONSTRAINTS);
 
         // Empty availability value
         assertParseFailure(parser, " " + PREFIX_AVAILABILITY,
@@ -173,15 +188,15 @@ public class FindCommandParserTest {
 
         // Invalid time format
         assertParseFailure(parser, " " + PREFIX_AVAILABILITY + "MONDAY,25:00,17:00",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+                VolunteerAvailability.MESSAGE_CONSTRAINTS);
 
         // Missing end time
         assertParseFailure(parser, " " + PREFIX_AVAILABILITY + "MONDAY,14:00",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+                VolunteerAvailability.MESSAGE_CONSTRAINTS);
 
         // Non-time garbage
         assertParseFailure(parser, " " + PREFIX_AVAILABILITY + "MONDAY,abc,def",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+                VolunteerAvailability.MESSAGE_CONSTRAINTS);
     }
 
     @Test
@@ -197,7 +212,7 @@ public class FindCommandParserTest {
     }
 
     @Test
-    public void parse_missingKeywords_throwsParseException() {
+    public void parse_missingSearchTerms_throwsParseException() {
         assertParseFailure(parser, PREFIX_MATCH_TYPE + KEYWORD_TOKEN,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
         assertParseFailure(parser, PREFIX_MATCH_TYPE + SUBSTRING_TOKEN,

@@ -25,7 +25,14 @@ public class ListCommandParserTest {
         assertParseSuccess(parser, "name", new ListCommand(SortAttribute.NAME, SortOrder.ASC));
         assertParseSuccess(parser, "email desc", new ListCommand(SortAttribute.EMAIL, SortOrder.DESC));
         assertParseSuccess(parser, "  NaMe   dEsC  ", new ListCommand(SortAttribute.NAME, SortOrder.DESC));
+        assertParseSuccess(parser, "address asc", new ListCommand(SortAttribute.ADDRESS, SortOrder.ASC));
         assertParseSuccess(parser, "vr desc", new ListCommand(SortAttribute.VR, SortOrder.DESC));
+    }
+
+    @Test
+    public void parse_caseInsensitiveArgs_returnsListCommand() {
+        assertParseSuccess(parser, "ROLE", new ListCommand(SortAttribute.ROLE, SortOrder.ASC));
+        assertParseSuccess(parser, "EMAIL DESC", new ListCommand(SortAttribute.EMAIL, SortOrder.DESC));
     }
 
     @Test
@@ -36,7 +43,10 @@ public class ListCommandParserTest {
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE));
         assertParseFailure(parser, "unknown",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE));
-        assertParseFailure(parser, "name desc extra",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_extraArguments_throwsParseException() {
+        assertParseFailure(parser, "name desc extra", ListCommand.MESSAGE_EXTRA_ARGUMENTS);
     }
 }

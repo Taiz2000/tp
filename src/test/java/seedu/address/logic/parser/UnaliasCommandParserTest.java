@@ -24,7 +24,11 @@ public class UnaliasCommandParserTest {
     @Test
     public void parse_missingParts_failure() {
         assertParseFailure(parser, "", MESSAGE_INVALID_FORMAT);
-        assertParseFailure(parser, "ls extra", MESSAGE_INVALID_FORMAT);
+    }
+
+    @Test
+    public void parse_extraArguments_throwsParseException() {
+        assertParseFailure(parser, "ls extra", UnaliasCommand.MESSAGE_EXTRA_ARGUMENTS);
     }
 
     @Test

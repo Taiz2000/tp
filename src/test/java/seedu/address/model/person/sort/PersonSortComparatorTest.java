@@ -62,6 +62,7 @@ public class PersonSortComparatorTest {
                 .withName("alice")
                 .withPhone("12345")
                 .withEmail("a@example.com")
+                .withAddress("Apple Street")
                 .withRole("Developer")
                 .withTags("beta", "alpha")
                 .withRecords("2026-03-20T09:00,2026-03-20T12:00")
@@ -70,6 +71,7 @@ public class PersonSortComparatorTest {
                 .withName("BOB")
                 .withPhone("23456")
                 .withEmail("b@example.com")
+                .withAddress("Banana Avenue")
                 .withRole("Tester")
                 .withTags("beta", "charlie")
                 .withRecords("2026-04-01T09:00,2026-04-01T12:00")
@@ -78,6 +80,7 @@ public class PersonSortComparatorTest {
         assertTrue(new PersonSortComparator(SortAttribute.NAME, SortOrder.ASC).compare(first, second) < 0);
         assertTrue(new PersonSortComparator(SortAttribute.PHONE, SortOrder.ASC).compare(first, second) < 0);
         assertTrue(new PersonSortComparator(SortAttribute.EMAIL, SortOrder.ASC).compare(first, second) < 0);
+        assertTrue(new PersonSortComparator(SortAttribute.ADDRESS, SortOrder.ASC).compare(first, second) < 0);
         assertTrue(new PersonSortComparator(SortAttribute.ROLE, SortOrder.ASC).compare(first, second) < 0);
         assertTrue(new PersonSortComparator(SortAttribute.TAG, SortOrder.ASC).compare(first, second) < 0);
         assertTrue(new PersonSortComparator(SortAttribute.VR, SortOrder.ASC).compare(first, second) < 0);
@@ -85,6 +88,7 @@ public class PersonSortComparatorTest {
         assertTrue(new PersonSortComparator(SortAttribute.NAME, SortOrder.DESC).compare(first, second) > 0);
         assertTrue(new PersonSortComparator(SortAttribute.PHONE, SortOrder.DESC).compare(first, second) > 0);
         assertTrue(new PersonSortComparator(SortAttribute.EMAIL, SortOrder.DESC).compare(first, second) > 0);
+        assertTrue(new PersonSortComparator(SortAttribute.ADDRESS, SortOrder.DESC).compare(first, second) > 0);
         assertTrue(new PersonSortComparator(SortAttribute.ROLE, SortOrder.DESC).compare(first, second) > 0);
         assertTrue(new PersonSortComparator(SortAttribute.TAG, SortOrder.DESC).compare(first, second) > 0);
         assertTrue(new PersonSortComparator(SortAttribute.VR, SortOrder.DESC).compare(first, second) > 0);

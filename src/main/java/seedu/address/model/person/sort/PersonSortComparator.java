@@ -39,6 +39,9 @@ public class PersonSortComparator implements Comparator<Person> {
         case EMAIL:
             result = STRING_COMPARATOR.compare(first.getEmail().value, second.getEmail().value);
             break;
+        case ADDRESS:
+            result = STRING_COMPARATOR.compare(first.getAddress().value, second.getAddress().value);
+            break;
         case ROLE:
             result = STRING_COMPARATOR.compare(first.getRole().value, second.getRole().value);
             break;

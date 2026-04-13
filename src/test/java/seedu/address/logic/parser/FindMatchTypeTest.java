@@ -16,6 +16,13 @@ public class FindMatchTypeTest {
     }
 
     @Test
+    public void fromToken_caseInsensitiveTokens_returnsMatchType() {
+        assertEquals(Optional.of(FindMatchType.KEYWORD), FindMatchType.fromToken("KW"));
+        assertEquals(Optional.of(FindMatchType.SUBSTRING), FindMatchType.fromToken("Ss"));
+        assertEquals(Optional.of(FindMatchType.FUZZY), FindMatchType.fromToken("FZ"));
+    }
+
+    @Test
     public void fromToken_unsupportedToken_returnsEmpty() {
         assertEquals(Optional.empty(), FindMatchType.fromToken("regex"));
     }

@@ -10,6 +10,7 @@ public enum SortAttribute {
     NAME("name"),
     PHONE("phone"),
     EMAIL("email"),
+    ADDRESS("address"),
     ROLE("role"),
     TAG("tag"),
     VR("vr");

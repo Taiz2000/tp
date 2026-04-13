@@ -17,6 +17,7 @@ public class UnaliasCommand extends Command {
             + ": Removes a command alias.\n"
             + "Parameters: SHORT\n"
             + "Example: " + COMMAND_WORD + " ls";
+    public static final String MESSAGE_EXTRA_ARGUMENTS = "Too many arguments provided!\n" + MESSAGE_USAGE;
     public static final String MESSAGE_SUCCESS = "Alias removed: %1$s";
     public static final String MESSAGE_ALIAS_NOT_FOUND = "This alias does not exist.";
 

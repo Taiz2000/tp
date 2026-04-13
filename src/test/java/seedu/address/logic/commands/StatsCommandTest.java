@@ -3,6 +3,8 @@ package seedu.address.logic.commands;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.Messages.MESSAGE_NOT_VIEWING_KEPT_PERSONS;
+import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 
 import org.junit.jupiter.api.Test;
@@ -45,7 +47,15 @@ public class StatsCommandTest {
     }
 
     @Test
-    public void execute_roleStats_success() {
+    public void execute_notViewingKeptPersons_throwsCommandException() {
+        Model model = new ModelManager(buildAddressBook(), new UserPrefs());
+        StatsCommand command = new StatsCommand(StatisticsCategory.ROLE);
+        assertCommandFailure(command, model, PersonListView.DELETED_PERSONS,
+                MESSAGE_NOT_VIEWING_KEPT_PERSONS);
+    }
+
+    @Test
+    public void execute_roleStatsUnfilteredList_success() {
         Model model = new ModelManager(buildAddressBook(), new UserPrefs());
         Model expectedModel = new ModelManager(buildAddressBook(), new UserPrefs());
 
@@ -56,12 +66,30 @@ public class StatsCommandTest {
                 "Medic      | ##### 25.0% (1)",
                 "Unassigned | ##### 25.0% (1)");
 
-        assertCommandSuccess(command, model, PersonListView.DELETED_PERSONS,
+        assertCommandSuccess(command, model, PersonListView.KEPT_PERSONS,
                 expected, PersonListView.KEPT_PERSONS, expectedModel);
     }
 
     @Test
-    public void execute_recordStats_success() {
+    public void execute_roleStatsFilteredList_success() {
+        Model model = new ModelManager(buildAddressBook(), new UserPrefs());
+        Model expectedModel = new ModelManager(buildAddressBook(), new UserPrefs());
+
+        // Filter to show only persons with "Leader" role
+        model.updateFilteredKeptPersonList(person -> person.getRole().value.equals("Leader"));
+        expectedModel.updateFilteredKeptPersonList(person -> person.getRole().value.equals("Leader"));
+
+        StatsCommand command = new StatsCommand(StatisticsCategory.ROLE);
+        String expected = String.join("\n",
+                "Role Distribution (2 volunteers)",
+                "Leader | #################### 100.0% (2)");
+
+        assertCommandSuccess(command, model, PersonListView.KEPT_PERSONS,
+                expected, PersonListView.KEPT_PERSONS, expectedModel);
+    }
+
+    @Test
+    public void execute_recordStatsUnfilteredList_success() {
         Model model = new ModelManager(buildAddressBook(), new UserPrefs());
         Model expectedModel = new ModelManager(buildAddressBook(), new UserPrefs());
 
@@ -73,7 +101,31 @@ public class StatsCommandTest {
                 "Dana Yu  | ########## 1 record(s)",
                 "Chen Wei |  0 record(s)");
 
-        assertCommandSuccess(command, model, expected, expectedModel);
+        assertCommandSuccess(command, model, PersonListView.KEPT_PERSONS,
+                expected, PersonListView.KEPT_PERSONS, expectedModel);
+    }
+
+    @Test
+    public void execute_recordStatsFilteredList_success() {
+        Model model = new ModelManager(buildAddressBook(), new UserPrefs());
+        Model expectedModel = new ModelManager(buildAddressBook(), new UserPrefs());
+
+        // Filter to show only Alex Tan and Dana Yu
+        model.updateFilteredKeptPersonList(person ->
+                person.getName().fullName.equals("Alex Tan")
+                || person.getName().fullName.equals("Dana Yu"));
+        expectedModel.updateFilteredKeptPersonList(person ->
+                person.getName().fullName.equals("Alex Tan")
+                || person.getName().fullName.equals("Dana Yu"));
+
+        StatsCommand command = new StatsCommand(StatisticsCategory.RECORD);
+        String expected = String.join("\n",
+                "Volunteer Record Counts (2 volunteers)",
+                "Alex Tan | #################### 2 record(s)",
+                "Dana Yu  | ########## 1 record(s)");
+
+        assertCommandSuccess(command, model, PersonListView.KEPT_PERSONS,
+                expected, PersonListView.KEPT_PERSONS, expectedModel);
     }
 
     @Test

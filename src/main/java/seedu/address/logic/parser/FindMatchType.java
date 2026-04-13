@@ -26,7 +26,7 @@ public enum FindMatchType {
      */
     public static Optional<FindMatchType> fromToken(String token) {
         return Arrays.stream(FindMatchType.values())
-                .filter(matchType -> matchType.token.equals(token))
+                .filter(matchType -> matchType.token.equalsIgnoreCase(token))
                 .findFirst();
     }
 }

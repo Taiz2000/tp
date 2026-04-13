@@ -2,10 +2,12 @@ package seedu.address.ui;
 
 import java.util.logging.Logger;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
@@ -50,6 +52,9 @@ public class MainWindow extends UiPart<Stage> {
 
     @FXML
     private StackPane resultDisplayPlaceholder;
+
+    @FXML
+    private SplitPane splitPane;
 
     @FXML
     private StackPane statusbarPlaceholder;
@@ -115,7 +120,7 @@ public class MainWindow extends UiPart<Stage> {
      * Fills up all the placeholders of this window.
      */
     void fillInnerParts() {
-        personListPanel = new PersonListPanel(logic.getFilteredKeptPersonList());
+        personListPanel = new PersonListPanel(personListView.getDisplayMessage(), selectPersonList());
         personListPanelPlaceholder.getChildren().add(personListPanel.getRoot());
 
         resultDisplay = new ResultDisplay();
@@ -127,6 +132,7 @@ public class MainWindow extends UiPart<Stage> {
 
         CommandBox commandBox = new CommandBox(this::executeCommand);
         commandBoxPlaceholder.getChildren().add(commandBox.getRoot());
+        Platform.runLater(() -> splitPane.setDividerPositions(0.2));
     }
 
     /**
@@ -199,16 +205,19 @@ public class MainWindow extends UiPart<Stage> {
         }
     }
 
-    private void updatePersonListPanel() {
+    private ObservableList<Person> selectPersonList() {
         // Indented case blocks in lambda-style switch statements are allowed
         // CHECKSTYLE.OFF: Indentation
-        ObservableList<Person> personList = switch (personListView) {
+        return switch (personListView) {
             case KEPT_PERSONS -> logic.getFilteredKeptPersonList();
             case DELETED_PERSONS -> logic.getFilteredDeletedPersonList();
             default -> throw new IllegalStateException("Unexpected value of personListView: " + personListView);
         };
         // CHECKSTYLE.ON: Indentation
+    }
 
-        personListPanel.setPersonList(personList);
+    private void updatePersonListPanel() {
+        personListPanel.setPersonListStatus(personListView.getDisplayMessage());
+        personListPanel.setPersonList(selectPersonList());
     }
 }

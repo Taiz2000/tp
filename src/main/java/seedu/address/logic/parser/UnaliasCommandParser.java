@@ -15,8 +15,11 @@ public class UnaliasCommandParser implements Parser<UnaliasCommand> {
     public UnaliasCommand parse(String args) throws ParseException {
         requireNonNull(args);
         String trimmedArgs = args.trim();
-        if (trimmedArgs.isEmpty() || trimmedArgs.contains(" ")) {
+        if (trimmedArgs.isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, UnaliasCommand.MESSAGE_USAGE));
+        }
+        if (trimmedArgs.contains(" ")) {
+            throw new ParseException(UnaliasCommand.MESSAGE_EXTRA_ARGUMENTS);
         }
 
         try {

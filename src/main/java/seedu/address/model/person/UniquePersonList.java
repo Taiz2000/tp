@@ -54,11 +54,13 @@ public class UniquePersonList extends PersonList {
             throw new PersonNotFoundException();
         }
 
-        if (!target.isSamePerson(editedPerson) && contains(editedPerson)) {
+        internalList.remove(index);
+        if (contains(editedPerson)) {
+            internalList.add(index, target);
             throw new DuplicatePersonException();
         }
 
-        internalList.set(index, editedPerson);
+        internalList.add(index, editedPerson);
     }
 
     /**

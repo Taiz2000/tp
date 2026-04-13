@@ -26,7 +26,7 @@ public class ListCommandParser implements Parser<ListCommand> {
         }
 
         if (tokens.size() > 2) {
-            throw getInvalidCommandFormatParseException();
+            throw new ParseException(ListCommand.MESSAGE_EXTRA_ARGUMENTS);
         }
 
         SortAttribute attribute = SortAttribute.fromToken(tokens.get(0))

@@ -1,6 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.commands.CommandUtil.requireViewingKeptPersons;
 import static seedu.address.model.statistics.StatisticsCategory.RECORD_TOKEN;
 import static seedu.address.model.statistics.StatisticsCategory.ROLE_TOKEN;
 
@@ -24,6 +25,12 @@ public class StatsCommand extends Command {
             + "Parameters: CATEGORY\n"
             + "Currently supported CATEGORY: " + ROLE_TOKEN + ", " + RECORD_TOKEN + "\n"
             + "Example: " + COMMAND_WORD + " " + ROLE_TOKEN;
+
+    public static final String MESSAGE_UNKNOWN_CATEGORY = "Unknown statistics category: %1$s\n"
+            + "Currently supported CATEGORY: " + ROLE_TOKEN + ", " + RECORD_TOKEN;
+
+    public static final String MESSAGE_EXTRA_ARGUMENTS = "Too many arguments provided!\n"
+            + MESSAGE_USAGE;
 
     private final StatisticsCategory category;
     private final StatisticsGeneratorFactory generatorFactory;
@@ -51,9 +58,9 @@ public class StatsCommand extends Command {
     @Override
     public CommandResult execute(Model model, PersonListView personListView) throws CommandException {
         requireNonNull(model);
-        requireNonNull(personListView);
+        requireViewingKeptPersons(personListView);
         StatisticsGenerator generator = generatorFactory.create(category);
-        StatisticsReport report = generator.generate(model.getAddressBook().getKeptPersonList());
+        StatisticsReport report = generator.generate(model.getFilteredKeptPersonList());
         return new CommandResult(report.render(), PersonListView.KEPT_PERSONS);
     }
 

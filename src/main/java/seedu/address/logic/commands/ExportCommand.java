@@ -14,14 +14,18 @@ import seedu.address.model.Model;
 import seedu.address.model.person.Person;
 
 /**
- * Exports the active address book to a CSV file.
+ * Exports kept volunteers to a CSV file based on the current view.
  */
 public class ExportCommand extends Command {
 
     public static final String COMMAND_WORD = "export";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Exports all active volunteers in the address book to a CSV file.\n"
+            + ": Exports kept volunteers to a CSV file.\n"
+            + "When viewing the contact list, exports the currently displayed kept contacts, "
+            + "so active find filters are applied.\n"
+            + "When viewing the recycle bin, exports the full kept contact list instead; "
+            + "deleted contacts are never exported and the view switches back to the contact list.\n"
             + "Parameters: FILE_PATH\n"
             + "Example: " + COMMAND_WORD + " data/volunteers.csv";
 
@@ -31,7 +35,7 @@ public class ExportCommand extends Command {
     private final Path filePath;
 
     /**
-     * Creates an ExportCommand to export the active address book to the specified file path.
+     * Creates an ExportCommand to export kept volunteers to the specified file path.
      *
      * @param filePath Path to the CSV file to be written.
      */
@@ -44,7 +48,11 @@ public class ExportCommand extends Command {
     public CommandResult execute(Model model, PersonListView personListView) throws CommandException {
         requireNonNull(model);
 
-        List<Person> persons = model.getKeptPersonList();
+        boolean isViewingDeletedPersons = personListView == PersonListView.DELETED_PERSONS;
+        List<Person> persons = isViewingDeletedPersons
+                ? model.getKeptPersonList()
+                : model.getFilteredKeptPersonList();
+        PersonListView resultView = isViewingDeletedPersons ? PersonListView.KEPT_PERSONS : personListView;
 
         try {
             CsvWriterUtil.writePersons(filePath, persons);
@@ -54,7 +62,7 @@ public class ExportCommand extends Command {
 
         return new CommandResult(
                 String.format(MESSAGE_SUCCESS, persons.size(), filePath),
-                PersonListView.KEPT_PERSONS);
+                resultView);
     }
 
     @Override

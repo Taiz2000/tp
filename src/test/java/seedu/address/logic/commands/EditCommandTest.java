@@ -233,10 +233,29 @@ public class EditCommandTest {
     @Test
     public void execute_duplicatePersonUnfilteredList_failure() {
         Person firstPerson = model.getFilteredKeptPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder(firstPerson).build();
-        EditCommand editCommand = new EditCommand(INDEX_SECOND_PERSON, descriptor);
+        Person secondPerson = model.getFilteredKeptPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
 
-        assertCommandFailure(editCommand, model, PersonListView.KEPT_PERSONS,
+        // edit secondPerson into an exact duplicate of firstPerson
+        EditPersonDescriptor duplicateDescriptor = new EditPersonDescriptorBuilder(firstPerson).build();
+        EditCommand duplicateEditCommand = new EditCommand(INDEX_SECOND_PERSON, duplicateDescriptor);
+
+        assertCommandFailure(duplicateEditCommand, model, PersonListView.KEPT_PERSONS,
+                EditCommand.MESSAGE_DUPLICATE_PERSON);
+
+        // give secondPerson the same phone as firstPerson
+        EditPersonDescriptor samePhoneDescriptor = new EditPersonDescriptor();
+        samePhoneDescriptor.setPhone(firstPerson.getPhone());
+        EditCommand samePhoneEditCommand = new EditCommand(INDEX_SECOND_PERSON, samePhoneDescriptor);
+
+        assertCommandFailure(samePhoneEditCommand, model, PersonListView.KEPT_PERSONS,
+                EditCommand.MESSAGE_DUPLICATE_PERSON);
+
+        // give firstPerson the same email as secondPerson
+        EditPersonDescriptor sameEmailDescriptor = new EditPersonDescriptor();
+        sameEmailDescriptor.setEmail(secondPerson.getEmail());
+        EditCommand sameEmailEditCommand = new EditCommand(INDEX_FIRST_PERSON, sameEmailDescriptor);
+
+        assertCommandFailure(sameEmailEditCommand, model, PersonListView.KEPT_PERSONS,
                 EditCommand.MESSAGE_DUPLICATE_PERSON);
     }
 
