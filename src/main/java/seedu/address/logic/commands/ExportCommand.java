@@ -5,7 +5,10 @@ import static java.util.Objects.requireNonNull;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.UUID;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.PersonListView;
@@ -20,9 +23,12 @@ import seedu.address.model.person.Person;
 public class ExportCommand extends Command {
 
     public static final String COMMAND_WORD = "export";
+    private static final DateTimeFormatter FILE_NAME_TIMESTAMP_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss");
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Exports kept volunteers to a CSV file. If FILE_PATH already exists, it will be overwritten.\n"
+            + ": Exports kept volunteers to a CSV file. If FILE_PATH already exists, "
+            + "a new file name will be generated automatically.\n"
             + "When viewing the contact list, exports the currently displayed kept contacts, "
             + "so active find filters are applied.\n"
             + "When viewing the recycle bin, exports the full kept contact list instead; "
@@ -31,8 +37,8 @@ public class ExportCommand extends Command {
             + "Example: " + COMMAND_WORD + " data/volunteers.csv";
 
     public static final String MESSAGE_SUCCESS = "Exported %1$d volunteers to %2$s";
-    public static final String MESSAGE_SUCCESS_OVERWRITE =
-            "Exported %1$d volunteers to %2$s. Existing file was overwritten.";
+    public static final String MESSAGE_SUCCESS_REDIRECTED =
+            "Exported %1$d volunteers to %2$s because %3$s already exists.";
     public static final String MESSAGE_EXPORT_FAILURE = "Could not export to %1$s: %2$s";
 
     private final Path filePath;
@@ -56,18 +62,49 @@ public class ExportCommand extends Command {
                 ? model.getKeptPersonList()
                 : model.getFilteredKeptPersonList();
         PersonListView resultView = isViewingDeletedPersons ? PersonListView.KEPT_PERSONS : personListView;
-        boolean fileExistsBeforeWrite = Files.exists(filePath);
+        Path outputFilePath = resolveOutputFilePath(filePath);
 
         try {
-            CsvWriterUtil.writePersons(filePath, persons);
+            CsvWriterUtil.writePersons(outputFilePath, persons);
         } catch (IOException e) {
-            throw new CommandException(String.format(MESSAGE_EXPORT_FAILURE, filePath, e.getMessage()));
+            throw new CommandException(String.format(MESSAGE_EXPORT_FAILURE, outputFilePath, e.getMessage()));
         }
 
         return new CommandResult(
-                String.format(fileExistsBeforeWrite ? MESSAGE_SUCCESS_OVERWRITE : MESSAGE_SUCCESS,
-                        persons.size(), filePath),
+                buildSuccessMessage(persons.size(), outputFilePath),
                 resultView);
+    }
+
+    static Path resolveOutputFilePath(Path requestedFilePath) {
+        if (!Files.exists(requestedFilePath) || Files.isDirectory(requestedFilePath)) {
+            return requestedFilePath;
+        }
+
+        String fileName = requestedFilePath.getFileName().toString();
+        String timestamp = LocalDateTime.now().format(FILE_NAME_TIMESTAMP_FORMATTER);
+        String extension = "";
+        String stem = fileName;
+        int lastDotIndex = fileName.lastIndexOf('.');
+        if (lastDotIndex > 0 && lastDotIndex < fileName.length() - 1) {
+            stem = fileName.substring(0, lastDotIndex);
+            extension = fileName.substring(lastDotIndex);
+        }
+
+        Path candidatePath;
+        do {
+            String token = UUID.randomUUID().toString().substring(0, 8);
+            candidatePath = requestedFilePath.resolveSibling(stem + "-" + timestamp + "-" + token + extension);
+        } while (Files.exists(candidatePath));
+
+        return candidatePath;
+    }
+
+    private String buildSuccessMessage(int personCount, Path outputFilePath) {
+        if (outputFilePath.equals(filePath)) {
+            return String.format(MESSAGE_SUCCESS, personCount, outputFilePath);
+        }
+
+        return String.format(MESSAGE_SUCCESS_REDIRECTED, personCount, outputFilePath, filePath);
     }
 
     @Override

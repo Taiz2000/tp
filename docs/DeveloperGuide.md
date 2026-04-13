@@ -318,7 +318,8 @@ For the `export` command:
 * This means active `find` filters affect export only when the user is in active view.
 * In deleted view, `ExportCommand` retrieves `Model#getKeptPersonList()` instead, so deleted persons are never exported.
 * After export from deleted view, the command returns `PersonListView.KEPT_PERSONS`, switching the UI back to the active list.
-* `ExportCommand` then calls `CsvWriterUtil` to convert the selected active-person list into CSV format and write it to the file.
+* Before writing, `ExportCommand` resolves the final output path. If the requested path already exists as a file, it generates a sibling file name by appending a timestamp and short uniqueness token before the extension.
+* `ExportCommand` then calls `CsvWriterUtil` to convert the selected active-person list into CSV format and write it to the resolved file.
 
 For the `import` command:
 
@@ -759,7 +760,10 @@ testers are expected to do more *exploratory* testing.
 1. Exporting contacts
 
    1. Test case: `export test_output.csv`<br>
-      Expected: CSV file created at `test_output.csv`. Status message shows "Exported X volunteers to test_output.csv".
+       Expected: CSV file created at `test_output.csv`. Status message shows "Exported X volunteers to test_output.csv".
+
+   2. Test case: create `test_output.csv`, then run `export test_output.csv` again.<br>
+      Expected: existing `test_output.csv` remains unchanged. A new sibling file with a name derived from `test_output.csv` is created, and the status message reports the generated file path because `test_output.csv` already exists.
 
 1. Importing contacts
 

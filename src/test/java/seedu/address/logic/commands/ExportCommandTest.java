@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -134,9 +135,9 @@ public class ExportCommandTest {
     }
 
     @Test
-    public void execute_existingFile_overwritesFile() throws Exception {
-        Path outputFile = tempDir.resolve("volunteers.csv");
-        Files.writeString(outputFile, "old content");
+    public void execute_existingFile_exportsToDerivedSiblingFile() throws Exception {
+        Path requestedFile = tempDir.resolve("volunteers.csv");
+        Files.writeString(requestedFile, "old content");
 
         Person alice = new PersonBuilder().withName("Alice Pauline")
                 .withPhone("94351253")
@@ -148,24 +149,57 @@ public class ExportCommandTest {
                 List.of(alice),
                 List.of(alice),
                 List.of());
-        ExportCommand command = new ExportCommand(outputFile);
+        ExportCommand command = new ExportCommand(requestedFile);
 
         CommandResult result = command.execute(model, PersonListView.KEPT_PERSONS);
+        Path generatedFile = findGeneratedSiblingFile(requestedFile);
 
-        assertEquals(String.format(ExportCommand.MESSAGE_SUCCESS_OVERWRITE, 1, outputFile),
+        assertEquals(String.format(ExportCommand.MESSAGE_SUCCESS_REDIRECTED, 1, generatedFile, requestedFile),
                 result.getFeedbackToUser());
         assertEquals(PersonListView.KEPT_PERSONS, result.getPersonListView());
 
-        String content = Files.readString(outputFile);
+        assertEquals("old content", Files.readString(requestedFile));
+        assertEquals(tempDir, generatedFile.getParent());
+        assertTrue(generatedFile.getFileName().toString()
+                .matches("volunteers-\\d{8}T\\d{6}-[0-9a-f]{8}\\.csv"));
+
+        String content = Files.readString(generatedFile);
         assertTrue(content.contains("name,phone,email,address,role,notes,tags,availabilities,records"));
         assertTrue(content.contains("Alice Pauline"));
         assertTrue(!content.contains("old content"));
     }
 
     @Test
-    public void messageUsage_mentionsExistingFilesAreOverwritten() {
+    public void execute_missingParentDirectory_createsDirectoryAndExports() throws Exception {
+        Path outputFile = tempDir.resolve("exports").resolve("archive").resolve("volunteers.csv");
+        Person alice = new PersonBuilder().withName("Alice Pauline")
+                .withEmail("alice@example.com")
+                .build();
+        ModelStub model = new ModelStubWithPersonLists(List.of(alice), List.of(alice), List.of());
+
+        CommandResult result = new ExportCommand(outputFile).execute(model, PersonListView.KEPT_PERSONS);
+
+        assertEquals(String.format(ExportCommand.MESSAGE_SUCCESS, 1, outputFile), result.getFeedbackToUser());
+        assertTrue(Files.isDirectory(outputFile.getParent()));
+        assertTrue(Files.exists(outputFile));
+    }
+
+    @Test
+    public void resolveOutputFilePath_existingFileWithoutExtension_appendsSuffixInSameDirectory() throws Exception {
+        Path requestedFile = tempDir.resolve("volunteers");
+        Files.writeString(requestedFile, "old content");
+
+        Path resolvedFile = ExportCommand.resolveOutputFilePath(requestedFile);
+
+        assertEquals(tempDir, resolvedFile.getParent());
+        assertTrue(resolvedFile.getFileName().toString().matches("volunteers-\\d{8}T\\d{6}-[0-9a-f]{8}"));
+        assertTrue(!resolvedFile.equals(requestedFile));
+    }
+
+    @Test
+    public void messageUsage_mentionsGeneratedFileNameWhenPathExists() {
         assertEquals("export: Exports kept volunteers to a CSV file. "
-                        + "If FILE_PATH already exists, it will be overwritten.\n"
+                        + "If FILE_PATH already exists, a new file name will be generated automatically.\n"
                         + "When viewing the contact list, exports the currently displayed kept contacts, "
                         + "so active find filters are applied.\n"
                         + "When viewing the recycle bin, exports the full kept contact list instead; "
@@ -258,6 +292,16 @@ public class ExportCommandTest {
         ExportCommand exportCommand = new ExportCommand(filePath);
         String expected = ExportCommand.class.getCanonicalName() + "{filePath=" + filePath + "}";
         assertEquals(expected, exportCommand.toString());
+    }
+
+    private Path findGeneratedSiblingFile(Path requestedFile) throws Exception {
+        try (Stream<Path> files = Files.list(requestedFile.getParent())) {
+            List<Path> generatedFiles = files
+                    .filter(path -> !path.equals(requestedFile))
+                    .toList();
+            assertEquals(1, generatedFiles.size());
+            return generatedFiles.get(0);
+        }
     }
 
     /**
