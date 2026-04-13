@@ -509,7 +509,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Performance**
 
-1. The system should be able to handle up to 500 contacts without noticeable sluggishness during typical usage.
+1. The system should support a roster of up to 500 volunteers. In performance tests conducted on a typical modern desktop or laptop running Java 17, the application should start within 10 seconds, and the commands list, add, find, edit, and delete should each complete within 5 second for a 500-volunteer dataset. The export command for the same dataset should complete within 10 seconds.
 2. Bulk operations involving up to 100 contacts should complete within 2 seconds.
 
 **Usability**
