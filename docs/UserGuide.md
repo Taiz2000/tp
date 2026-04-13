@@ -323,6 +323,9 @@ You can use this command while viewing either the contact list or the recycle bi
 
 Format: `import FILE_PATH`
 
+* Exactly one file path must be provided after `import`.
+* Any extra text after the file path will cause the command to be rejected as invalid.
+* File paths with spaces are not supported.
 * Your CSV file must include the column headers `name`, `phone`, `email`, and `address`. 
   * The following headers are optional: `role`, `notes`, `tags`, `availabilities`, `records`.
 * RosterBolt imports standard CSV. For manually edited CSV files, any field containing commas must be enclosed in double quotes.
@@ -373,6 +376,9 @@ If you run `export` while viewing the recycle bin, RosterBolt exports the active
 
 Format: `export FILE_PATH`
 
+* Exactly one file path must be provided after `export`.
+* Any extra text after the file path will cause the command to be rejected as invalid.
+* File paths with spaces are not supported.
 * If a file already exists at the given path, it's overwritten without warning, so double-check the path to avoid accidentally replacing an important file.
 
 Examples:
