@@ -193,10 +193,10 @@ Format: `list [ATTRIBUTE [asc|desc]]`
   * `vr` sorts by the end time of each volunteer's most recent volunteer record. Use `list vr asc` to see who hasn't served recently (useful for distributing duties fairly), or `list vr desc` to see who served most recently. Volunteers without any volunteer records are treated as least-recently served (i.e., they appear first when sorting in ascending order, so you can easily spot who hasn't served yet).
 
 Examples:
-* `list`
-* `list name`
-* `list email desc`
-* `list vr desc`
+* `list` shows all active volunteers in the default order.
+* `list name` shows all active volunteers sorted by name in ascending order.
+* `list email desc` shows all active volunteers sorted by email in descending order.
+* `list vr desc` shows volunteers with the most recent volunteer records first.
 
 ### Creating a command alias : `alias`
 
@@ -225,6 +225,11 @@ Lists all the command aliases you've set up, so you can check what shortcuts are
 
 Format: `aliases`
 
+Examples:
+* `aliases` shows `No aliases defined.` if you haven't created any aliases yet.
+* `alias ls list` followed by `aliases` shows `ls -> list` in the alias list.
+* `alias rm delete` followed by `alias ls list`, then `aliases`, shows both aliases sorted by alias name.
+
 ### Removing a command alias : `unalias`
 
 Removes an existing command alias, e.g. if you no longer need it.
@@ -232,7 +237,8 @@ Removes an existing command alias, e.g. if you no longer need it.
 Format: `unalias SHORT`
 
 Examples:
-* `unalias ls`
+* `alias ls list` followed by `unalias ls` removes the `ls` shortcut.
+* `unalias ls` is rejected with `This alias does not exist.` if `ls` hasn't been created yet.
 
 ### Showing recycle bin of recently deleted volunteers : `bin`
 
@@ -247,6 +253,11 @@ Format: `bin`
    * If both volunteers are **completely identical** in every field, only one of them is kept in the recycle bin.
 * The recycle bin is cleared when you close RosterBolt, so make sure to restore any accidentally deleted volunteers before exiting.
 
+Examples:
+* `delete 2` followed by `bin` shows the deleted volunteer in the recycle bin.
+* `clear` followed by `bin` shows the volunteers removed by `clear`, so you can review them before restoring or exiting.
+* After you close and reopen RosterBolt, `bin` no longer shows volunteers deleted in the previous session.
+
 ### Editing a volunteer : `edit`
 
 Edits the details of a volunteer that's already in your RosterBolt contact list. Use this when a volunteer changes their phone number, email, availability, or any other information.
@@ -260,7 +271,8 @@ Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [r/ROLE] [nt/NOTES]
 * The values you provide replace the existing values for those fields.
 * When you edit tags, availabilities, or records, the new values **replace all existing values** for that field (i.e., they aren't added on top of the old ones).
 * You can remove all the volunteer's tags, availabilities, records, role, or notes by typing `t/`, `va/`, `vr/`, `r/`, or `nt/` without specifying values after the prefix.
-  * To clear tags, availabilities, or records, the empty prefix must be the only occurrence of that prefix. For example, use `edit 1 t/` to clear all tags; `edit 1 t/ t/` and `edit 1 t/friend t/` are not accepted because the new tags are mutually contradictory.
+  * Repeated empty prefixes are accepted and still clear that field. For example, `edit 1 t/` and `edit 1 t/ t/` both clear all tags.
+  * Don't mix empty and non-empty values for the same prefix. For example, `edit 1 t/friend t/` is not accepted because the new tags are mutually contradictory.
 * See [field constraints](#field-constraints) for valid values for each field.
 
 Examples:
@@ -323,8 +335,8 @@ Format: `stats CATEGORY`
 * `record` ranks volunteers by how many volunteer records they have, so you can see who has been most (or least) active.
 
 Examples:
-* `stats role`
-* `stats record`
+* `stats role` shows the percentage breakdown of volunteer roles, including `Unassigned` for volunteers without a role.
+* `stats record` ranks volunteers by how many volunteer records they have.
 
 ### Deleting a volunteer : `delete`
 
@@ -364,6 +376,9 @@ Format: `restore INDEX [MORE_INDICES]`
 Examples:
 * `bin` followed by `restore 2 3` restores the 2nd and 3rd volunteers in the recycle bin.
 * `bin` followed by `restore 3 3 2` has the same behavior, as duplicate indices are ignored and the order of indices doesn't matter.
+* `list` followed by `restore 1` is rejected with `You must be viewing the recycle bin of recently deleted contacts to perform this command.`
+* If the 1st volunteer in the recycle bin has the same phone number or email as someone in the active list, `bin` followed by `restore 1` is rejected with `A person that you want to restore is already in the address book.`
+* If the 1st and 2nd volunteers in the recycle bin share the same phone number or email, `bin` followed by `restore 1 2` is rejected with `Two people that you want to restore have the same identity.`
 
 ![result for 'restore 1'](images/restoreResult.png)
 
@@ -438,7 +453,6 @@ Format: `export FILE_PATH`
 * If a file already exists at the given path, it's overwritten without warning, so double-check the path to avoid accidentally replacing an important file.
 
 Examples:
-* `export data/volunteers.csv`
 * `export backups/event-a.csv` creates the `backups` folder if needed and exports the active volunteers there.
 * `export data/volunteers.csv` overwrites `data/volunteers.csv` if it already exists.
 * `export` is rejected with an invalid command format error because a file path is required.
@@ -453,11 +467,20 @@ Format: `clear`
 
 * All removed volunteers are placed in the recycle bin.
 
+Examples:
+* `list` followed by `clear` moves every active volunteer into the recycle bin and leaves the active list empty.
+* `clear` followed by `bin` lets you review the cleared volunteers and restore any that were removed by mistake.
+* `bin` followed by `clear` is rejected with `You must be viewing the working list of kept contacts to perform this command.`
+
 ### Exiting the program : `exit`
 
 Exits RosterBolt. Your volunteer data is saved automatically, but the recycle bin will be cleared, so make sure you've restored any accidentally deleted volunteers before exiting.
 
 Format: `exit`
+
+Examples:
+* `exit` closes RosterBolt after saving your active volunteer data.
+* `delete 1` followed by `exit` closes RosterBolt and clears the recycle bin, so restore the volunteer first if the deletion was a mistake.
 
 ### Editing the previous command : `editprev`
 
@@ -466,6 +489,7 @@ Loads your last successfully run command (other than `editprev` itself) back int
 Format: `editprev`
 
 * Only the most recent successful command (excluding `editprev`) is remembered for the current session.
+* If the command used an alias, the alias is preserved exactly as typed.
 * The recalled command isn't run automatically, meaning you can edit it first and press Enter when you're ready.
 
 Examples:
