@@ -180,7 +180,7 @@ Format: `list [ATTRIBUTE [asc|desc]]`
 * **Sorting attribute (`ATTRIBUTE`):**
   * Currently supported `ATTRIBUTE`: `name`, `phone`, `email`, `address`, `role`, `tag`, or `vr`.
   * `ATTRIBUTE` is case-insensitive (e.g., `list ROLE` works the same as `list role`).
-  * Omitting `ATTRIBUTE` shows the list in the order the volunteers were added.
+  * Omitting `ATTRIBUTE` shows the list in the default order (i.e., the order the volunteers were added).
 * **Sort order (`asc|desc`):**
   * Order defaults to `asc` when omitted.
 * **Sort behavior per attribute:**
@@ -212,9 +212,6 @@ Format: `alias SHORT COMMAND_WORD`
 * If RosterBolt detects invalid aliases in `preferences.json` when it starts up, it removes them and shows you a one-time notice.
 
 Examples:
-* `alias ls list`
-* `alias rm delete`
-* `alias wipe clear`
 * `alias f find` followed by `f va/MONDAY,14:00,17:00 alice` behaves like `find va/MONDAY,14:00,17:00 alice`.
 * `alias ep editprev` is rejected with `Alias target cannot be alias, aliases, unalias, or editprev.`
 * `alias quickadd add n/John Doe` is rejected with `Alias target must be exactly one existing command word.`
@@ -254,9 +251,8 @@ Format: `bin`
 * The recycle bin is cleared when you close RosterBolt, so make sure to restore any accidentally deleted volunteers before exiting.
 
 Examples:
-* `delete 2` followed by `bin` shows the deleted volunteer in the recycle bin.
-* `clear` followed by `bin` shows the volunteers removed by `clear`, so you can review them before restoring or exiting.
-* After you close and reopen RosterBolt, `bin` no longer shows volunteers deleted in the previous session.
+* If at least 2 volunteers are shown in the contact list, `delete 2` followed by `bin` shows the deleted volunteer in the recycle bin.
+* If your contact list contains volunteers, `clear` followed by `bin` shows the volunteers removed by `clear`, so you can review them before restoring or exiting.
 
 ### Editing a volunteer : `edit`
 
@@ -455,7 +451,6 @@ Format: `export FILE_PATH`
 Examples:
 * `export backups/event-a.csv` creates the `backups` folder if needed and exports the active volunteers there.
 * `export data/volunteers.csv` overwrites `data/volunteers.csv` if it already exists.
-* `export` is rejected with an invalid command format error because a file path is required.
 
 ### Clearing all entries : `clear`
 
