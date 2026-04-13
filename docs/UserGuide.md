@@ -119,6 +119,7 @@ A person can have any number of tags, availabilities, and records (including 0).
 * A person is considered a duplicate if the phone number matches exactly, or the email matches case-insensitively.
   * If a duplicate is detected, the command is rejected and an error is shown.
   * Email comparisons are case-insensitive across RosterBolt (e.g., `A@b.com` is treated as the same as `a@b.com`).
+* For tags, omitting `t/`, specifying one tag, specifying multiple non-duplicate tags, or specifying duplicate empty tags (e.g., `t/ t/`) are all accepted. Do not mix empty and non-empty tag prefixes (e.g., `t/friend t/`).
 * `AVAILABILITY` must be in the format `DAY,HH:mm,HH:mm` (day, start time, end time) where `DAY` is a full day name (case-insensitive, e.g., `MONDAY`, `monday`, or `Monday`) and start time is earlier than end time.
 * `RECORD` must be in the format `yyyy-MM-ddTHH:mm,yyyy-MM-ddTHH:mm` (start date-time, end date-time) and start date-time must be earlier than end date-time.
 
