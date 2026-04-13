@@ -12,6 +12,8 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_RECORD;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -69,7 +71,9 @@ public class AddCommandParser implements Parser<AddCommand> {
         Phone phone = ParserUtil.parsePhone(argMultimap.getValue(PREFIX_PHONE).get());
         Email email = ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get());
         Address address = ParserUtil.parseAddress(argMultimap.getValue(PREFIX_ADDRESS).get());
-        Set<Tag> tagList = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
+        List<String> tagNames = argMultimap.getAllValues(PREFIX_TAG);
+        Set<Tag> tagList = ParserUtil.parseTags(tagNames.stream().allMatch(String::isEmpty)
+                ? Collections.emptySet() : tagNames);
         Role role = Person.EMPTY_ROLE;
         if (argMultimap.getValue(PREFIX_ROLE).isPresent()) {
             role = ParserUtil.parseRole(argMultimap.getValue(PREFIX_ROLE).get());

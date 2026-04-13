@@ -129,9 +129,10 @@ public class EditCommandParserTest {
 
         // while parsing {@code PREFIX_TAG} alone will reset the tags of the {@code Person} being edited,
         // parsing it together with a valid tag results in error
-        assertParseFailure(parser, "1" + TAG_DESC_FRIEND + TAG_DESC_HUSBAND + TAG_EMPTY, Tag.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "1" + TAG_DESC_FRIEND + TAG_EMPTY + TAG_DESC_HUSBAND, Tag.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "1" + TAG_EMPTY + TAG_DESC_FRIEND + TAG_DESC_HUSBAND, Tag.MESSAGE_CONSTRAINTS);
+        String duplicateTagMessage = Messages.getErrorMessageForDuplicatePrefixes(PREFIX_TAG);
+        assertParseFailure(parser, "1" + TAG_DESC_FRIEND + TAG_DESC_HUSBAND + TAG_EMPTY, duplicateTagMessage);
+        assertParseFailure(parser, "1" + TAG_DESC_FRIEND + TAG_EMPTY + TAG_DESC_HUSBAND, duplicateTagMessage);
+        assertParseFailure(parser, "1" + TAG_EMPTY + TAG_DESC_FRIEND + TAG_DESC_HUSBAND, duplicateTagMessage);
 
         // multiple invalid values, but only the first invalid value is captured
         assertParseFailure(parser, "1" + INVALID_NAME_DESC + INVALID_EMAIL_DESC + VALID_ADDRESS_AMY + VALID_PHONE_AMY,
@@ -276,9 +277,35 @@ public class EditCommandParserTest {
     }
 
     @Test
+    public void parse_resetTagsWithRepeatedEmptyPrefixes_success() {
+        Index targetIndex = INDEX_THIRD_PERSON;
+        String userInput = targetIndex.getOneBased() + TAG_EMPTY + TAG_EMPTY;
+
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withTags().build();
+        EditCommand expectedCommand = new EditCommand(targetIndex, descriptor);
+
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
+    @Test
     public void parse_resetAvailabilityAndRecords_success() {
         Index targetIndex = INDEX_THIRD_PERSON;
         String userInput = targetIndex.getOneBased() + AVAILABILITY_EMPTY + RECORD_EMPTY;
+
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                .withAvailabilities()
+                .withRecords()
+                .build();
+        EditCommand expectedCommand = new EditCommand(targetIndex, descriptor);
+
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
+    @Test
+    public void parse_resetAvailabilityAndRecordsWithRepeatedEmptyPrefixes_success() {
+        Index targetIndex = INDEX_THIRD_PERSON;
+        String userInput = targetIndex.getOneBased()
+                + AVAILABILITY_EMPTY + AVAILABILITY_EMPTY + RECORD_EMPTY + RECORD_EMPTY;
 
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
                 .withAvailabilities()
