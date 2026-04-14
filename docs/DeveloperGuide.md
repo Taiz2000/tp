@@ -294,7 +294,7 @@ The `import` and `export` commands extend the application with CSV file support.
 At a high level:
 
 * `AddressBookParser#parseCommand()` identifies the command word and passes control to either `ImportCommandParser` or `ExportCommandParser`.
-* The respective parser validates the file path and creates an `ImportCommand` or `ExportCommand`.
+* The respective parser delegates file-path parsing to `ParserUtil#parseFilePath(...)`, then creates an `ImportCommand` or `ExportCommand`.
 
 For the `export` command:
 
